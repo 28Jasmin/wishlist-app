@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FiPlus,
   FiChevronLeft,
@@ -9,8 +9,6 @@ import {
   FiUser,
   FiX,
   FiCheck,
-  FiEdit2,
-  FiTrash2,
   FiMapPin,
   FiTag,
   FiBookmark,
@@ -616,40 +614,12 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
   );
 };
 
-// Floating Action Button Component
-const FloatingActionButton = ({ onClick }) => {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.9 }}
-      onClick={onClick}
-      style={{
-        position: 'fixed',
-        bottom: 100,
-        right: 20,
-        width: 64,
-        height: 64,
-        borderRadius: '50%',
-        background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
-        border: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        WebkitTapHighlightColor: 'transparent',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
-        color: '#ffffff',
-        fontSize: 28,
-        zIndex: 200,
-      }}
-      whileHover={{ scale: 1.05 }}
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-    >
-      <FiPlus />
-    </motion.button>
-  );
-};
+// Updated Floating Action Button Component with 3D styling
+const FloatingActionButton = ({ onClick }) => (
+  <button className="fab-3d" onClick={onClick} aria-label="Add Wish">
+    <FiPlus className="fab-3d-icon" />
+  </button>
+);
 
 // Create Wish Modal (Optimized for S25)
 const CreateWishModal = ({ categories, onSave, onClose }) => {
@@ -884,15 +854,46 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
 // Main App Component
 export default function App() {
   const [wishes, setWishes] = useState(initialWishes);
-  const [categories, setCategories] = useState(defaultCategories);
+  const [categories] = useState(defaultCategories);
   const [selectedCategory, setSelectedCategory] = useState("Adventure");
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeBottomTab, setActiveBottomTab] = useState('home');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState({
+    name: "Your Name",
+    avatar: "",
+  });
+
+  // All wishes for search
+  const allWishes = useMemo(() => wishes, [wishes]);
+  
+  // Search functionality
+  const searchedWishes = useMemo(() => {
+    if (!searchQuery) return allWishes;
+    const q = searchQuery.toLowerCase();
+    return allWishes.filter(wish =>
+      wish.content.toLowerCase().includes(q) ||
+      (wish.notes && wish.notes.toLowerCase().includes(q)) ||
+      (wish.tags && wish.tags.some(tag => tag.toLowerCase().includes(q))) ||
+      (wish.category && wish.category.toLowerCase().includes(q))
+    );
+  }, [searchQuery, allWishes]);
 
   // Filter wishes by category
   const filteredWishes = useMemo(() => {
     return wishes.filter(wish => wish.category === selectedCategory);
   }, [wishes, selectedCategory]);
+
+  // Stats calculation
+  const completedWishes = wishes.filter(w => w.completed);
+  const totalWishes = wishes.length;
+  const completedCount = completedWishes.length;
+  const mostPopularCategory = useMemo(() => {
+    if (!wishes.length) return '';
+    const freq = {};
+    wishes.forEach(w => { freq[w.category] = (freq[w.category] || 0) + 1; });
+    return Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
+  }, [wishes]);
 
   // Handlers
   const handleAddWish = (wishData) => {
@@ -921,86 +922,247 @@ export default function App() {
       WebkitUserSelect: 'none',
       userSelect: 'none',
     }}>
-      {/* Header */}
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.98))',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: `1px solid ${theme.colors.border}`,
-        zIndex: 50,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-      }}>
-        <div style={{
-          padding: '16px 24px',
-          textAlign: 'center',
+      {/* Header - Only show on home tab */}
+      {activeBottomTab === 'home' && (
+        <header style={{
+          position: 'sticky',
+          top: 0,
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.98))',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: `1px solid ${theme.colors.border}`,
+          zIndex: 50,
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
         }}>
-          <h1 style={{
-            fontSize: 26,
-            fontWeight: 800,
-            color: theme.colors.text.primary,
-            marginBottom: 0,
-            fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            textShadow: theme.shadows.text3d,
+          <div style={{
+            padding: '16px 24px',
+            textAlign: 'center',
           }}>
-            Wishli
-          </h1>
-        </div>
+            <h1 style={{
+              fontSize: 26,
+              fontWeight: 800,
+              color: theme.colors.text.primary,
+              marginBottom: 0,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              textShadow: theme.shadows.text3d,
+            }}>
+              Wishli
+            </h1>
+          </div>
 
-        {/* Category Tabs */}
-        <CategoryTabs
-          categories={categories}
-          selected={selectedCategory}
-          onSelect={setSelectedCategory}
-        />
-      </header>
+          {/* Category Tabs */}
+          <CategoryTabs
+            categories={categories}
+            selected={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
+        </header>
+      )}
 
       {/* Main Content */}
       <main>
-        {filteredWishes.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '120px 20px',
-            color: theme.colors.text.tertiary,
-          }}>
-            <div style={{ fontSize: 64, marginBottom: 20, opacity: 0.15 }}>×</div>
-            <p style={{ 
-              fontSize: 18, 
-              marginBottom: 32,
+        {activeBottomTab === 'home' && (
+          filteredWishes.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '120px 20px',
+              color: theme.colors.text.tertiary,
+            }}>
+              <div style={{ fontSize: 64, marginBottom: 20, opacity: 0.15 }}>×</div>
+              <p style={{ 
+                fontSize: 18, 
+                marginBottom: 32,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              }}>
+                No wishes in {selectedCategory} yet
+              </p>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAddModal(true)}
+                style={{
+                  padding: '14px 28px',
+                  background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: theme.radius.lg,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  cursor: 'pointer',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                <FiPlus size={18} />
+                Add Your First Wish
+              </motion.button>
+            </div>
+          ) : (
+            <FannedCardStack
+              wishes={filteredWishes}
+              onCardClick={handleCardClick}
+            />
+          )
+        )}
+
+        {activeBottomTab === 'search' && (
+          <div style={{ padding: 24 }}>
+            <div className="search-container" style={{ marginBottom: 24 }}>
+              <input
+                className="search-input"
+                type="text"
+                placeholder="Search wishes..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+              <FiSearch className="search-icon" />
+            </div>
+            {searchedWishes.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-state-icon">×</div>
+                <div className="empty-state-title">No results</div>
+                <div className="empty-state-description">Try a different keyword.</div>
+              </div>
+            ) : (
+              <div className="wishes-list">
+                {searchedWishes.map(wish => (
+                  <div
+                    className="wish-list-item"
+                    key={wish.id}
+                    onClick={() => handleCardClick(wish)}
+                  >
+                    {wish.media ? (
+                      <img
+                        className="wish-list-thumbnail"
+                        src={wish.media}
+                        alt={wish.content}
+                        style={{ objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div className="wish-list-thumbnail" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: theme.colors.surface,
+                        color: theme.colors.text.tertiary,
+                      }}>
+                        {getTypeIcon(wish.type)}
+                      </div>
+                    )}
+                    <div className="wish-list-content">
+                      <div className="wish-list-title">{wish.content}</div>
+                      <div className="wish-list-meta">
+                        <span>{wish.category}</span>
+                        <span>{formatDate(wish.created)}</span>
+                      </div>
+                    </div>
+                    {wish.completed && (
+                      <FiCheck size={18} color={theme.colors.success} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeBottomTab === 'profile' && (
+          <div style={{ padding: 24, maxWidth: 400, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+              <div style={{
+                width: 80, height: 80, borderRadius: '50%',
+                background: theme.colors.surface, margin: '0 auto 12px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 36, color: theme.colors.text.tertiary,
+                border: `2px solid ${theme.colors.border}`,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              }}>
+                {user.avatar ? (
+                  <img src={user.avatar} alt="avatar" style={{ width: '100%', borderRadius: '50%' }} />
+                ) : (
+                  user.name[0]
+                )}
+              </div>
+              <input
+                style={{
+                  fontSize: 20, fontWeight: 700, textAlign: 'center',
+                  border: 'none', background: 'transparent', outline: 'none', width: '100%',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                }}
+                value={user.name}
+                onChange={e => setUser({ ...user, name: e.target.value })}
+              />
+            </div>
+            
+            <div className="stats-container" style={{ marginBottom: 32 }}>
+              <div className="stat-card">
+                <div className="stat-value">{totalWishes}</div>
+                <div className="stat-label">Total Wishes</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value">{completedCount}</div>
+                <div className="stat-label">Completed</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value">{mostPopularCategory || '-'}</div>
+                <div className="stat-label">Top Category</div>
+              </div>
+            </div>
+            
+            <h3 style={{ 
+              fontSize: 16, fontWeight: 700, marginBottom: 12,
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
-              No wishes in {selectedCategory} yet
-            </p>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowAddModal(true)}
-              style={{
-                padding: '14px 28px',
-                background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: theme.radius.lg,
-                fontSize: 16,
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 10,
-                cursor: 'pointer',
-                WebkitTapHighlightColor: 'transparent',
-                fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-              }}
-            >
-              <FiPlus size={18} />
-              Add Your First Wish
-            </motion.button>
+              Completed Wishes
+            </h3>
+            {completedWishes.length === 0 ? (
+              <div className="empty-state-description">No completed wishes yet.</div>
+            ) : (
+              <div className="wishes-list">
+                {completedWishes.map(wish => (
+                  <div className="wish-list-item" key={wish.id}>
+                    {wish.media ? (
+                      <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} />
+                    ) : (
+                      <div className="wish-list-thumbnail" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: theme.colors.surface,
+                        color: theme.colors.text.tertiary,
+                      }}>
+                        {getTypeIcon(wish.type)}
+                      </div>
+                    )}
+                    <div className="wish-list-content">
+                      <div className="wish-list-title">{wish.content}</div>
+                      <div className="wish-list-meta">
+                        <span>{wish.category}</span>
+                        <span>{formatDate(wish.completedDate || wish.created)}</span>
+                      </div>
+                    </div>
+                    <button
+                      style={{ 
+                        background: 'none', border: 'none', 
+                        color: theme.colors.warning, fontSize: 18,
+                        cursor: 'pointer', padding: 8,
+                      }}
+                      onClick={() => setWishes(wishes.map(w => 
+                        w.id === wish.id ? { ...w, completed: false } : w
+                      ))}
+                      title="Mark as incomplete"
+                    >
+                      <FiX />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
-          <FannedCardStack
-            wishes={filteredWishes}
-            onCardClick={handleCardClick}
-          />
         )}
       </main>
 
@@ -1010,8 +1172,10 @@ export default function App() {
         onTabChange={handleBottomTabChange}
       />
 
-      {/* Floating Action Button */}
-      <FloatingActionButton onClick={() => setShowAddModal(true)} />
+      {/* Floating Action Button - Only show on home tab */}
+      {activeBottomTab === 'home' && (
+        <FloatingActionButton onClick={() => setShowAddModal(true)} />
+      )}
 
       {/* Modals */}
       <AnimatePresence>
