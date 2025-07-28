@@ -56,29 +56,94 @@ import {
   FaExclamationTriangle,
   FaCheck,
   FaBan,
-  FaVolumeUp,
-  FaVolumeMute,
-  FaVolumeOff,
-  FaVolumeDown,
-  FaVolumeUp as FaVolumeMax,
-  FaVolumeMute as FaVolumeNone,
-  FaVolumeOff as FaVolumeSilent,
-  FaVolumeDown as FaVolumeLow,
 } from "react-icons/fa";
+
+// Add this style tag or in your CSS file
+const globalStyles = `
+  body {
+    font-family: 'Inter', 'SF Pro Display', 'Segoe UI', Arial, sans-serif;
+    background: #f6f7f9;
+    color: #22223b;
+    letter-spacing: 0.01em;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 8px;
+  }
+
+  .glass {
+    background: rgba(255,255,255,0.65);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+
+  .dark .glass {
+    background: rgba(34,34,59,0.85);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #e0e7ef;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+`;
 
 // --- Enhanced SVG Animated Background ---
 const AnimatedBackground = ({ dark, theme }) => {
-  const colors = {
-    default: dark ? ["#22223b", "#0f3460"] : ["#FF9A8B", "#FF99AC"],
-    ocean: ["#00c9ff", "#92fe9d"],
-    sunset: ["#ff7e5f", "#feb47b"],
-    forest: ["#134e5e", "#71b280"],
-    cosmic: ["#642B73", "#C6426E"],
-    neon: ["#12c2e9", "#c471ed", "#f64f59"],
-  };
-
-  const gradientColors = colors[theme] || colors.default;
-
   return (
     <svg
       style={{
@@ -95,22 +160,21 @@ const AnimatedBackground = ({ dark, theme }) => {
     >
       <defs>
         <radialGradient id="bg-grad" cx="50%" cy="50%" r="80%">
-          <stop offset="0%" stopColor={gradientColors[0]} />
-          <stop offset="100%" stopColor={gradientColors[1]} />
+          <stop offset="0%" stopColor="#f6f7f9" />
+          <stop offset="100%" stopColor="#e0e7ef" />
         </radialGradient>
         <filter id="blur">
           <feGaussianBlur stdDeviation="10" />
         </filter>
       </defs>
       <rect width="100vw" height="100vh" fill="url(#bg-grad)" />
-      {/* Floating bubbles */}
-      {[...Array(12)].map((_, i) => (
+      {[...Array(6)].map((_, i) => (
         <motion.circle
           key={i}
           cx={Math.random() * 100 + "%"}
           cy={Math.random() * 100 + "%"}
           r={Math.random() * 30 + 20}
-          fill={dark ? "#fff2" : "#fff4"}
+          fill="#fff2"
           filter="url(#blur)"
           animate={{
             cy: [
@@ -118,34 +182,13 @@ const AnimatedBackground = ({ dark, theme }) => {
               Math.random() * 100 + "%",
               Math.random() * 100 + "%",
             ],
-            opacity: [0.3, 0.7, 0.3],
+            opacity: [0.2, 0.4, 0.2],
           }}
           transition={{
-            duration: 8 + Math.random() * 4,
+            duration: 12 + Math.random() * 6,
             repeat: Infinity,
             repeatType: "mirror",
             delay: Math.random() * 4,
-          }}
-        />
-      ))}
-      {/* Floating particles */}
-      {[...Array(20)].map((_, i) => (
-        <motion.circle
-          key={`particle-${i}`}
-          cx={Math.random() * 100 + "%"}
-          cy={Math.random() * 100 + "%"}
-          r={Math.random() * 4 + 1}
-          fill={dark ? "#fff8" : "#fff"}
-          animate={{
-            x: [0, Math.random() * 100 - 50],
-            y: [0, Math.random() * 100 - 50],
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 5 + Math.random() * 5,
-            repeat: Infinity,
-            repeatType: "reverse",
-            delay: Math.random() * 2,
           }}
         />
       ))}
@@ -156,10 +199,10 @@ const AnimatedBackground = ({ dark, theme }) => {
 // --- Enhanced Confetti Celebration ---
 const Confetti = ({ show, type = "default" }) => {
   const confettiTypes = {
-    default: { count: 60, size: [10, 20], colors: ["#FF6B6B", "#4ECDC4", "#FFD166", "#1A535C"] },
-    celebration: { count: 100, size: [8, 15], colors: ["#FF6B6B", "#4ECDC4", "#FFD166", "#1A535C", "#9B5DE5"] },
-    success: { count: 80, size: [6, 12], colors: ["#4ECDC4", "#1A535C"] },
-    premium: { count: 120, size: [5, 25], colors: ["#FFD700", "#FFA500", "#FF6347"] },
+    default: { count: 60, size: [10, 20], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9", "#888"] },
+    celebration: { count: 100, size: [8, 15], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9", "#888", "#ccc"] },
+    success: { count: 80, size: [6, 12], colors: ["#e0e7ef", "#888"] },
+    premium: { count: 120, size: [5, 25], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9"] },
   };
 
   const config = confettiTypes[type] || confettiTypes.default;
@@ -216,17 +259,6 @@ const Confetti = ({ show, type = "default" }) => {
 
 // --- Enhanced Toast Notification ---
 const Toast = ({ message, icon, show, type = "default", duration = 2200 }) => {
-  const toastTypes = {
-    default: { bg: "#1A535C", color: "#fff" },
-    success: { bg: "#4ECDC4", color: "#fff" },
-    error: { bg: "#FF6B6B", color: "#fff" },
-    warning: { bg: "#FFD166", color: "#1A535C" },
-    info: { bg: "#9B5DE5", color: "#fff" },
-    premium: { bg: "linear-gradient(90deg, #FFD700, #FFA500)", color: "#000" },
-  };
-
-  const style = toastTypes[type] || toastTypes.default;
-
   return (
     <AnimatePresence>
       {show && (
@@ -236,14 +268,14 @@ const Toast = ({ message, icon, show, type = "default", duration = 2200 }) => {
           exit={{ y: 60, opacity: 0 }}
           style={{
             position: "fixed",
-            bottom: 30,
+            bottom: 40,
             left: "50%",
             transform: "translateX(-50%)",
-            background: style.bg,
-            color: style.color,
+            background: "rgba(255,255,255,0.85)",
+            color: "#22223b",
             padding: "16px 32px",
             borderRadius: 32,
-            boxShadow: "0 8px 32px #0003",
+            boxShadow: "0 8px 32px #0001",
             zIndex: 1001,
             display: "flex",
             alignItems: "center",
@@ -252,6 +284,8 @@ const Toast = ({ message, icon, show, type = "default", duration = 2200 }) => {
             fontSize: 18,
             maxWidth: "90vw",
             wordBreak: "break-word",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
           }}
         >
           {icon}
@@ -268,7 +302,7 @@ const defaultCategories = [
     key: "travel",
     name: "Travel",
     icon: <FaPlane />,
-    color: "#4ECDC4",
+    color: "#bdbdbd",
     description: "Dream destinations and adventures",
     count: 12,
     featured: true,
@@ -277,7 +311,7 @@ const defaultCategories = [
     key: "movies",
     name: "Movies",
     icon: <FaFilm />,
-    color: "#FF6B6B",
+    color: "#bdbdbd",
     description: "Must-watch films and series",
     count: 8,
   },
@@ -285,7 +319,7 @@ const defaultCategories = [
     key: "restaurants",
     name: "Restaurants",
     icon: <FaUtensils />,
-    color: "#FFD166",
+    color: "#bdbdbd",
     description: "Delicious dining experiences",
     count: 5,
   },
@@ -293,7 +327,7 @@ const defaultCategories = [
     key: "books",
     name: "Books",
     icon: <FaBook />,
-    color: "#1A535C",
+    color: "#bdbdbd",
     description: "Books to read and explore",
     count: 15,
   },
@@ -301,7 +335,7 @@ const defaultCategories = [
     key: "shopping",
     name: "Shopping",
     icon: <FaShoppingBag />,
-    color: "#FF9A8B",
+    color: "#bdbdbd",
     description: "Products and items to buy",
     count: 7,
   },
@@ -309,7 +343,7 @@ const defaultCategories = [
     key: "sports",
     name: "Sports",
     icon: <FaFutbol />,
-    color: "#FF5E7D",
+    color: "#bdbdbd",
     description: "Sports events and activities",
     count: 3,
   },
@@ -317,7 +351,7 @@ const defaultCategories = [
     key: "hobbies",
     name: "Hobbies",
     icon: <FaPaintBrush />,
-    color: "#9B5DE5",
+    color: "#bdbdbd",
     description: "Creative and fun activities",
     count: 9,
   },
@@ -331,7 +365,7 @@ const sampleWishes = {
       title: "Santorini, Greece",
       description: "Visit the stunning white-washed buildings with blue domes.",
       media:
-        "<https://images.unsplash.com/photo-1570077188259-71c05c181d41?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1570077188259-71c05c181d41?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-05-15",
       targetDate: "2024-06-01",
@@ -349,7 +383,7 @@ const sampleWishes = {
       description:
         "Explore the vibrant city with its mix of temples and skyscrapers.",
       media:
-        "<https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-06-20",
       targetDate: "2024-09-15",
@@ -367,7 +401,7 @@ const sampleWishes = {
       description:
         "Hike through the breathtaking landscapes of Patagonia.",
       media:
-        "<https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-07-10",
       targetDate: "2024-12-01",
@@ -386,7 +420,7 @@ const sampleWishes = {
       title: "Inception",
       description: "Experience the mind-bending world of dreams within dreams.",
       media:
-        "<https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-04-05",
       targetDate: "",
@@ -404,7 +438,7 @@ const sampleWishes = {
       title: "Parasite",
       description: "A masterpiece of social commentary and dark comedy.",
       media:
-        "<https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-05-12",
       targetDate: "",
@@ -424,7 +458,7 @@ const sampleWishes = {
       title: "Le Bernardin",
       description: "Michelin-starred seafood restaurant in New York.",
       media:
-        "<https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-03-18",
       targetDate: "2024-02-14",
@@ -444,7 +478,7 @@ const sampleWishes = {
       title: "The Midnight Library",
       description: "A novel about infinite possibilities and life choices.",
       media:
-        "<https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80>",
+        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80",
       mediaType: "image",
       dateAdded: "2023-02-20",
       targetDate: "",
@@ -509,14 +543,14 @@ const PremiumBadge = ({ size = "small" }) => {
     <div
       style={{
         ...sizeStyles[size],
-        background: "linear-gradient(90deg, #FFD700, #FFA500)",
-        color: "#000",
+        background: "#e0e7ef",
+        color: "#22223b",
         fontWeight: 700,
         borderRadius: 20,
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        boxShadow: "0 2px 8px rgba(255, 215, 0, 0.3)",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
       }}
     >
       <FaStar /> PREMIUM
@@ -528,41 +562,30 @@ const PremiumBadge = ({ size = "small" }) => {
 function StatCard({ icon, value, label, color, trend }) {
   return (
     <div
+      className="glass"
       style={{
         flex: 1,
-        background: "#fff8",
         borderRadius: 18,
         padding: "16px 0",
         textAlign: "center",
-        boxShadow: "0 2px 8px #0001",
         position: "relative",
         overflow: "hidden",
       }}
     >
       <div
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 4,
-          background: color,
-        }}
-      />
-      <div
-        style={{
           fontSize: 24,
-          color,
+          color: "#bdbdbd",
           marginBottom: 4,
         }}
       >
         {icon}
       </div>
-      <div style={{ fontWeight: 700, fontSize: 22 }}>{value}</div>
+      <div style={{ fontWeight: 700, fontSize: 22, color: "#22223b" }}>{value}</div>
       <div style={{ fontSize: 13, color: "#888", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
         {label}
         {trend && (
-          <span style={{ color: trend > 0 ? "#4ECDC4" : "#FF6B6B", fontSize: 12 }}>
+          <span style={{ color: trend > 0 ? "#22223b" : "#888", fontSize: 12 }}>
             {trend > 0 ? "↑" : "↓"} {Math.abs(trend)}%
           </span>
         )}
@@ -572,19 +595,19 @@ function StatCard({ icon, value, label, color, trend }) {
 }
 
 // --- Enhanced Progress Bar ---
-function ProgressBar({ value, total, label, color = "#4ECDC4" }) {
+function ProgressBar({ value, total, label, color = "#e0e7ef" }) {
   const percent = total === 0 ? 0 : Math.round((value / total) * 100);
   return (
     <div style={{ margin: "18px 0" }}>
       {label && (
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <span style={{ fontWeight: 600 }}>{label}</span>
-          <span>{percent}%</span>
+          <span style={{ fontWeight: 600, color: "#22223b" }}>{label}</span>
+          <span style={{ color: "#888" }}>{percent}%</span>
         </div>
       )}
       <div
         style={{
-          background: "#eee",
+          background: "#f6f7f9",
           borderRadius: 12,
           height: 18,
           position: "relative",
@@ -593,13 +616,13 @@ function ProgressBar({ value, total, label, color = "#4ECDC4" }) {
         <motion.div
           style={{
             height: "100%",
-            background: `linear-gradient(90deg, ${color} 0%, ${color}80 100%)`,
+            background: color,
             borderRadius: 12,
             width: `${percent}%`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#fff",
+            color: "#22223b",
             fontWeight: 700,
             fontSize: 13,
             position: "absolute",
@@ -619,15 +642,14 @@ function ProgressBar({ value, total, label, color = "#4ECDC4" }) {
 function CategoryCard({ category, count, onClick, isSelected }) {
   return (
     <motion.div
-      whileHover={{ scale: 1.04, boxShadow: "0 8px 32px #0002" }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.02, boxShadow: "0 12px 32px #0001" }}
+      whileTap={{ scale: 0.98 }}
+      className="glass"
       style={{
-        background: "#fff",
         borderRadius: 20,
         padding: "22px 12px 16px 12px",
         textAlign: "center",
-        boxShadow: "0 4px 16px #0001",
-        border: `3px solid ${category.color}`,
+        border: "none",
         cursor: "pointer",
         position: "relative",
         transform: isSelected ? "scale(1.05)" : "none",
@@ -636,18 +658,18 @@ function CategoryCard({ category, count, onClick, isSelected }) {
       }}
       onClick={onClick}
     >
-      <div style={{ fontSize: 36, color: category.color, marginBottom: 8 }}>
+      <div style={{ fontSize: 36, color: "#bdbdbd", marginBottom: 8 }}>
         {category.icon}
       </div>
-      <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{category.name}</div>
+      <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4, color: "#22223b" }}>{category.name}</div>
       <div style={{ fontSize: 12, color: "#888", marginBottom: 8 }}>{category.description}</div>
       <div
         style={{
           position: "absolute",
           top: 10,
           right: 16,
-          background: category.color,
-          color: "#fff",
+          background: "rgba(0,0,0,0.04)",
+          color: "#22223b",
           borderRadius: "50%",
           width: 28,
           height: 28,
@@ -656,7 +678,6 @@ function CategoryCard({ category, count, onClick, isSelected }) {
           justifyContent: "center",
           fontWeight: 700,
           fontSize: 15,
-          boxShadow: "0 2px 8px #0001",
         }}
       >
         {count}
@@ -685,27 +706,29 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
       style={{
         background: wish.media
           ? `url(${wish.media}) center/cover`
-          : category.color,
+          : "#f6f7f9",
         borderRadius: 24,
         minHeight: 320,
         position: "relative",
         overflow: "hidden",
-        border: `4px solid ${category.color}`,
+        boxShadow: "0 8px 32px #0001",
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
       }}
     >
-      {/* Overlay */}
+      {/* Glass Overlay */}
       <div
         style={{
-          background: "linear-gradient(0deg,#000b 60%,#0000 100%)",
+          background: "rgba(255,255,255,0.65)",
           position: "absolute",
           left: 0,
           right: 0,
           bottom: 0,
           top: 0,
           zIndex: 1,
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
       />
 
@@ -714,15 +737,15 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
         style={{
           position: "relative",
           zIndex: 2,
-          color: "#fff",
+          color: "#22223b",
           padding: "24px 20px 18px 20px",
-          textShadow: "1px 1px 4px #000a",
+          textShadow: "none",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
             <div style={{ fontSize: 22, fontWeight: 700 }}>{wish.title}</div>
-            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4 }}>
+            <div style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>
               Added: {formatDate(wish.dateAdded)}
               {wish.targetDate && (
                 <>
@@ -734,7 +757,7 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
           <motion.button
             whileTap={{ scale: 0.9 }}
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "rgba(0,0,0,0.04)",
               border: "none",
               borderRadius: 12,
               width: 32,
@@ -743,6 +766,7 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
+              color: "#22223b",
             }}
             onClick={() => setShowDetails(!showDetails)}
           >
@@ -774,7 +798,7 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
                   <span
                     key={index}
                     style={{
-                      background: "rgba(255,255,255,0.2)",
+                      background: "rgba(0,0,0,0.04)",
                       padding: "2px 8px",
                       borderRadius: 12,
                       fontSize: 12
@@ -793,11 +817,11 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
             <motion.button
               whileTap={{ scale: 0.9 }}
               style={{
-                background: "rgba(255,255,255,0.2)",
+                background: "rgba(0,0,0,0.04)",
                 border: "none",
                 borderRadius: 18,
                 padding: "6px 12px",
-                color: "#fff",
+                color: "#22223b",
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
@@ -807,18 +831,18 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
               }}
               onClick={handleLike}
             >
-              {liked ? <FaHeart color="#FF6B6B" /> : <FaRegHeart />}
+              {liked ? <FaHeart color="#888" /> : <FaRegHeart />}
               {wish.likes + (liked ? 1 : 0)}
             </motion.button>
 
             <motion.button
               whileTap={{ scale: 0.9 }}
               style={{
-                background: "rgba(255,255,255,0.2)",
+                background: "rgba(0,0,0,0.04)",
                 border: "none",
                 borderRadius: 18,
                 padding: "6px 12px",
-                color: "#fff",
+                color: "#22223b",
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
@@ -835,11 +859,11 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
             <motion.button
               whileTap={{ scale: 0.9 }}
               style={{
-                background: "rgba(255,255,255,0.2)",
+                background: "rgba(0,0,0,0.04)",
                 border: "none",
                 borderRadius: 18,
                 padding: "6px 12px",
-                color: "#fff",
+                color: "#22223b",
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
@@ -858,11 +882,11 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
             <motion.button
               whileTap={{ scale: 0.9 }}
               style={{
-                background: "#4ECDC4",
+                background: "#e0e7ef",
                 border: "none",
                 borderRadius: 18,
                 padding: "6px 12px",
-                color: "#fff",
+                color: "#22223b",
                 fontWeight: 700,
                 fontSize: 14,
                 cursor: "pointer",
@@ -881,11 +905,11 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
           <motion.button
             whileTap={{ scale: 0.9 }}
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "rgba(0,0,0,0.04)",
               border: "none",
               borderRadius: 18,
               padding: "6px 12px",
-              color: "#fff",
+              color: "#22223b",
               fontWeight: 600,
               fontSize: 14,
               cursor: "pointer",
@@ -901,11 +925,11 @@ function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, 
           <motion.button
             whileTap={{ scale: 0.9 }}
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "rgba(0,0,0,0.04)",
               border: "none",
               borderRadius: 18,
               padding: "6px 12px",
-              color: "#fff",
+              color: "#22223b",
               fontWeight: 600,
               fontSize: 14,
               cursor: "pointer",
@@ -948,14 +972,13 @@ function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike
           whileTap={{ scale: 0.95 }}
           style={{
             marginTop: 20,
-            background: category.color,
-            color: "#fff",
+            background: "#e0e7ef",
+            color: "#22223b",
             fontWeight: 700,
             fontSize: 16,
             border: "none",
             borderRadius: 24,
             padding: "12px 24px",
-            boxShadow: "0 4px 16px #0001",
             cursor: "pointer",
             display: "inline-flex",
             alignItems: "center",
@@ -996,7 +1019,7 @@ function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike
               zIndex: 10 - i,
               width: "98%",
               maxWidth: 380,
-              boxShadow: "0 8px 32px #0002",
+              boxShadow: "0 8px 32px #0001",
               opacity: 1 - i * 0.18,
               scale: 1 - i * 0.06,
               pointerEvents: i === 0 ? "auto" : "none",
@@ -1023,8 +1046,8 @@ function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike
                 position: "absolute",
                 top: 12,
                 left: 18,
-                background: "#0006",
-                color: "#fff",
+                background: "rgba(0,0,0,0.04)",
+                color: "#22223b",
                 borderRadius: 16,
                 fontSize: 13,
                 padding: "2px 10px",
@@ -1050,12 +1073,12 @@ function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike
           whileTap={{ scale: 0.9 }}
           disabled={index === 0}
           style={{
-            background: "#FF6B6B",
+            background: "rgba(0,0,0,0.04)",
             border: "none",
             borderRadius: "50%",
             width: 44,
             height: 44,
-            color: "#fff",
+            color: "#22223b",
             fontSize: 20,
             cursor: index === 0 ? "not-allowed" : "pointer",
             opacity: index === 0 ? 0.5 : 1,
@@ -1068,12 +1091,12 @@ function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike
           whileTap={{ scale: 0.9 }}
           disabled={index === wishes.length - 1}
           style={{
-            background: "#FF6B6B",
+            background: "rgba(0,0,0,0.04)",
             border: "none",
             borderRadius: "50%",
             width: 44,
             height: 44,
-            color: "#fff",
+            color: "#22223b",
             fontSize: 20,
             cursor: index === wishes.length - 1 ? "not-allowed" : "pointer",
             opacity: index === wishes.length - 1 ? 0.5 : 1,
@@ -1117,14 +1140,13 @@ function Modal({ show, onClose, title, children, size = "medium" }) {
           onClick={onClose}
         >
           <motion.div
+            className="glass"
             style={{
-              background: "#fff",
               borderRadius: 24,
               padding: 32,
               minWidth: 320,
               ...sizeStyles[size],
               width: "90vw",
-              boxShadow: "0 8px 32px #0003",
               position: "relative",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -1142,6 +1164,7 @@ function Modal({ show, onClose, title, children, size = "medium" }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                color: "#22223b",
               }}
             >
               {title}
@@ -1172,7 +1195,6 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("FaStar");
-  const [color, setColor] = useState("#FF6B6B");
   const [featured, setFeatured] = useState(false);
 
   const icons = [
@@ -1200,7 +1222,7 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
       name,
       description,
       icon: React.createElement(require("react-icons/fa")[icon]),
-      color,
+      color: "#bdbdbd",
       featured,
       count: 0,
     });
@@ -1209,7 +1231,7 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
   return (
     <form onSubmit={handleSubmit}>
       <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700 }}>Category Name</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Category Name</label>
         <input
           type="text"
           required
@@ -1218,45 +1240,51 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
           placeholder="e.g. Adventures"
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700 }}>Description</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe this category..."
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
             minHeight: 60,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700 }}>Icon</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Icon</label>
         <select
           value={icon}
           onChange={(e) => setIcon(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         >
           {icons.map((ic) => (
@@ -1267,25 +1295,6 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
         </select>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700 }}>Color</label>
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          style={{
-            width: 48,
-            height: 32,
-            border: "none",
-            borderRadius: 8,
-            marginLeft: 8,
-          }}
-        />
-        <span style={{ marginLeft: 12, fontSize: 14, color: "#666" }}>
-          {color}
-        </span>
-      </div>
-
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center" }}>
         <input
           type="checkbox"
@@ -1294,7 +1303,7 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
           onChange={(e) => setFeatured(e.target.checked)}
           style={{ marginRight: 8 }}
         />
-        <label htmlFor="featured" style={{ fontWeight: 700 }}>
+        <label htmlFor="featured" style={{ fontWeight: 700, color: "#22223b" }}>
           Featured Category
         </label>
         <span style={{ marginLeft: 8, fontSize: 12, color: "#888" }}>
@@ -1306,8 +1315,8 @@ function AddCategoryForm({ onSubmit, existingKeys }) {
         type="submit"
         style={{
           width: "100%",
-          background: "#FF6B6B",
-          color: "#fff",
+          background: "#e0e7ef",
+          color: "#22223b",
           fontWeight: 700,
           fontSize: 18,
           border: "none",
@@ -1363,7 +1372,7 @@ function AddWishForm({ onSubmit, categories, initial }) {
   return (
     <form onSubmit={handleSubmit}>
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Title</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Title</label>
         <input
           type="text"
           required
@@ -1372,45 +1381,51 @@ function AddWishForm({ onSubmit, categories, initial }) {
           placeholder="What's your wish?"
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Description</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe your wish..."
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
             minHeight: 60,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Category</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Category</label>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         >
           {categories.map((cat) => (
@@ -1422,34 +1437,38 @@ function AddWishForm({ onSubmit, categories, initial }) {
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Target Date (optional)</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Target Date (optional)</label>
         <input
           type="date"
           value={targetDate}
           onChange={(e) => setTargetDate(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Priority</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Priority</label>
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         >
           <option value="high">High</option>
@@ -1459,7 +1478,7 @@ function AddWishForm({ onSubmit, categories, initial }) {
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Location (optional)</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Location (optional)</label>
         <input
           type="text"
           value={location}
@@ -1467,17 +1486,19 @@ function AddWishForm({ onSubmit, categories, initial }) {
           placeholder="Where is this wish?"
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Tags (comma separated)</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Tags (comma separated)</label>
         <input
           type="text"
           value={tags}
@@ -1485,27 +1506,31 @@ function AddWishForm({ onSubmit, categories, initial }) {
           placeholder="e.g. beach, vacation, summer"
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Privacy</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Privacy</label>
         <select
           value={privacy}
           onChange={(e) => setPrivacy(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         >
           <option value="public">Public</option>
@@ -1515,24 +1540,26 @@ function AddWishForm({ onSubmit, categories, initial }) {
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700 }}>Photo/Video (URL)</label>
+        <label style={{ fontWeight: 700, color: "#22223b" }}>Photo/Video (URL)</label>
         <input
           type="url"
           value={media}
           onChange={(e) => {
             setMedia(e.target.value);
             setMediaType(
-              e.target.value.match(/\\.(mp4|webm)$/i) ? "video" : "image"
+              e.target.value.match(/\.(mp4|webm)$/i) ? "video" : "image"
             );
           }}
           placeholder="Paste image or video URL"
           style={{
             width: "100%",
-            padding: "10px 14px",
-            borderRadius: 14,
-            border: "2px solid #eee",
+            padding: "12px 16px",
+            borderRadius: 16,
+            border: "none",
+            background: "#f6f7f9",
             fontSize: 16,
             marginTop: 4,
+            boxShadow: "0 1px 4px #0001",
           }}
         />
         {media && (
@@ -1557,8 +1584,8 @@ function AddWishForm({ onSubmit, categories, initial }) {
         type="submit"
         style={{
           width: "100%",
-          background: "#4ECDC4",
-          color: "#fff",
+          background: "#e0e7ef",
+          color: "#22223b",
           fontWeight: 700,
           fontSize: 18,
           border: "none",
@@ -1587,6 +1614,16 @@ function FaCloud(props) {
 
 // --- Enhanced Main App ---
 export default function App() {
+  // Add global styles
+  React.useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = globalStyles;
+    document.head.appendChild(styleElement);
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   // --- State ---
   const [dark, setDark] = useState(false);
   const [page, setPage] = useState("home"); // home | category | completed | profile | settings
@@ -1609,7 +1646,7 @@ export default function App() {
   const [showFilters, setShowFilters] = useState(false);
   const [user, setUser] = useState({
     name: "Alex Johnson",
-    avatar: "<https://randomuser.me/api/portraits/men/32.jpg>",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
     level: 5,
     xp: 1250,
     nextLevelXp: 1500,
@@ -1766,9 +1803,9 @@ export default function App() {
   return (
     <div
       style={{
-        fontFamily: "Fredoka One, Comic Neue, sans-serif",
+        fontFamily: "Inter, sans-serif",
         minHeight: "100vh",
-        color: dark ? "#f0f0f0" : "#1A535C",
+        color: dark ? "#f6f7f9" : "#22223b",
         background: "none",
         position: "relative",
         overflowX: "hidden",
@@ -1783,17 +1820,22 @@ export default function App() {
       <div
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          background: dark ? "#22223b" : "#fff",
-          padding: "12px 24px",
+          top: 24,
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: "rgba(255,255,255,0.85)",
+          padding: "8px 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           zIndex: 100,
-          boxShadow: "0 2px 12px #0002",
+          boxShadow: "0 2px 12px #0001",
+          borderRadius: 24,
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+          width: "min(96vw, 680px)",
         }}
+        className={dark ? "glass" : ""}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <motion.button
@@ -1802,14 +1844,14 @@ export default function App() {
               background: "none",
               border: "none",
               fontSize: 24,
-              color: dark ? "#FFD166" : "#1A535C",
+              color: dark ? "#f6f7f9" : "#22223b",
               cursor: "pointer",
             }}
             onClick={() => setPage("home")}
           >
             <FaHome />
           </motion.button>
-          <h2 style={{ margin: 0, fontSize: 22 }}>WishList Adventure</h2>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600 }}>WishList Adventure</h2>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -1819,7 +1861,7 @@ export default function App() {
               background: "none",
               border: "none",
               fontSize: 20,
-              color: dark ? "#FFD166" : "#1A535C",
+              color: dark ? "#f6f7f9" : "#22223b",
               cursor: "pointer",
               position: "relative",
             }}
@@ -1837,8 +1879,8 @@ export default function App() {
                   position: "absolute",
                   top: -5,
                   right: -5,
-                  background: "#FF6B6B",
-                  color: "#fff",
+                  background: "#e0e7ef",
+                  color: "#22223b",
                   borderRadius: "50%",
                   width: 18,
                   height: 18,
@@ -1846,6 +1888,7 @@ export default function App() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  fontWeight: 600,
                 }}
               >
                 {notifications}
@@ -1859,7 +1902,7 @@ export default function App() {
               background: "none",
               border: "none",
               fontSize: 20,
-              color: dark ? "#FFD166" : "#1A535C",
+              color: dark ? "#f6f7f9" : "#22223b",
               cursor: "pointer",
             }}
             onClick={() => setPage("profile")}
@@ -1871,18 +1914,20 @@ export default function App() {
             whileTap={{ scale: 0.85, rotate: 20 }}
             onClick={handleToggleDark}
             style={{
-              background: dark ? "#22223b" : "#fff",
-              color: dark ? "#FFD166" : "#1A535C",
+              background: dark ? "rgba(34,34,59,0.85)" : "rgba(255,255,255,0.85)",
+              color: dark ? "#f6f7f9" : "#22223b",
               border: "none",
               borderRadius: "50%",
               width: 40,
               height: 40,
-              boxShadow: "0 2px 12px #0002",
+              boxShadow: "0 2px 8px #0001",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 20,
               cursor: "pointer",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
             }}
             aria-label="Toggle dark mode"
           >
@@ -1894,37 +1939,41 @@ export default function App() {
       {/* Main Container */}
       <div
         style={{
-          maxWidth: 540,
+          maxWidth: 720,
           margin: "80px auto 40px auto",
-          background: dark ? "#22223be6" : "#fff9",
           borderRadius: 32,
-          boxShadow: "0 16px 48px #0002",
+          boxShadow: "0 16px 48px #0001",
           padding: 0,
           position: "relative",
           zIndex: 1,
           minHeight: 600,
         }}
+        className="glass"
       >
         {/* Header */}
         <motion.header
           style={{
-            background: "linear-gradient(90deg,#FF6B6B,#FFD166)",
+            background: "rgba(255,255,255,0.65)",
             borderRadius: "32px 32px 0 0",
             padding: "32px 24px 16px 24px",
             textAlign: "center",
             boxShadow: "0 4px 24px #0001",
+            borderBottom: "1px solid rgba(0,0,0,0.04)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
           initial={{ y: -40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
           <motion.h1
             style={{
-              fontFamily: "Fredoka One, sans-serif",
-              fontSize: 36,
-              color: "#fff",
-              letterSpacing: 1,
+              fontFamily: "Inter, sans-serif",
+              fontSize: 32,
+              color: "#22223b",
+              fontWeight: 700,
+              letterSpacing: 0.01,
               marginBottom: 4,
-              textShadow: "2px 2px 0 #0002",
+              textShadow: "none",
             }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -1934,10 +1983,11 @@ export default function App() {
           </motion.h1>
           <div
             style={{
-              color: "#fff",
-              fontSize: 18,
+              color: "#22223b",
+              fontSize: 16,
               marginBottom: 8,
-              opacity: 0.85,
+              opacity: 0.7,
+              fontWeight: 400,
             }}
           >
             Your dreams, your journey!
@@ -1967,21 +2017,21 @@ export default function App() {
                     icon={<FaStar />}
                     value={allWishes.length}
                     label="Total Wishes"
-                    color="#FF6B6B"
+                    color="#bdbdbd"
                     trend={5}
                   />
                   <StatCard
                     icon={<FaCheckCircle />}
                     value={completed.length}
                     label="Completed"
-                    color="#4ECDC4"
+                    color="#bdbdbd"
                     trend={12}
                   />
                   <StatCard
                     icon={<FaBook />}
                     value={categories.length}
                     label="Categories"
-                    color="#FFD166"
+                    color="#bdbdbd"
                     trend={3}
                   />
                 </div>
@@ -2011,10 +2061,11 @@ export default function App() {
                     style={{
                       width: "100%",
                       padding: "12px 16px 12px 40px",
-                      borderRadius: 32,
-                      border: "2px solid #eee",
+                      borderRadius: 16,
+                      border: "none",
+                      background: "#f6f7f9",
                       fontSize: 16,
-                      background: dark ? "#22223b" : "#fff",
+                      boxShadow: "0 1px 4px #0001",
                     }}
                   />
                 </div>
@@ -2024,7 +2075,7 @@ export default function App() {
                     whileTap={{ scale: 0.95 }}
                     style={{
                       flex: 1,
-                      background: dark ? "#333" : "#f0f0f0",
+                      background: "rgba(0,0,0,0.04)",
                       border: "none",
                       borderRadius: 24,
                       padding: "8px 16px",
@@ -2033,7 +2084,7 @@ export default function App() {
                       justifyContent: "center",
                       gap: 8,
                       cursor: "pointer",
-                      color: dark ? "#ddd" : "#333",
+                      color: "#22223b",
                     }}
                     onClick={() => setShowFilters(!showFilters)}
                   >
@@ -2044,7 +2095,7 @@ export default function App() {
                     whileTap={{ scale: 0.95 }}
                     style={{
                       flex: 1,
-                      background: dark ? "#333" : "#f0f0f0",
+                      background: "rgba(0,0,0,0.04)",
                       border: "none",
                       borderRadius: 24,
                       padding: "8px 16px",
@@ -2053,7 +2104,7 @@ export default function App() {
                       justifyContent: "center",
                       gap: 8,
                       cursor: "pointer",
-                      color: dark ? "#ddd" : "#333",
+                      color: "#22223b",
                     }}
                     onClick={() => setToast({
                       show: true,
@@ -2072,23 +2123,23 @@ export default function App() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     style={{
-                      background: dark ? "#333" : "#f0f0f0",
+                      background: "#f6f7f9",
                       borderRadius: 16,
                       padding: 16,
                       margin: "12px 0",
                     }}
                   >
-                    <h4 style={{ margin: "0 0 12px 0" }}>Filter Options</h4>
+                    <h4 style={{ margin: "0 0 12px 0", color: "#22223b" }}>Filter Options</h4>
                     <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                       {["all", "high", "medium", "low"].map((priority) => (
                         <button
                           key={priority}
                           style={{
-                            background: filterOption === priority ? "#4ECDC4" : "transparent",
-                            border: "1px solid #4ECDC4",
+                            background: filterOption === priority ? "#e0e7ef" : "transparent",
+                            border: "1px solid #e0e7ef",
                             borderRadius: 20,
                             padding: "6px 12px",
-                            color: filterOption === priority ? "#fff" : "#4ECDC4",
+                            color: "#22223b",
                             cursor: "pointer",
                           }}
                           onClick={() => setFilterOption(priority)}
@@ -2129,15 +2180,13 @@ export default function App() {
                   style={{
                     width: "100%",
                     marginTop: 18,
-                    background:
-                      "linear-gradient(90deg,#FF9A8B,#FF6A88,#FF99AC)",
-                    color: "#fff",
+                    background: "#e0e7ef",
+                    color: "#22223b",
                     fontWeight: 700,
                     fontSize: 18,
                     border: "none",
                     borderRadius: 24,
                     padding: "16px 0",
-                    boxShadow: "0 4px 16px #0001",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -2172,7 +2221,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      background: "#FFD166",
+                      background: "#e0e7ef",
                       border: "none",
                       borderRadius: 24,
                       width: 40,
@@ -2182,6 +2231,7 @@ export default function App() {
                       justifyContent: "center",
                       fontSize: 20,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setPage("home")}
                   >
@@ -2194,6 +2244,7 @@ export default function App() {
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
+                      color: "#22223b",
                     }}
                   >
                     {getCategory(categories, currentCategory).icon}
@@ -2202,7 +2253,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      background: "#4ECDC4",
+                      background: "#e0e7ef",
                       border: "none",
                       borderRadius: 24,
                       width: 40,
@@ -2211,7 +2262,7 @@ export default function App() {
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: 20,
-                      color: "#fff",
+                      color: "#22223b",
                       marginLeft: "auto",
                       cursor: "pointer",
                     }}
@@ -2261,7 +2312,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      background: "#FFD166",
+                      background: "#e0e7ef",
                       border: "none",
                       borderRadius: 24,
                       width: 40,
@@ -2271,6 +2322,7 @@ export default function App() {
                       justifyContent: "center",
                       fontSize: 20,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setPage("home")}
                   >
@@ -2283,6 +2335,7 @@ export default function App() {
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
+                      color: "#22223b",
                     }}
                   >
                     <FaCheckCircle />
@@ -2310,7 +2363,7 @@ export default function App() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 20 }}
                           style={{
-                            background: "#4ECDC420",
+                            background: "rgba(0,0,0,0.04)",
                             borderRadius: 16,
                             marginBottom: 12,
                             padding: "16px 20px",
@@ -2319,11 +2372,11 @@ export default function App() {
                             gap: 16,
                           }}
                         >
-                          <span style={{ fontSize: 22, color: "#4ECDC4" }}>
+                          <span style={{ fontSize: 22, color: "#bdbdbd" }}>
                             {getCategory(categories, wish.category).icon}
                           </span>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 700, fontSize: 18 }}>
+                            <div style={{ fontWeight: 700, fontSize: 18, color: "#22223b" }}>
                               {wish.title}
                             </div>
                             <div style={{ fontSize: 14, color: "#888" }}>
@@ -2359,7 +2412,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      background: "#FFD166",
+                      background: "#e0e7ef",
                       border: "none",
                       borderRadius: 24,
                       width: 40,
@@ -2369,6 +2422,7 @@ export default function App() {
                       justifyContent: "center",
                       fontSize: 20,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setPage("home")}
                   >
@@ -2381,6 +2435,7 @@ export default function App() {
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
+                      color: "#22223b",
                     }}
                   >
                     <FaUser />
@@ -2389,8 +2444,8 @@ export default function App() {
                 </div>
 
                 <div
+                  className="glass"
                   style={{
-                    background: dark ? "#333" : "#f0f0f0",
                     borderRadius: 24,
                     padding: 24,
                     textAlign: "center",
@@ -2404,18 +2459,18 @@ export default function App() {
                       width: 100,
                       height: 100,
                       borderRadius: "50%",
-                      border: "4px solid #4ECDC4",
+                      border: "4px solid #e0e7ef",
                       marginBottom: 16,
                     }}
                   />
-                  <h2 style={{ margin: "0 0 8px 0" }}>{user.name}</h2>
+                  <h2 style={{ margin: "0 0 8px 0", color: "#22223b" }}>{user.name}</h2>
                   <div style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 16 }}>
                     <div style={{ textAlign: "center" }}>
-                      <div style={{ fontWeight: 700, fontSize: 20 }}>{user.level}</div>
+                      <div style={{ fontWeight: 700, fontSize: 20, color: "#22223b" }}>{user.level}</div>
                       <div style={{ fontSize: 14, color: "#888" }}>Level</div>
                     </div>
                     <div style={{ textAlign: "center" }}>
-                      <div style={{ fontWeight: 700, fontSize: 20 }}>{user.xp}/{user.nextLevelXp}</div>
+                      <div style={{ fontWeight: 700, fontSize: 20, color: "#22223b" }}>{user.xp}/{user.nextLevelXp}</div>
                       <div style={{ fontSize: 14, color: "#888" }}>XP</div>
                     </div>
                   </div>
@@ -2424,7 +2479,7 @@ export default function App() {
                     value={user.xp}
                     total={user.nextLevelXp}
                     label="Next Level Progress"
-                    color="#FFD166"
+                    color="#e0e7ef"
                   />
 
                   <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
@@ -2432,8 +2487,8 @@ export default function App() {
                       <div
                         key={index}
                         style={{
-                          background: "#4ECDC4",
-                          color: "#fff",
+                          background: "#e0e7ef",
+                          color: "#22223b",
                           borderRadius: 20,
                           padding: "4px 12px",
                           fontSize: 14,
@@ -2448,9 +2503,9 @@ export default function App() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                   <motion.button
                     whileTap={{ scale: 0.95 }}
+                    className="glass"
                     style={{
-                      background: dark ? "#444" : "#fff",
-                      border: "1px solid #eee",
+                      border: "none",
                       borderRadius: 16,
                       padding: "16px 0",
                       display: "flex",
@@ -2458,6 +2513,7 @@ export default function App() {
                       alignItems: "center",
                       gap: 8,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setPage("settings")}
                   >
@@ -2467,9 +2523,9 @@ export default function App() {
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
+                    className="glass"
                     style={{
-                      background: dark ? "#444" : "#fff",
-                      border: "1px solid #eee",
+                      border: "none",
                       borderRadius: 16,
                       padding: "16px 0",
                       display: "flex",
@@ -2477,6 +2533,7 @@ export default function App() {
                       alignItems: "center",
                       gap: 8,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setToast({
                       show: true,
@@ -2491,9 +2548,9 @@ export default function App() {
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
+                    className="glass"
                     style={{
-                      background: dark ? "#444" : "#fff",
-                      border: "1px solid #eee",
+                      border: "none",
                       borderRadius: 16,
                       padding: "16px 0",
                       display: "flex",
@@ -2501,6 +2558,7 @@ export default function App() {
                       alignItems: "center",
                       gap: 8,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setToast({
                       show: true,
@@ -2515,9 +2573,9 @@ export default function App() {
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
+                    className="glass"
                     style={{
-                      background: dark ? "#444" : "#fff",
-                      border: "1px solid #eee",
+                      border: "none",
                       borderRadius: 16,
                       padding: "16px 0",
                       display: "flex",
@@ -2525,6 +2583,7 @@ export default function App() {
                       alignItems: "center",
                       gap: 8,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setToast({
                       show: true,
@@ -2561,7 +2620,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      background: "#FFD166",
+                      background: "#e0e7ef",
                       border: "none",
                       borderRadius: 24,
                       width: 40,
@@ -2571,6 +2630,7 @@ export default function App() {
                       justifyContent: "center",
                       fontSize: 20,
                       cursor: "pointer",
+                      color: "#22223b",
                     }}
                     onClick={() => setPage("profile")}
                   >
@@ -2583,6 +2643,7 @@ export default function App() {
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
+                      color: "#22223b",
                     }}
                   >
                     <FaCog />
@@ -2591,17 +2652,17 @@ export default function App() {
                 </div>
 
                 <div
+                  className="glass"
                   style={{
-                    background: dark ? "#333" : "#f0f0f0",
                     borderRadius: 16,
                     padding: 20,
                     marginBottom: 16,
                   }}
                 >
-                  <h3 style={{ margin: "0 0 16px 0" }}>Appearance</h3>
+                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Appearance</h3>
 
                   <div style={{ marginBottom: 16 }}>
-                    <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>
+                    <label style={{ fontWeight: 600, display: "block", marginBottom: 8, color: "#22223b" }}>
                       Theme
                     </label>
                     <select
@@ -2609,12 +2670,13 @@ export default function App() {
                       onChange={(e) => setTheme(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: 14,
-                        border: "2px solid #eee",
+                        padding: "12px 16px",
+                        borderRadius: 16,
+                        border: "none",
+                        background: "#f6f7f9",
                         fontSize: 16,
-                        background: dark ? "#444" : "#fff",
-                        color: dark ? "#fff" : "#000",
+                        boxShadow: "0 1px 4px #0001",
+                        color: "#22223b",
                       }}
                     >
                       <option value="default">Default</option>
@@ -2627,7 +2689,7 @@ export default function App() {
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ fontWeight: 600 }}>Dark Mode</label>
+                    <label style={{ fontWeight: 600, color: "#22223b" }}>Dark Mode</label>
                     <label className="switch">
                       <input
                         type="checkbox"
@@ -2640,17 +2702,17 @@ export default function App() {
                 </div>
 
                 <div
+                  className="glass"
                   style={{
-                    background: dark ? "#333" : "#f0f0f0",
                     borderRadius: 16,
                     padding: 20,
                     marginBottom: 16,
                   }}
                 >
-                  <h3 style={{ margin: "0 0 16px 0" }}>Notifications</h3>
+                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Notifications</h3>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                    <label style={{ fontWeight: 600 }}>Push Notifications</label>
+                    <label style={{ fontWeight: 600, color: "#22223b" }}>Push Notifications</label>
                     <label className="switch">
                       <input type="checkbox" defaultChecked />
                       <span className="slider round"></span>
@@ -2658,7 +2720,7 @@ export default function App() {
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                    <label style={{ fontWeight: 600 }}>Email Updates</label>
+                    <label style={{ fontWeight: 600, color: "#22223b" }}>Email Updates</label>
                     <label className="switch">
                       <input type="checkbox" defaultChecked />
                       <span className="slider round"></span>
@@ -2666,7 +2728,7 @@ export default function App() {
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ fontWeight: 600 }}>Weekly Summary</label>
+                    <label style={{ fontWeight: 600, color: "#22223b" }}>Weekly Summary</label>
                     <label className="switch">
                       <input type="checkbox" />
                       <span className="slider round"></span>
@@ -2675,20 +2737,20 @@ export default function App() {
                 </div>
 
                 <div
+                  className="glass"
                   style={{
-                    background: dark ? "#333" : "#f0f0f0",
                     borderRadius: 16,
                     padding: 20,
                   }}
                 >
-                  <h3 style={{ margin: "0 0 16px 0" }}>Account</h3>
+                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Account</h3>
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     style={{
                       width: "100%",
-                      background: "#FF6B6B",
-                      color: "#fff",
+                      background: "#e0e7ef",
+                      color: "#22223b",
                       border: "none",
                       borderRadius: 16,
                       padding: "12px 0",
@@ -2711,8 +2773,8 @@ export default function App() {
                     style={{
                       width: "100%",
                       background: "transparent",
-                      color: "#FF6B6B",
-                      border: "1px solid #FF6B6B",
+                      color: "#888",
+                      border: "1px solid #888",
                       borderRadius: 16,
                       padding: "12px 0",
                       fontWeight: 600,
