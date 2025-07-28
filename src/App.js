@@ -22,7 +22,7 @@ import {
   FiFolder,
 } from "react-icons/fi";
 
-// Minimal mymind-style theme for S25 optimization
+// Enhanced theme with 3D effects
 const theme = {
   colors: {
     bg: "#ffffff",
@@ -48,6 +48,8 @@ const theme = {
     md: "0 4px 8px rgba(0, 0, 0, 0.06)",
     lg: "0 8px 16px rgba(0, 0, 0, 0.08)",
     xl: "0 16px 32px rgba(0, 0, 0, 0.10)",
+    "3d": "0 20px 40px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.05)",
+    "text3d": "1px 1px 2px rgba(0, 0, 0, 0.1), 2px 2px 4px rgba(0, 0, 0, 0.08)",
   },
   radius: {
     sm: "6px",
@@ -211,11 +213,12 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
         borderBottom: `1px solid ${theme.colors.border}`,
         padding: '0',
         gap: 0,
-        background: theme.colors.bg,
+        background: `linear-gradient(to bottom, ${theme.colors.bg}, ${theme.colors.surface})`,
         WebkitOverflowScrolling: 'touch',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
         scrollSnapType: 'x mandatory',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
       }}
       className="hide-scrollbar"
     >
@@ -228,17 +231,19 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
           style={{
             border: 'none',
             background: 'none',
-            fontWeight: selected === cat ? 600 : 400,
-            borderBottom: selected === cat ? '2px solid #2a2a2a' : '2px solid transparent',
+            fontWeight: selected === cat ? 700 : 500,
+            borderBottom: selected === cat ? '3px solid #2a2a2a' : '3px solid transparent',
             color: selected === cat ? '#2a2a2a' : '#a0a0a0',
-            padding: '14px 18px',
-            fontSize: 14,
+            padding: '16px 20px',
+            fontSize: 15,
             cursor: 'pointer',
             transition: 'all 0.15s',
             whiteSpace: 'nowrap',
             flexShrink: 0,
             scrollSnapAlign: 'start',
             WebkitTapHighlightColor: 'transparent',
+            fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            textShadow: selected === cat ? theme.shadows.text3d : 'none',
           }}
         >
           {cat}
@@ -248,7 +253,7 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
   );
 };
 
-// Fanned Card Stack Component (Optimized for S25)
+// Enhanced Fanned Card Stack Component with 3:5 ratio
 const FannedCardStack = ({ wishes, onCardClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -299,8 +304,8 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
     const isActive = adjustedDiff === 0;
     const scale = 1 - Math.abs(adjustedDiff) * 0.05;
     const rotate = adjustedDiff * 6;
-    const translateX = adjustedDiff * 45;
-    const translateY = Math.abs(adjustedDiff) * 10;
+    const translateX = adjustedDiff * 55;
+    const translateY = Math.abs(adjustedDiff) * 15;
     const zIndex = wishes.length - Math.abs(adjustedDiff);
     const opacity = 1 - Math.abs(adjustedDiff) * 0.2;
 
@@ -321,6 +326,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
       cursor: isActive ? 'pointer' : 'default',
       pointerEvents: isActive ? 'auto' : 'none',
       willChange: 'transform',
+      filter: isActive ? 'none' : 'brightness(0.95)',
     };
   };
 
@@ -328,15 +334,15 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
     <div style={{ 
       position: 'relative', 
       width: '100%',
-      padding: '40px 20px 100px',
-      minHeight: 450,
+      padding: '40px 20px 140px',
+      minHeight: 600,
     }}>
       {/* Cards Container */}
       <div
         style={{
           position: 'relative',
-          height: 340,
-          maxWidth: 280,
+          height: 500,
+          maxWidth: 320,
           margin: '0 auto',
           perspective: '1000px',
         }}
@@ -353,50 +359,51 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
             <motion.div
               whileTap={{ scale: 0.98 }}
               style={{
-                width: 240,
-                height: 320,
-                borderRadius: 18,
-                background: '#fff',
-                boxShadow: theme.shadows.lg,
+                width: 280,
+                height: 467,
+                borderRadius: 24,
+                background: 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+                boxShadow: theme.shadows["3d"],
                 overflow: 'hidden',
                 WebkitTapHighlightColor: 'transparent',
+                border: '1px solid rgba(0, 0, 0, 0.05)',
               }}
             >
               {/* Card Image */}
               {wish.media ? (
                 <div style={{
                   width: '100%',
-                  height: 140,
+                  height: 200,
                   background: `url(${wish.media}) center/cover`,
                   position: 'relative',
                 }}>
                   {wish.completed && (
                     <div style={{
                       position: 'absolute',
-                      top: 10,
-                      right: 10,
+                      top: 12,
+                      right: 12,
                       background: 'rgba(255, 255, 255, 0.95)',
                       borderRadius: '50%',
-                      width: 28,
-                      height: 28,
+                      width: 32,
+                      height: 32,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: theme.shadows.sm,
+                      boxShadow: theme.shadows.md,
                     }}>
-                      <FiCheck size={14} color={theme.colors.success} />
+                      <FiCheck size={16} color={theme.colors.success} />
                     </div>
                   )}
                 </div>
               ) : (
                 <div style={{
                   width: '100%',
-                  height: 140,
-                  background: theme.colors.surface,
+                  height: 200,
+                  background: `linear-gradient(135deg, ${theme.colors.surface}, ${theme.colors.surfaceHover})`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 48,
+                  fontSize: 60,
                   color: theme.colors.text.tertiary,
                   fontWeight: 300,
                 }}>
@@ -405,14 +412,16 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
               )}
               
               {/* Card Content */}
-              <div style={{ padding: '18px 20px 16px' }}>
+              <div style={{ padding: '24px' }}>
                 <div style={{ 
-                  fontWeight: 600, 
-                  fontSize: 17, 
-                  marginBottom: 6,
+                  fontWeight: 800, 
+                  fontSize: 20, 
+                  marginBottom: 12,
                   lineHeight: 1.3,
                   color: wish.completed ? theme.colors.text.tertiary : theme.colors.text.primary,
                   textDecoration: wish.completed ? 'line-through' : 'none',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  textShadow: theme.shadows.text3d,
                 }}>
                   {wish.content}
                 </div>
@@ -420,13 +429,14 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 {wish.notes && (
                   <div style={{ 
                     color: theme.colors.text.secondary, 
-                    fontSize: 13,
-                    lineHeight: 1.5,
-                    marginBottom: 10,
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                    marginBottom: 16,
                     display: '-webkit-box',
-                    WebkitLineClamp: 2,
+                    WebkitLineClamp: 4,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
+                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
                   }}>
                     {wish.notes}
                   </div>
@@ -435,11 +445,20 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
-                  fontSize: 11,
+                  gap: 12,
+                  fontSize: 12,
                   color: theme.colors.text.tertiary,
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
                 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 6,
+                    background: theme.colors.surface,
+                    padding: '6px 12px',
+                    borderRadius: theme.radius.md,
+                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)',
+                  }}>
                     {getTypeIcon(wish.type)}
                     {wish.type}
                   </span>
@@ -451,50 +470,52 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
         ))}
       </div>
 
-      {/* Navigation Controls */}
+      {/* Navigation Controls - Lowered */}
       <div style={{
         position: 'absolute',
-        bottom: 40,
+        bottom: 60,
         left: '50%',
         transform: 'translateX(-50%)',
         display: 'flex',
         alignItems: 'center',
-        gap: 24,
+        gap: 32,
       }}>
         {/* Left Arrow */}
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handlePrevious}
           style={{
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             borderRadius: '50%',
-            background: theme.colors.bg,
-            border: `1px solid ${theme.colors.border}`,
+            background: 'linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%)',
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             WebkitTapHighlightColor: 'transparent',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.05)',
           }}
         >
-          <FiChevronLeft size={18} />
+          <FiChevronLeft size={20} />
         </motion.button>
 
         {/* Page Indicators */}
         <div style={{
           display: 'flex',
-          gap: 6,
+          gap: 8,
         }}>
           {wishes.map((_, idx) => (
             <div
               key={idx}
               style={{
-                width: idx === currentIndex ? 18 : 6,
-                height: 6,
-                borderRadius: 3,
+                width: idx === currentIndex ? 24 : 8,
+                height: 8,
+                borderRadius: 4,
                 background: idx === currentIndex ? theme.colors.accent : theme.colors.border,
                 transition: 'all 0.2s ease',
+                boxShadow: idx === currentIndex ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none',
               }}
             />
           ))}
@@ -505,31 +526,31 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
           whileTap={{ scale: 0.9 }}
           onClick={handleNext}
           style={{
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             borderRadius: '50%',
-            background: theme.colors.bg,
-            border: `1px solid ${theme.colors.border}`,
+            background: 'linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%)',
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             WebkitTapHighlightColor: 'transparent',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.05)',
           }}
         >
-          <FiChevronRight size={18} />
+          <FiChevronRight size={20} />
         </motion.button>
       </div>
     </div>
   );
 };
 
-// Bottom Navigation Component
+// Bottom Navigation Component - Modified to 3 buttons
 const BottomNavigation = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'home', icon: <FiHome />, label: 'Home' },
     { id: 'search', icon: <FiSearch />, label: 'Search' },
-    { id: 'add', icon: <FiPlus />, label: 'Add' },
     { id: 'profile', icon: <FiUser />, label: 'Profile' },
   ];
 
@@ -539,42 +560,94 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
       bottom: 0,
       left: 0,
       right: 0,
-      background: theme.colors.bg,
+      background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95))',
       borderTop: `1px solid ${theme.colors.border}`,
       paddingBottom: 'env(safe-area-inset-bottom)',
       zIndex: 100,
+      boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.04)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
     }}>
       <div style={{
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: '8px 0',
+        padding: '10px 0',
       }}>
         {tabs.map(tab => (
           <motion.button
             key={tab.id}
             whileTap={{ scale: 0.9 }}
-            onClick={() => tab.id === 'add' ? onTabChange(tab.id) : null}
+            onClick={() => onTabChange(tab.id)}
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 4,
-              padding: '8px 16px',
+              gap: 6,
+              padding: '10px 20px',
               border: 'none',
               background: 'none',
               cursor: 'pointer',
               color: activeTab === tab.id ? theme.colors.accent : theme.colors.text.tertiary,
-              fontSize: 20,
+              fontSize: 22,
               WebkitTapHighlightColor: 'transparent',
+              transition: 'all 0.2s ease',
             }}
           >
-            {tab.icon}
-            <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
+            <div style={{
+              padding: 8,
+              borderRadius: 12,
+              background: activeTab === tab.id ? theme.colors.accentLight : 'transparent',
+              transition: 'all 0.2s ease',
+            }}>
+              {tab.icon}
+            </div>
+            <span style={{ 
+              fontSize: 11, 
+              fontWeight: 600,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            }}>
+              {tab.label}
+            </span>
           </motion.button>
         ))}
       </div>
     </div>
+  );
+};
+
+// Floating Action Button Component
+const FloatingActionButton = ({ onClick }) => {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.9 }}
+      onClick={onClick}
+      style={{
+        position: 'fixed',
+        bottom: 100,
+        right: 20,
+        width: 64,
+        height: 64,
+        borderRadius: '50%',
+        background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
+        border: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        WebkitTapHighlightColor: 'transparent',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+        color: '#ffffff',
+        fontSize: 28,
+        zIndex: 200,
+      }}
+      whileHover={{ scale: 1.05 }}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+    >
+      <FiPlus />
+    </motion.button>
   );
 };
 
@@ -606,12 +679,14 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
+        background: 'rgba(0, 0, 0, 0.6)',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
         zIndex: 1000,
         padding: 0,
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
       }}
       onClick={onClose}
     >
@@ -622,21 +697,22 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: theme.colors.bg,
+          background: 'linear-gradient(to bottom, #ffffff, #fafafa)',
           width: '100%',
           maxHeight: '85vh',
-          borderRadius: '20px 20px 0 0',
+          borderRadius: '24px 24px 0 0',
           overflow: 'hidden',
+          boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.15)',
         }}
       >
         {/* Handle */}
         <div style={{
-          padding: '10px 0 4px',
+          padding: '12px 0 6px',
           display: 'flex',
           justifyContent: 'center',
         }}>
           <div style={{
-            width: 36,
+            width: 40,
             height: 4,
             background: theme.colors.border,
             borderRadius: 2,
@@ -648,33 +724,41 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '8px 20px 16px',
+          padding: '12px 24px 20px',
         }}>
-          <h2 style={{ fontSize: 18, fontWeight: 600 }}>Add New Wish</h2>
+          <h2 style={{ 
+            fontSize: 22, 
+            fontWeight: 800,
+            fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            textShadow: theme.shadows.text3d,
+          }}>
+            Add New Wish
+          </h2>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
             style={{
               background: 'transparent',
               border: 'none',
-              padding: 8,
+              padding: 10,
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
             }}
           >
-            <FiX size={20} />
+            <FiX size={24} />
           </motion.button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ padding: '0 20px 32px' }}>
-          <div style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit} style={{ padding: '0 24px 36px' }}>
+          <div style={{ marginBottom: 24 }}>
             <label style={{
               display: 'block',
-              fontSize: 12,
-              fontWeight: 500,
+              fontSize: 14,
+              fontWeight: 600,
               color: theme.colors.text.secondary,
-              marginBottom: 6,
+              marginBottom: 8,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
               Title
             </label>
@@ -687,23 +771,28 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
               autoFocus
               style={{
                 width: '100%',
-                padding: '12px 14px',
+                padding: '14px 16px',
                 fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: theme.radius.md,
+                border: `2px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.lg,
                 outline: 'none',
                 WebkitAppearance: 'none',
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                background: 'white',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                transition: 'all 0.2s ease',
               }}
             />
           </div>
 
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 24 }}>
             <label style={{
               display: 'block',
-              fontSize: 12,
-              fontWeight: 500,
+              fontSize: 14,
+              fontWeight: 600,
               color: theme.colors.text.secondary,
-              marginBottom: 6,
+              marginBottom: 8,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
               Category
             </label>
@@ -712,16 +801,19 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               style={{
                 width: '100%',
-                padding: '12px 14px',
+                padding: '14px 16px',
                 fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: theme.radius.md,
+                border: `2px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.lg,
                 outline: 'none',
                 WebkitAppearance: 'none',
-                background: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
-                backgroundPosition: 'right 12px center',
-                backgroundSize: '16px',
-                paddingRight: '40px',
+                background: `white url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
+                backgroundPosition: 'right 14px center',
+                backgroundSize: '18px',
+                paddingRight: '44px',
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                transition: 'all 0.2s ease',
               }}
             >
               {categories.map((cat) => (
@@ -730,13 +822,14 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             </select>
           </div>
 
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 28 }}>
             <label style={{
               display: 'block',
-              fontSize: 12,
-              fontWeight: 500,
+              fontSize: 14,
+              fontWeight: 600,
               color: theme.colors.text.secondary,
-              marginBottom: 6,
+              marginBottom: 8,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
               Description
             </label>
@@ -744,16 +837,20 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Lorem ipsum logum et amet..."
-              rows={3}
+              rows={4}
               style={{
                 width: '100%',
-                padding: '12px 14px',
+                padding: '14px 16px',
                 fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: theme.radius.md,
+                border: `2px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.lg,
                 outline: 'none',
                 resize: 'none',
                 WebkitAppearance: 'none',
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                background: 'white',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                transition: 'all 0.2s ease',
               }}
             />
           </div>
@@ -763,15 +860,17 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             whileTap={{ scale: 0.98 }}
             style={{
               width: '100%',
-              padding: '14px',
-              background: theme.colors.accent,
+              padding: '16px',
+              background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
               color: '#fff',
               border: 'none',
-              borderRadius: theme.radius.md,
-              fontSize: 15,
-              fontWeight: 600,
+              borderRadius: theme.radius.lg,
+              fontSize: 17,
+              fontWeight: 700,
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
             }}
           >
             Add Wishlist Card
@@ -811,15 +910,12 @@ export default function App() {
 
   const handleBottomTabChange = (tab) => {
     setActiveBottomTab(tab);
-    if (tab === 'add') {
-      setShowAddModal(true);
-    }
   };
 
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: theme.colors.bg,
+      background: `linear-gradient(to bottom, ${theme.colors.bg}, ${theme.colors.surface})`,
       paddingBottom: 80,
       WebkitTouchCallout: 'none',
       WebkitUserSelect: 'none',
@@ -829,31 +925,27 @@ export default function App() {
       <header style={{
         position: 'sticky',
         top: 0,
-        background: 'rgba(255, 255, 255, 0.98)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
+        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.98))',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         borderBottom: `1px solid ${theme.colors.border}`,
         zIndex: 50,
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
       }}>
         <div style={{
-          padding: '14px 20px',
+          padding: '16px 24px',
           textAlign: 'center',
         }}>
           <h1 style={{
-            fontSize: 20,
-            fontWeight: 600,
+            fontSize: 26,
+            fontWeight: 800,
             color: theme.colors.text.primary,
-            marginBottom: 2,
+            marginBottom: 0,
+            fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            textShadow: theme.shadows.text3d,
           }}>
             Wishli
           </h1>
-          <p style={{
-            fontSize: 11,
-            color: theme.colors.text.tertiary,
-            fontWeight: 400,
-          }}>
-            Use HorizontalPager in Compose for fanning
-          </p>
         </div>
 
         {/* Category Tabs */}
@@ -869,32 +961,38 @@ export default function App() {
         {filteredWishes.length === 0 ? (
           <div style={{
             textAlign: 'center',
-            padding: '100px 20px',
+            padding: '120px 20px',
             color: theme.colors.text.tertiary,
           }}>
-            <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.2 }}>×</div>
-            <p style={{ fontSize: 15, marginBottom: 24 }}>
+            <div style={{ fontSize: 64, marginBottom: 20, opacity: 0.15 }}>×</div>
+            <p style={{ 
+              fontSize: 18, 
+              marginBottom: 32,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            }}>
               No wishes in {selectedCategory} yet
             </p>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAddModal(true)}
               style={{
-                padding: '12px 24px',
-                background: theme.colors.accent,
+                padding: '14px 28px',
+                background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
                 color: '#fff',
                 border: 'none',
-                borderRadius: theme.radius.md,
-                fontSize: 14,
-                fontWeight: 500,
+                borderRadius: theme.radius.lg,
+                fontSize: 16,
+                fontWeight: 600,
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 8,
+                gap: 10,
                 cursor: 'pointer',
                 WebkitTapHighlightColor: 'transparent',
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
               }}
             >
-              <FiPlus size={16} />
+              <FiPlus size={18} />
               Add Your First Wish
             </motion.button>
           </div>
@@ -911,6 +1009,9 @@ export default function App() {
         activeTab={activeBottomTab}
         onTabChange={handleBottomTabChange}
       />
+
+      {/* Floating Action Button */}
+      <FloatingActionButton onClick={() => setShowAddModal(true)} />
 
       {/* Modals */}
       <AnimatePresence>

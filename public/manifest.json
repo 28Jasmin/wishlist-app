@@ -22,7 +22,7 @@
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "description": "Use HorizontalPager in Compose for fanning",
+  "description": "Your personal wishlist collection",
   "orientation": "portrait",
   "prefer_related_applications": false
 }

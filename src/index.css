@@ -1,7 +1,7 @@
-/* Import Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+/* Import Playfair Display as alternative to Nexus Sherif */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-/* CSS Variables for MyMind-style theme optimized for S25 */
+/* CSS Variables for Enhanced 3D Theme optimized for S25 */
 :root {
   /* Colors */
   --color-bg: #ffffff;
@@ -19,12 +19,14 @@
   --color-error: #f87171;
   --color-info: #60a5fa;
   
-  /* Shadows - Lighter for mymind style */
+  /* Enhanced Shadows for 3D effect */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.10);
+  --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.05);
+  --shadow-text-3d: 1px 1px 2px rgba(0, 0, 0, 0.1), 2px 2px 4px rgba(0, 0, 0, 0.08);
   
   /* Radius - Smoother for modern Android */
   --radius-sm: 6px;
@@ -53,6 +55,14 @@
   --safe-area-inset-right: env(safe-area-inset-right);
 }
 
+/* Font Setup */
+@font-face {
+  font-family: 'Nexus Sherif';
+  src: local('Playfair Display'), local('PlayfairDisplay');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Reset and Base Styles */
 *,
 *::before,
@@ -71,7 +81,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Nexus Sherif', 'Playfair Display', serif;
   background: var(--color-bg);
   color: var(--color-text-primary);
   font-size: var(--font-size-base);
@@ -87,12 +97,13 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Typography */
+/* Typography with 3D effects */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+  font-family: 'Nexus Sherif', 'Playfair Display', serif;
+  font-weight: 700;
   line-height: 1.2;
   color: var(--color-text-primary);
-  letter-spacing: -0.01em;
+  text-shadow: var(--shadow-text-3d);
 }
 
 /* Custom Scrollbar - Hidden for cleaner look */
@@ -111,7 +122,7 @@ h1, h2, h3, h4, h5, h6 {
   color: inherit;
 }
 
-/* Focus States - Minimal for mymind style */
+/* Focus States - Enhanced for 3D */
 :focus {
   outline: none;
 }
@@ -120,48 +131,52 @@ h1, h2, h3, h4, h5, h6 {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+  box-shadow: 0 0 8px rgba(42, 42, 42, 0.2);
 }
 
-/* Input Styles - Optimized for S25 */
+/* Input Styles - Enhanced 3D */
 input,
 textarea,
 select {
-  font-family: inherit;
+  font-family: 'Nexus Sherif', 'Playfair Display', serif;
   font-size: 16px; /* Prevents zoom on iOS/Android */
   line-height: 1.5;
   color: var(--color-text-primary);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background: white;
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 14px 16px;
   width: 100%;
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-fast);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 input:hover,
 textarea:hover,
 select:hover {
   border-color: var(--color-text-tertiary);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   border-color: var(--color-accent);
-  background: var(--color-bg);
+  background: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(42, 42, 42, 0.1);
 }
 
-/* Button Styles - Optimized touch targets */
+/* Button Styles - Enhanced 3D */
 button {
-  font-family: inherit;
+  font-family: 'Nexus Sherif', 'Playfair Display', serif;
   font-size: var(--font-size-base);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1;
   color: var(--color-text-primary);
-  background: transparent;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%);
   border: none;
   border-radius: var(--radius-md);
   padding: 12px 20px;
@@ -178,17 +193,19 @@ button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 -1px 2px rgba(0, 0, 0, 0.04);
 }
 
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.98) translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-/* Animations - GPU accelerated */
+/* Enhanced Animations - GPU accelerated */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -199,11 +216,20 @@ button:active {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-4px);
+    transform: translateX(-8px);
   }
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0) rotateX(0);
+  }
+  50% {
+    transform: translateY(-10px) rotateX(5deg);
   }
 }
 
@@ -305,6 +331,10 @@ button:active {
 .text-secondary { color: var(--color-text-secondary); }
 .text-tertiary { color: var(--color-text-tertiary); }
 
+.text-3d {
+  text-shadow: var(--shadow-text-3d);
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -329,4 +359,30 @@ button:active {
 
 .safe-right {
   padding-right: var(--safe-area-inset-right);
+}
+
+/* 3D Card Effects */
+.card-3d {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateY(5deg) rotateX(-5deg);
+}
+
+/* Enhanced button effects */
+.button-3d {
+  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.button-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.button-3d:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }

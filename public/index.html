@@ -5,18 +5,26 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Use HorizontalPager in Compose for fanning" />
+    <meta name="description" content="Wishli - Your wishlist collection" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- Inter Font -->
+    <!-- Playfair Display Font (similar to Nexus Sherif) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <title>Wishli</title>
     
     <style>
+      /* Using Playfair Display as alternative to Nexus Sherif */
+      @font-face {
+        font-family: 'Nexus Sherif';
+        src: local('Playfair Display'), local('PlayfairDisplay');
+        font-weight: normal;
+        font-style: normal;
+      }
+      
       /* Prevent FOUC and optimize for S25 */
       * {
         margin: 0;
@@ -29,7 +37,7 @@
         visibility: hidden;
         opacity: 0;
         background: #ffffff;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Nexus Sherif', 'Playfair Display', serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         overflow-x: hidden;
