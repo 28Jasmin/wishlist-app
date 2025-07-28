@@ -1,2830 +1,938 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import {
-  FaMoon,
-  FaSun,
-  FaCheckCircle,
-  FaPlus,
-  FaTrash,
-  FaEdit,
-  FaArrowLeft,
-  FaArrowRight,
-  FaHome,
-  FaCog,
-  FaStar,
-  FaPlane,
-  FaFilm,
-  FaUtensils,
-  FaBook,
-  FaShoppingBag,
-  FaFutbol,
-  FaPaintBrush,
-  FaSearch,
-  FaUser,
-  FaBell,
-  FaChartBar,
-  FaShareAlt,
-  FaHeart,
-  FaRegHeart,
-  FaComments,
-  FaEllipsisH,
-  FaFilter,
-  FaSort,
-  FaCalendarAlt,
-  FaLock,
-  FaGlobe,
-  FaCamera,
-  FaTimes,
-  FaChevronDown,
-  FaChevronUp,
-  FaMapMarkerAlt,
-  FaTag,
-  FaClock,
-  FaUsers,
-  FaTrophy,
-  FaGift,
-  FaMagic,
-  FaRocket,
-  FaPalette,
-  FaStickyNote,
-  FaHistory,
-  FaDownload,
-  FaUpload,
-  FaSync,
-  FaInfoCircle,
-  FaQuestionCircle,
-  FaExclamationTriangle,
-  FaCheck,
-  FaBan,
-} from "react-icons/fa";
+  FiPlus,
+  FiChevronLeft,
+  FiChevronRight,
+  FiHome,
+  FiSearch,
+  FiUser,
+  FiX,
+  FiCheck,
+  FiEdit2,
+  FiTrash2,
+  FiMapPin,
+  FiTag,
+  FiBookmark,
+  FiHeart,
+  FiVideo,
+  FiMusic,
+  FiStar,
+  FiTrendingUp,
+  FiFolder,
+} from "react-icons/fi";
 
-// Add this style tag or in your CSS file
-const globalStyles = `
-  body {
-    font-family: 'Inter', 'SF Pro Display', 'Segoe UI', Arial, sans-serif;
-    background: #f6f7f9;
-    color: #22223b;
-    letter-spacing: 0.01em;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
-    border-radius: 8px;
-  }
-
-  .glass {
-    background: rgba(255,255,255,0.65);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,0.18);
-  }
-
-  .dark .glass {
-    background: rgba(34,34,59,0.85);
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-  }
-
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-  }
-
-  input:checked + .slider {
-    background-color: #e0e7ef;
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
-
-  .slider.round {
-    border-radius: 34px;
-  }
-
-  .slider.round:before {
-    border-radius: 50%;
-  }
-`;
-
-// --- Enhanced SVG Animated Background ---
-const AnimatedBackground = ({ dark, theme }) => {
-  return (
-    <svg
-      style={{
-        position: "fixed",
-        zIndex: 0,
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        pointerEvents: "none",
-      }}
-      width="100vw"
-      height="100vh"
-    >
-      <defs>
-        <radialGradient id="bg-grad" cx="50%" cy="50%" r="80%">
-          <stop offset="0%" stopColor="#f6f7f9" />
-          <stop offset="100%" stopColor="#e0e7ef" />
-        </radialGradient>
-        <filter id="blur">
-          <feGaussianBlur stdDeviation="10" />
-        </filter>
-      </defs>
-      <rect width="100vw" height="100vh" fill="url(#bg-grad)" />
-      {[...Array(6)].map((_, i) => (
-        <motion.circle
-          key={i}
-          cx={Math.random() * 100 + "%"}
-          cy={Math.random() * 100 + "%"}
-          r={Math.random() * 30 + 20}
-          fill="#fff2"
-          filter="url(#blur)"
-          animate={{
-            cy: [
-              Math.random() * 100 + "%",
-              Math.random() * 100 + "%",
-              Math.random() * 100 + "%",
-            ],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 12 + Math.random() * 6,
-            repeat: Infinity,
-            repeatType: "mirror",
-            delay: Math.random() * 4,
-          }}
-        />
-      ))}
-    </svg>
-  );
+// Minimal mymind-style theme for S25 optimization
+const theme = {
+  colors: {
+    bg: "#ffffff",
+    surface: "#fafafa",
+    surfaceHover: "#f5f5f5",
+    text: {
+      primary: "#1a1a1a",
+      secondary: "#6e6e6e",
+      tertiary: "#a0a0a0",
+    },
+    border: "#efefef",
+    borderLight: "#f8f8f8",
+    accent: "#2a2a2a",
+    accentLight: "#e8e8e8",
+    success: "#4ade80",
+    warning: "#fb923c",
+    error: "#f87171",
+    info: "#60a5fa",
+  },
+  shadows: {
+    xs: "0 1px 2px rgba(0, 0, 0, 0.03)",
+    sm: "0 2px 4px rgba(0, 0, 0, 0.04)",
+    md: "0 4px 8px rgba(0, 0, 0, 0.06)",
+    lg: "0 8px 16px rgba(0, 0, 0, 0.08)",
+    xl: "0 16px 32px rgba(0, 0, 0, 0.10)",
+  },
+  radius: {
+    sm: "6px",
+    md: "10px",
+    lg: "14px",
+    xl: "20px",
+    full: "9999px",
+  },
+  transitions: {
+    fast: "120ms ease",
+    base: "180ms ease",
+    slow: "280ms ease",
+  },
 };
 
-// --- Enhanced Confetti Celebration ---
-const Confetti = ({ show, type = "default" }) => {
-  const confettiTypes = {
-    default: { count: 60, size: [10, 20], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9", "#888"] },
-    celebration: { count: 100, size: [8, 15], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9", "#888", "#ccc"] },
-    success: { count: 80, size: [6, 12], colors: ["#e0e7ef", "#888"] },
-    premium: { count: 120, size: [5, 25], colors: ["#e0e7ef", "#bdbdbd", "#f6f7f9"] },
-  };
-
-  const config = confettiTypes[type] || confettiTypes.default;
-
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            pointerEvents: "none",
-            zIndex: 1000,
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          {[...Array(config.count)].map((_, i) => (
-            <motion.div
-              key={i}
-              style={{
-                position: "absolute",
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: config.size[0] + Math.random() * (config.size[1] - config.size[0]),
-                height: config.size[0] + Math.random() * (config.size[1] - config.size[0]),
-                borderRadius: Math.random() > 0.5 ? "50%" : "0",
-                background: config.colors[Math.floor(Math.random() * config.colors.length)],
-                transform: `rotate(${Math.random() * 360}deg)`,
-              }}
-              initial={{ y: -100, opacity: 0, scale: 0 }}
-              animate={{
-                y: [0, 200 + Math.random() * 300],
-                opacity: [1, 0],
-                scale: [0, 1, 0],
-                rotate: [0, Math.random() * 360, Math.random() * 720],
-                x: [0, (Math.random() - 0.5) * 200],
-              }}
-              transition={{
-                duration: 2 + Math.random() * 1.5,
-                delay: Math.random() * 0.5,
-              }}
-            />
-          ))}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-// --- Enhanced Toast Notification ---
-const Toast = ({ message, icon, show, type = "default", duration = 2200 }) => {
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ y: 60, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 60, opacity: 0 }}
-          style={{
-            position: "fixed",
-            bottom: 40,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "rgba(255,255,255,0.85)",
-            color: "#22223b",
-            padding: "16px 32px",
-            borderRadius: 32,
-            boxShadow: "0 8px 32px #0001",
-            zIndex: 1001,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            fontWeight: 600,
-            fontSize: 18,
-            maxWidth: "90vw",
-            wordBreak: "break-word",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-          }}
-        >
-          {icon}
-          {message}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-// --- Enhanced Category Data ---
+// Default categories
 const defaultCategories = [
+  "Restaurant",
+  "Adventure", 
+  "Travel",
+  "Games",
+  "Movies",
+  "Books",
+  "Music",
+  "Shopping"
+];
+
+// Sample data with categories
+const initialWishes = [
   {
-    key: "travel",
-    name: "Travel",
-    icon: <FaPlane />,
-    color: "#bdbdbd",
-    description: "Dream destinations and adventures",
-    count: 12,
-    featured: true,
+    id: "1",
+    content: "Canada",
+    type: "travel",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1609963095806-c6b65827e8d0?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 0, 15),
+    tags: ["nature", "mountains", "hiking"],
+    notes: "Lorem ipsum logum et amet, consectetur du. Visit Banff National Park and see the Northern Lights.",
+    location: "Banff, Canada",
+    priority: "high",
+    completed: false,
   },
   {
-    key: "movies",
-    name: "Movies",
-    icon: <FaFilm />,
-    color: "#bdbdbd",
-    description: "Must-watch films and series",
-    count: 8,
+    id: "2",
+    content: "Skydiving in Dubai",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 0, 20),
+    tags: ["extreme", "dubai", "bucket-list"],
+    notes: "Lorem ipsum logum et amet, consectetur du. Jump from 13,000 feet over Palm Jumeirah.",
+    priority: "high",
+    completed: false,
   },
   {
-    key: "restaurants",
-    name: "Restaurants",
-    icon: <FaUtensils />,
-    color: "#bdbdbd",
-    description: "Delicious dining experiences",
-    count: 5,
+    id: "3",
+    content: "Scuba Diving Great Barrier Reef",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 5),
+    tags: ["ocean", "australia", "diving"],
+    notes: "Lorem ipsum logum et amet, consectetur du. Explore the underwater world of coral reefs.",
+    priority: "medium",
+    completed: false,
   },
   {
-    key: "books",
-    name: "Books",
-    icon: <FaBook />,
-    color: "#bdbdbd",
-    description: "Books to read and explore",
-    count: 15,
+    id: "4",
+    content: "Northern Lights in Iceland",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 10),
+    tags: ["iceland", "aurora", "winter"],
+    notes: "Best time: September to March",
+    location: "Reykjavik, Iceland",
+    priority: "high",
+    completed: false,
   },
   {
-    key: "shopping",
-    name: "Shopping",
-    icon: <FaShoppingBag />,
-    color: "#bdbdbd",
-    description: "Products and items to buy",
-    count: 7,
+    id: "5",
+    content: "La Bernardin NYC",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 18),
+    tags: ["fine-dining", "seafood", "michelin"],
+    notes: "Book 2 months in advance, try the tasting menu",
+    priority: "medium",
+    completed: false,
   },
   {
-    key: "sports",
-    name: "Sports",
-    icon: <FaFutbol />,
-    color: "#bdbdbd",
-    description: "Sports events and activities",
-    count: 3,
-  },
-  {
-    key: "hobbies",
-    name: "Hobbies",
-    icon: <FaPaintBrush />,
-    color: "#bdbdbd",
-    description: "Creative and fun activities",
-    count: 9,
+    id: "6",
+    content: "Watch Dune Part Two",
+    type: "movie",
+    category: "Movies",
+    media: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 1),
+    tags: ["sci-fi", "epic", "villeneuve"],
+    notes: "Watch in IMAX for best experience",
+    priority: "medium",
+    completed: true,
+    completedDate: new Date(2024, 2, 15),
   },
 ];
 
-// --- Enhanced Sample Wishes ---
-const sampleWishes = {
-  travel: [
-    {
-      id: 1,
-      title: "Santorini, Greece",
-      description: "Visit the stunning white-washed buildings with blue domes.",
-      media:
-        "https://images.unsplash.com/photo-1570077188259-71c05c181d41?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-05-15",
-      targetDate: "2024-06-01",
-      priority: "high",
-      likes: 42,
-      comments: 8,
-      shared: 12,
-      location: "Santorini, Greece",
-      tags: ["beach", "sunset", "romantic"],
-      category: "travel",
-    },
-    {
-      id: 2,
-      title: "Tokyo, Japan",
-      description:
-        "Explore the vibrant city with its mix of temples and skyscrapers.",
-      media:
-        "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-06-20",
-      targetDate: "2024-09-15",
-      priority: "medium",
-      likes: 38,
-      comments: 5,
-      shared: 7,
-      location: "Tokyo, Japan",
-      tags: ["city", "culture", "technology"],
-      category: "travel",
-    },
-    {
-      id: 3,
-      title: "Patagonia Adventure",
-      description:
-        "Hike through the breathtaking landscapes of Patagonia.",
-      media:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-07-10",
-      targetDate: "2024-12-01",
-      priority: "high",
-      likes: 56,
-      comments: 12,
-      shared: 15,
-      location: "Patagonia, Chile/Argentina",
-      tags: ["hiking", "nature", "adventure"],
-      category: "travel",
-    },
-  ],
-  movies: [
-    {
-      id: 4,
-      title: "Inception",
-      description: "Experience the mind-bending world of dreams within dreams.",
-      media:
-        "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-04-05",
-      targetDate: "",
-      priority: "high",
-      likes: 24,
-      comments: 3,
-      shared: 5,
-      director: "Christopher Nolan",
-      year: 2010,
-      genre: ["Sci-Fi", "Thriller"],
-      category: "movies",
-    },
-    {
-      id: 5,
-      title: "Parasite",
-      description: "A masterpiece of social commentary and dark comedy.",
-      media:
-        "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-05-12",
-      targetDate: "",
-      priority: "high",
-      likes: 31,
-      comments: 7,
-      shared: 9,
-      director: "Bong Joon-ho",
-      year: 2019,
-      genre: ["Drama", "Thriller"],
-      category: "movies",
-    },
-  ],
-  restaurants: [
-    {
-      id: 6,
-      title: "Le Bernardin",
-      description: "Michelin-starred seafood restaurant in New York.",
-      media:
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-03-18",
-      targetDate: "2024-02-14",
-      priority: "high",
-      likes: 18,
-      comments: 4,
-      shared: 3,
-      location: "New York, NY",
-      cuisine: "Seafood",
-      price: "$$$$",
-      category: "restaurants",
-    },
-  ],
-  books: [
-    {
-      id: 7,
-      title: "The Midnight Library",
-      description: "A novel about infinite possibilities and life choices.",
-      media:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80",
-      mediaType: "image",
-      dateAdded: "2023-02-20",
-      targetDate: "",
-      priority: "medium",
-      likes: 29,
-      comments: 6,
-      shared: 8,
-      author: "Matt Haig",
-      pages: 304,
-      genre: "Fiction",
-      category: "books",
-    },
-  ],
-  shopping: [],
-  sports: [],
-  hobbies: [],
-};
-
-// --- Helper Functions ---
-const getCategory = (categories, key) =>
-  categories.find((c) => c.key === key) || categories[0];
-
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
-const formatTimeAgo = (dateString) => {
+// Utility functions
+const formatDate = (date) => {
   const now = new Date();
-  const date = new Date(dateString);
-  const seconds = Math.floor((now - date) / 1000);
-
-  let interval = seconds / 31536000;
-  if (interval > 1) return Math.floor(interval) + " years ago";
-
-  interval = seconds / 2592000;
-  if (interval > 1) return Math.floor(interval) + " months ago";
-
-  interval = seconds / 86400;
-  if (interval > 1) return Math.floor(interval) + " days ago";
-
-  interval = seconds / 3600;
-  if (interval > 1) return Math.floor(interval) + " hours ago";
-
-  interval = seconds / 60;
-  if (interval > 1) return Math.floor(interval) + " minutes ago";
-
-  return Math.floor(seconds) + " seconds ago";
+  const diff = now - date;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
 };
 
-// --- Enhanced Components ---
-
-// --- Premium Badge ---
-const PremiumBadge = ({ size = "small" }) => {
-  const sizeStyles = {
-    small: { fontSize: 12, padding: "2px 8px" },
-    medium: { fontSize: 14, padding: "4px 12px" },
-    large: { fontSize: 16, padding: "6px 16px" },
+const getTypeIcon = (type) => {
+  const icons = {
+    travel: <FiMapPin />,
+    book: <FiBookmark />,
+    skill: <FiTrendingUp />,
+    food: <FiHeart />,
+    movie: <FiVideo />,
+    music: <FiMusic />,
+    shopping: <FiTag />,
+    experience: <FiStar />,
   };
-
-  return (
-    <div
-      style={{
-        ...sizeStyles[size],
-        background: "#e0e7ef",
-        color: "#22223b",
-        fontWeight: 700,
-        borderRadius: 20,
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-      }}
-    >
-      <FaStar /> PREMIUM
-    </div>
-  );
+  return icons[type] || <FiFolder />;
 };
 
-// --- Enhanced Stat Card ---
-function StatCard({ icon, value, label, color, trend }) {
-  return (
-    <div
-      className="glass"
-      style={{
-        flex: 1,
-        borderRadius: 18,
-        padding: "16px 0",
-        textAlign: "center",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 24,
-          color: "#bdbdbd",
-          marginBottom: 4,
-        }}
-      >
-        {icon}
-      </div>
-      <div style={{ fontWeight: 700, fontSize: 22, color: "#22223b" }}>{value}</div>
-      <div style={{ fontSize: 13, color: "#888", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-        {label}
-        {trend && (
-          <span style={{ color: trend > 0 ? "#22223b" : "#888", fontSize: 12 }}>
-            {trend > 0 ? "↑" : "↓"} {Math.abs(trend)}%
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// --- Enhanced Progress Bar ---
-function ProgressBar({ value, total, label, color = "#e0e7ef" }) {
-  const percent = total === 0 ? 0 : Math.round((value / total) * 100);
-  return (
-    <div style={{ margin: "18px 0" }}>
-      {label && (
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <span style={{ fontWeight: 600, color: "#22223b" }}>{label}</span>
-          <span style={{ color: "#888" }}>{percent}%</span>
-        </div>
-      )}
-      <div
-        style={{
-          background: "#f6f7f9",
-          borderRadius: 12,
-          height: 18,
-          position: "relative",
-        }}
-      >
-        <motion.div
-          style={{
-            height: "100%",
-            background: color,
-            borderRadius: 12,
-            width: `${percent}%`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#22223b",
-            fontWeight: 700,
-            fontSize: 13,
-            position: "absolute",
-            left: 0,
-            top: 0,
-          }}
-          initial={{ width: 0 }}
-          animate={{ width: `${percent}%` }}
-          transition={{ type: "spring", stiffness: 120, damping: 18 }}
-        />
-      </div>
-    </div>
-  );
-}
-
-// --- Enhanced Category Card ---
-function CategoryCard({ category, count, onClick, isSelected }) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02, boxShadow: "0 12px 32px #0001" }}
-      whileTap={{ scale: 0.98 }}
-      className="glass"
-      style={{
-        borderRadius: 20,
-        padding: "22px 12px 16px 12px",
-        textAlign: "center",
-        border: "none",
-        cursor: "pointer",
-        position: "relative",
-        transform: isSelected ? "scale(1.05)" : "none",
-        zIndex: isSelected ? 2 : 1,
-        transition: "transform 0.2s ease",
-      }}
-      onClick={onClick}
-    >
-      <div style={{ fontSize: 36, color: "#bdbdbd", marginBottom: 8 }}>
-        {category.icon}
-      </div>
-      <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4, color: "#22223b" }}>{category.name}</div>
-      <div style={{ fontSize: 12, color: "#888", marginBottom: 8 }}>{category.description}</div>
-      <div
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 16,
-          background: "rgba(0,0,0,0.04)",
-          color: "#22223b",
-          borderRadius: "50%",
-          width: 28,
-          height: 28,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: 700,
-          fontSize: 15,
-        }}
-      >
-        {count}
-      </div>
-      {category.featured && (
-        <div style={{ position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)" }}>
-          <PremiumBadge size="small" />
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
-// --- Enhanced Wish Card ---
-function WishCard({ wish, category, onEdit, onDelete, onComplete, dark, onLike, onShare, onComment }) {
-  const [liked, setLiked] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    if (onLike) onLike(wish.id, !liked);
-  };
-
-  return (
-    <div
-      style={{
-        background: wish.media
-          ? `url(${wish.media}) center/cover`
-          : "#f6f7f9",
-        borderRadius: 24,
-        minHeight: 320,
-        position: "relative",
-        overflow: "hidden",
-        boxShadow: "0 8px 32px #0001",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-      }}
-    >
-      {/* Glass Overlay */}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.65)",
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          top: 0,
-          zIndex: 1,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
-      />
-
-      {/* Content */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          color: "#22223b",
-          padding: "24px 20px 18px 20px",
-          textShadow: "none",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-          <div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{wish.title}</div>
-            <div style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>
-              Added: {formatDate(wish.dateAdded)}
-              {wish.targetDate && (
-                <>
-                  {" "} | Target: <b>{formatDate(wish.targetDate)}</b>
-                </>
-              )}
-            </div>
-          </div>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "rgba(0,0,0,0.04)",
-              border: "none",
-              borderRadius: 12,
-              width: 32,
-              height: 32,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#22223b",
-            }}
-            onClick={() => setShowDetails(!showDetails)}
-          >
-            {showDetails ? <FaChevronUp /> : <FaChevronDown />}
-          </motion.button>
-        </div>
-
-        {showDetails && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            style={{ marginBottom: 12 }}
-          >
-            <div style={{ fontSize: 15, margin: "8px 0 12px 0" }}>
-              {wish.description}
-            </div>
-
-            {wish.location && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                <FaMapMarkerAlt size={14} />
-                <span style={{ fontSize: 14 }}>{wish.location}</span>
-              </div>
-            )}
-
-            {wish.tags && wish.tags.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-                {wish.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    style={{
-                      background: "rgba(0,0,0,0.04)",
-                      padding: "2px 8px",
-                      borderRadius: 12,
-                      fontSize: 12
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
-          <div style={{ display: "flex", gap: 12 }}>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              style={{
-                background: "rgba(0,0,0,0.04)",
-                border: "none",
-                borderRadius: 18,
-                padding: "6px 12px",
-                color: "#22223b",
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-              onClick={handleLike}
-            >
-              {liked ? <FaHeart color="#888" /> : <FaRegHeart />}
-              {wish.likes + (liked ? 1 : 0)}
-            </motion.button>
-
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              style={{
-                background: "rgba(0,0,0,0.04)",
-                border: "none",
-                borderRadius: 18,
-                padding: "6px 12px",
-                color: "#22223b",
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-              onClick={() => onComment && onComment(wish.id)}
-            >
-              <FaComments />
-              {wish.comments}
-            </motion.button>
-
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              style={{
-                background: "rgba(0,0,0,0.04)",
-                border: "none",
-                borderRadius: 18,
-                padding: "6px 12px",
-                color: "#22223b",
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-              onClick={() => onShare && onShare(wish)}
-            >
-              <FaShareAlt />
-              {wish.shared}
-            </motion.button>
-          </div>
-
-          <div style={{ display: "flex", gap: 8 }}>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              style={{
-                background: "#e0e7ef",
-                border: "none",
-                borderRadius: 18,
-                padding: "6px 12px",
-                color: "#22223b",
-                fontWeight: 700,
-                fontSize: 14,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-              onClick={() => onComplete(wish)}
-            >
-              <FaCheckCircle /> Complete
-            </motion.button>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "rgba(0,0,0,0.04)",
-              border: "none",
-              borderRadius: 18,
-              padding: "6px 12px",
-              color: "#22223b",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-            onClick={() => onEdit(wish)}
-          >
-            <FaEdit /> Edit
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "rgba(0,0,0,0.04)",
-              border: "none",
-              borderRadius: 18,
-              padding: "6px 12px",
-              color: "#22223b",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-            onClick={() => onDelete(wish)}
-          >
-            <FaTrash /> Delete
-          </motion.button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// --- Enhanced Wish Deck ---
-function WishDeck({ wishes, category, onEdit, onDelete, onComplete, dark, onLike, onShare, onComment }) {
-  const [index, setIndex] = useState(0);
-  const [dragging, setDragging] = useState(false);
-
+// Category Tabs Component (Optimized for S25)
+const CategoryTabs = ({ categories, selected, onSelect }) => {
+  const scrollRef = useRef(null);
+  
   useEffect(() => {
-    setIndex(0);
-  }, [wishes]);
-
-  if (wishes.length === 0)
-    return (
-      <div
-        style={{
-          textAlign: "center",
-          color: "#888",
-          fontSize: 20,
-          padding: 40,
-        }}
-      >
-        <FaCloud style={{ fontSize: 40, marginBottom: 12 }} />
-        <div>No wishes in this category yet.</div>
+    // Auto-scroll to selected category
+    if (scrollRef.current && selected) {
+      const selectedButton = scrollRef.current.querySelector(`[data-category="${selected}"]`);
+      if (selectedButton) {
+        selectedButton.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  }, [selected]);
+  
+  return (
+    <div
+      ref={scrollRef}
+      style={{
+        display: 'flex',
+        overflowX: 'auto',
+        borderBottom: `1px solid ${theme.colors.border}`,
+        padding: '0',
+        gap: 0,
+        background: theme.colors.bg,
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        scrollSnapType: 'x mandatory',
+      }}
+      className="hide-scrollbar"
+    >
+      {categories.map(cat => (
         <motion.button
+          key={cat}
+          data-category={cat}
+          onClick={() => onSelect(cat)}
           whileTap={{ scale: 0.95 }}
           style={{
-            marginTop: 20,
-            background: "#e0e7ef",
-            color: "#22223b",
-            fontWeight: 700,
-            fontSize: 16,
-            border: "none",
-            borderRadius: 24,
-            padding: "12px 24px",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
+            border: 'none',
+            background: 'none',
+            fontWeight: selected === cat ? 600 : 400,
+            borderBottom: selected === cat ? '2px solid #2a2a2a' : '2px solid transparent',
+            color: selected === cat ? '#2a2a2a' : '#a0a0a0',
+            padding: '14px 18px',
+            fontSize: 14,
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            scrollSnapAlign: 'start',
+            WebkitTapHighlightColor: 'transparent',
           }}
-          onClick={() => onEdit(null)}
         >
-          <FaPlus /> Add First Wish
+          {cat}
         </motion.button>
-      </div>
-    );
+      ))}
+    </div>
+  );
+};
 
-  const wish = wishes[index];
+// Fanned Card Stack Component (Optimized for S25)
+const FannedCardStack = ({ wishes, onCardClick }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  const handlePrevious = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev - 1 + wishes.length) % wishes.length);
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [wishes.length, isAnimating]);
+
+  const handleNext = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev + 1) % wishes.length);
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [wishes.length, isAnimating]);
+
+  // Touch handling for swipe
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        handleNext();
+      } else {
+        handlePrevious();
+      }
+    }
+  };
+
+  const getCardStyle = (index, wishIndex) => {
+    const diff = (wishIndex - currentIndex + wishes.length) % wishes.length;
+    const adjustedDiff = diff > wishes.length / 2 ? diff - wishes.length : diff;
+    
+    const isActive = adjustedDiff === 0;
+    const scale = 1 - Math.abs(adjustedDiff) * 0.05;
+    const rotate = adjustedDiff * 6;
+    const translateX = adjustedDiff * 45;
+    const translateY = Math.abs(adjustedDiff) * 10;
+    const zIndex = wishes.length - Math.abs(adjustedDiff);
+    const opacity = 1 - Math.abs(adjustedDiff) * 0.2;
+
+    return {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: `
+        translate(-50%, -50%)
+        translateX(${translateX}px)
+        translateY(${translateY}px)
+        scale(${scale})
+        rotate(${rotate}deg)
+      `,
+      zIndex,
+      opacity: Math.abs(adjustedDiff) > 2 ? 0 : opacity,
+      transition: isAnimating ? 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      cursor: isActive ? 'pointer' : 'default',
+      pointerEvents: isActive ? 'auto' : 'none',
+      willChange: 'transform',
+    };
+  };
 
   return (
-    <div style={{ minHeight: 340, margin: "24px 0" }}>
-      <div style={{ position: "relative", height: 340 }}>
-        {/* Card Stack */}
-        {wishes.slice(index, index + 3).map((w, i) => (
-          <motion.div
-            key={w.id}
-            drag={i === 0 ? "x" : false}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.8}
-            onDragStart={() => setDragging(true)}
-            onDragEnd={(e, info) => {
-              setDragging(false);
-              if (info.offset.x > 120 && index > 0) setIndex(index - 1);
-              else if (info.offset.x < -120 && index < wishes.length - 1)
-                setIndex(index + 1);
-            }}
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              margin: "auto",
-              top: i * 12,
-              zIndex: 10 - i,
-              width: "98%",
-              maxWidth: 380,
-              boxShadow: "0 8px 32px #0001",
-              opacity: 1 - i * 0.18,
-              scale: 1 - i * 0.06,
-              pointerEvents: i === 0 ? "auto" : "none",
-            }}
-            initial={{ y: 60, opacity: 0, scale: 0.9 }}
-            animate={{ y: 0, opacity: 1 - i * 0.18, scale: 1 - i * 0.06 }}
-            exit={{ y: 60, opacity: 0, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 180, damping: 18 }}
+    <div style={{ 
+      position: 'relative', 
+      width: '100%',
+      padding: '40px 20px 100px',
+      minHeight: 450,
+    }}>
+      {/* Cards Container */}
+      <div
+        style={{
+          position: 'relative',
+          height: 340,
+          maxWidth: 280,
+          margin: '0 auto',
+          perspective: '1000px',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {wishes.map((wish, idx) => (
+          <div
+            key={wish.id}
+            style={getCardStyle(currentIndex, idx)}
+            onClick={() => idx === currentIndex && onCardClick(wish)}
           >
-            <WishCard
-              wish={w}
-              category={category}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onComplete={onComplete}
-              dark={dark}
-              onLike={onLike}
-              onShare={onShare}
-              onComment={onComment}
-            />
-            {/* Card Counter */}
-            <div
+            <motion.div
+              whileTap={{ scale: 0.98 }}
               style={{
-                position: "absolute",
-                top: 12,
-                left: 18,
-                background: "rgba(0,0,0,0.04)",
-                color: "#22223b",
-                borderRadius: 16,
-                fontSize: 13,
-                padding: "2px 10px",
-                zIndex: 2,
+                width: 240,
+                height: 320,
+                borderRadius: 18,
+                background: '#fff',
+                boxShadow: theme.shadows.lg,
+                overflow: 'hidden',
+                WebkitTapHighlightColor: 'transparent',
               }}
             >
-              {index + 1}/{wishes.length}
-            </div>
-          </motion.div>
+              {/* Card Image */}
+              {wish.media ? (
+                <div style={{
+                  width: '100%',
+                  height: 140,
+                  background: `url(${wish.media}) center/cover`,
+                  position: 'relative',
+                }}>
+                  {wish.completed && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      borderRadius: '50%',
+                      width: 28,
+                      height: 28,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: theme.shadows.sm,
+                    }}>
+                      <FiCheck size={14} color={theme.colors.success} />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: 140,
+                  background: theme.colors.surface,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 48,
+                  color: theme.colors.text.tertiary,
+                  fontWeight: 300,
+                }}>
+                  ×
+                </div>
+              )}
+              
+              {/* Card Content */}
+              <div style={{ padding: '18px 20px 16px' }}>
+                <div style={{ 
+                  fontWeight: 600, 
+                  fontSize: 17, 
+                  marginBottom: 6,
+                  lineHeight: 1.3,
+                  color: wish.completed ? theme.colors.text.tertiary : theme.colors.text.primary,
+                  textDecoration: wish.completed ? 'line-through' : 'none',
+                }}>
+                  {wish.content}
+                </div>
+                
+                {wish.notes && (
+                  <div style={{ 
+                    color: theme.colors.text.secondary, 
+                    fontSize: 13,
+                    lineHeight: 1.5,
+                    marginBottom: 10,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}>
+                    {wish.notes}
+                  </div>
+                )}
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  fontSize: 11,
+                  color: theme.colors.text.tertiary,
+                }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {getTypeIcon(wish.type)}
+                    {wish.type}
+                  </span>
+                  <span>{formatDate(wish.created)}</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         ))}
       </div>
 
-      {/* Navigation */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 24,
-          marginTop: 18,
-        }}
-      >
+      {/* Navigation Controls */}
+      <div style={{
+        position: 'absolute',
+        bottom: 40,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 24,
+      }}>
+        {/* Left Arrow */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          disabled={index === 0}
+          onClick={handlePrevious}
           style={{
-            background: "rgba(0,0,0,0.04)",
-            border: "none",
-            borderRadius: "50%",
-            width: 44,
-            height: 44,
-            color: "#22223b",
-            fontSize: 20,
-            cursor: index === 0 ? "not-allowed" : "pointer",
-            opacity: index === 0 ? 0.5 : 1,
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            background: theme.colors.bg,
+            border: `1px solid ${theme.colors.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            WebkitTapHighlightColor: 'transparent',
           }}
-          onClick={() => setIndex((i) => Math.max(0, i - 1))}
         >
-          <FaArrowLeft />
+          <FiChevronLeft size={18} />
         </motion.button>
+
+        {/* Page Indicators */}
+        <div style={{
+          display: 'flex',
+          gap: 6,
+        }}>
+          {wishes.map((_, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: idx === currentIndex ? 18 : 6,
+                height: 6,
+                borderRadius: 3,
+                background: idx === currentIndex ? theme.colors.accent : theme.colors.border,
+                transition: 'all 0.2s ease',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Right Arrow */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          disabled={index === wishes.length - 1}
+          onClick={handleNext}
           style={{
-            background: "rgba(0,0,0,0.04)",
-            border: "none",
-            borderRadius: "50%",
-            width: 44,
-            height: 44,
-            color: "#22223b",
-            fontSize: 20,
-            cursor: index === wishes.length - 1 ? "not-allowed" : "pointer",
-            opacity: index === wishes.length - 1 ? 0.5 : 1,
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            background: theme.colors.bg,
+            border: `1px solid ${theme.colors.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            WebkitTapHighlightColor: 'transparent',
           }}
-          onClick={() => setIndex((i) => Math.min(wishes.length - 1, i + 1))}
         >
-          <FaArrowRight />
+          <FiChevronRight size={18} />
         </motion.button>
       </div>
     </div>
   );
-}
+};
 
-// --- Enhanced Modal ---
-function Modal({ show, onClose, title, children, size = "medium" }) {
-  const sizeStyles = {
-    small: { maxWidth: 320 },
-    medium: { maxWidth: 400 },
-    large: { maxWidth: 600 },
-  };
-
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          style={{
-            position: "fixed",
-            zIndex: 1002,
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "#0008",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        >
-          <motion.div
-            className="glass"
-            style={{
-              borderRadius: 24,
-              padding: 32,
-              minWidth: 320,
-              ...sizeStyles[size],
-              width: "90vw",
-              position: "relative",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
-            initial={{ scale: 0.9, y: 40 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 40 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: 22,
-                marginBottom: 18,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                color: "#22223b",
-              }}
-            >
-              {title}
-              <motion.button
-                whileTap={{ scale: 0.8, rotate: 90 }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: 28,
-                  color: "#888",
-                  cursor: "pointer",
-                }}
-                onClick={onClose}
-              >
-                ×
-              </motion.button>
-            </div>
-            {children}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-// --- Enhanced Add Category Form ---
-function AddCategoryForm({ onSubmit, existingKeys }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState("FaStar");
-  const [featured, setFeatured] = useState(false);
-
-  const icons = [
-    { name: "Star", value: "FaStar", icon: <FaStar /> },
-    { name: "Plane", value: "FaPlane", icon: <FaPlane /> },
-    { name: "Film", value: "FaFilm", icon: <FaFilm /> },
-    { name: "Utensils", value: "FaUtensils", icon: <FaUtensils /> },
-    { name: "Book", value: "FaBook", icon: <FaBook /> },
-    { name: "Shopping", value: "FaShoppingBag", icon: <FaShoppingBag /> },
-    { name: "Sports", value: "FaFutbol", icon: <FaFutbol /> },
-    { name: "Hobbies", value: "FaPaintBrush", icon: <FaPaintBrush /> },
-    { name: "Calendar", value: "FaCalendarAlt", icon: <FaCalendarAlt /> },
-    { name: "Gift", value: "FaGift", icon: <FaGift /> },
-    { name: "Trophy", value: "FaTrophy", icon: <FaTrophy /> },
-    { name: "Magic", value: "FaMagic", icon: <FaMagic /> },
+// Bottom Navigation Component
+const BottomNavigation = ({ activeTab, onTabChange }) => {
+  const tabs = [
+    { id: 'home', icon: <FiHome />, label: 'Home' },
+    { id: 'search', icon: <FiSearch />, label: 'Search' },
+    { id: 'add', icon: <FiPlus />, label: 'Add' },
+    { id: 'profile', icon: <FiUser />, label: 'Profile' },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const key = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (!name || existingKeys.includes(key)) return;
-
-    onSubmit({
-      key,
-      name,
-      description,
-      icon: React.createElement(require("react-icons/fa")[icon]),
-      color: "#bdbdbd",
-      featured,
-      count: 0,
-    });
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Category Name</label>
-        <input
-          type="text"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Adventures"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe this category..."
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            minHeight: 60,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Icon</label>
-        <select
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        >
-          {icons.map((ic) => (
-            <option key={ic.value} value={ic.value}>
-              {ic.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div style={{ marginBottom: 16, display: "flex", alignItems: "center" }}>
-        <input
-          type="checkbox"
-          id="featured"
-          checked={featured}
-          onChange={(e) => setFeatured(e.target.checked)}
-          style={{ marginRight: 8 }}
-        />
-        <label htmlFor="featured" style={{ fontWeight: 700, color: "#22223b" }}>
-          Featured Category
-        </label>
-        <span style={{ marginLeft: 8, fontSize: 12, color: "#888" }}>
-          (Premium badge)
-        </span>
-      </div>
-
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          background: "#e0e7ef",
-          color: "#22223b",
-          fontWeight: 700,
-          fontSize: 18,
-          border: "none",
-          borderRadius: 18,
-          padding: "12px 0",
-          marginTop: 8,
-          cursor: "pointer",
-        }}
-      >
-        Create Category
-      </button>
-    </form>
-  );
-}
-
-// --- Enhanced Add/Edit Wish Form ---
-function AddWishForm({ onSubmit, categories, initial }) {
-  const [title, setTitle] = useState(initial?.title || "");
-  const [description, setDescription] = useState(initial?.description || "");
-  const [category, setCategory] = useState(
-    initial?.category || categories[0].key
-  );
-  const [targetDate, setTargetDate] = useState(initial?.targetDate || "");
-  const [media, setMedia] = useState(initial?.media || "");
-  const [mediaType, setMediaType] = useState(initial?.mediaType || "");
-  const [priority, setPriority] = useState(initial?.priority || "medium");
-  const [location, setLocation] = useState(initial?.location || "");
-  const [tags, setTags] = useState(initial?.tags?.join(", ") || "");
-  const [privacy, setPrivacy] = useState(initial?.privacy || "public");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({
-      id: initial?.id || Date.now(),
-      title,
-      description,
-      category,
-      targetDate,
-      media,
-      mediaType,
-      dateAdded:
-        initial?.dateAdded || new Date().toISOString().split("T")[0],
-      priority,
-      location,
-      tags: tags.split(",").map(tag => tag.trim()).filter(tag => tag),
-      privacy,
-      likes: initial?.likes || 0,
-      comments: initial?.comments || 0,
-      shared: initial?.shared || 0,
-    });
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Title</label>
-        <input
-          type="text"
-          required
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="What's your wish?"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe your wish..."
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            minHeight: 60,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Category</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        >
-          {categories.map((cat) => (
-            <option key={cat.key} value={cat.key}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Target Date (optional)</label>
-        <input
-          type="date"
-          value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Priority</label>
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        >
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Location (optional)</label>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Where is this wish?"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Tags (comma separated)</label>
-        <input
-          type="text"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="e.g. beach, vacation, summer"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Privacy</label>
-        <select
-          value={privacy}
-          onChange={(e) => setPrivacy(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        >
-          <option value="public">Public</option>
-          <option value="friends">Friends Only</option>
-          <option value="private">Private</option>
-        </select>
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <label style={{ fontWeight: 700, color: "#22223b" }}>Photo/Video (URL)</label>
-        <input
-          type="url"
-          value={media}
-          onChange={(e) => {
-            setMedia(e.target.value);
-            setMediaType(
-              e.target.value.match(/\.(mp4|webm)$/i) ? "video" : "image"
-            );
-          }}
-          placeholder="Paste image or video URL"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 16,
-            border: "none",
-            background: "#f6f7f9",
-            fontSize: 16,
-            marginTop: 4,
-            boxShadow: "0 1px 4px #0001",
-          }}
-        />
-        {media && (
-          <div
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: theme.colors.bg,
+      borderTop: `1px solid ${theme.colors.border}`,
+      paddingBottom: 'env(safe-area-inset-bottom)',
+      zIndex: 100,
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: '8px 0',
+      }}>
+        {tabs.map(tab => (
+          <motion.button
+            key={tab.id}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => tab.id === 'add' ? onTabChange(tab.id) : null}
             style={{
-              marginTop: 8,
-              borderRadius: 12,
-              overflow: "hidden",
-              background: "#eee",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+              padding: '8px 16px',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              color: activeTab === tab.id ? theme.colors.accent : theme.colors.text.tertiary,
+              fontSize: 20,
+              WebkitTapHighlightColor: 'transparent',
             }}
           >
-            {mediaType === "video" ? (
-              <video src={media} controls style={{ width: "100%" }} />
-            ) : (
-              <img src={media} alt="preview" style={{ width: "100%" }} />
-            )}
-          </div>
-        )}
+            {tab.icon}
+            <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
+          </motion.button>
+        ))}
       </div>
-
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          background: "#e0e7ef",
-          color: "#22223b",
-          fontWeight: 700,
-          fontSize: 18,
-          border: "none",
-          borderRadius: 18,
-          padding: "12px 0",
-          marginTop: 8,
-          cursor: "pointer",
-        }}
-      >
-        {initial ? "Update Wish" : "Add to Wishlist"}
-      </button>
-    </form>
+    </div>
   );
-}
+};
 
-// --- Enhanced Cloud Icon ---
-function FaCloud(props) {
-  return (
-    <svg width={40} height={40} fill="none" viewBox="0 0 40 40" {...props}>
-      <ellipse cx="20" cy="28" rx="14" ry="8" fill="#eee" />
-      <ellipse cx="13" cy="24" rx="7" ry="5" fill="#eee" />
-      <ellipse cx="27" cy="24" rx="7" ry="5" fill="#eee" />
-    </svg>
-  );
-}
-
-// --- Enhanced Main App ---
-export default function App() {
-  // Add global styles
-  React.useEffect(() => {
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = globalStyles;
-    document.head.appendChild(styleElement);
-    return () => {
-      document.head.removeChild(styleElement);
-    };
-  }, []);
-
-  // --- State ---
-  const [dark, setDark] = useState(false);
-  const [page, setPage] = useState("home"); // home | category | completed | profile | settings
-  const [categories, setCategories] = useState(defaultCategories);
-  const [wishes, setWishes] = useState(sampleWishes);
-  const [completed, setCompleted] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState("travel");
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [confettiType, setConfettiType] = useState("default");
-  const [toast, setToast] = useState({ show: false, message: "", icon: null, type: "default" });
-  const [search, setSearch] = useState("");
-  const [showAddCategory, setShowAddCategory] = useState(false);
-  const [showAddWish, setShowAddWish] = useState(false);
-  const [editWish, setEditWish] = useState(null);
-  const [theme, setTheme] = useState("default");
-  const [notifications, setNotifications] = useState(3);
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [sortOption, setSortOption] = useState("dateAdded");
-  const [filterOption, setFilterOption] = useState("all");
-  const [showFilters, setShowFilters] = useState(false);
-  const [user, setUser] = useState({
-    name: "Alex Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    level: 5,
-    xp: 1250,
-    nextLevelXp: 1500,
-    badges: ["explorer", "bookworm", "foodie"],
+// Create Wish Modal (Optimized for S25)
+const CreateWishModal = ({ categories, onSave, onClose }) => {
+  const [formData, setFormData] = useState({
+    content: "",
+    category: categories[0],
+    notes: "",
+    media: "",
   });
 
-  // --- Derived Data ---
-  const allWishes = Object.values(wishes).flat();
-  const filteredWishes = search
-    ? allWishes.filter(
-        (w) =>
-          w.title.toLowerCase().includes(search.toLowerCase()) ||
-          w.description.toLowerCase().includes(search.toLowerCase())
-      )
-    : allWishes;
-
-  // --- Effects ---
-  useEffect(() => {
-    if (toast.show) {
-      const t = setTimeout(
-        () => setToast((t) => ({ ...t, show: false })),
-        2200
-      );
-      return () => clearTimeout(t);
-    }
-  }, [toast.show]);
-
-  // --- Handlers ---
-  const handleToggleDark = () => setDark((d) => !d);
-
-  const handleAddCategory = (cat) => {
-    setCategories((cats) => [...cats, cat]);
-    setWishes((w) => ({ ...w, [cat.key]: [] }));
-    setShowAddCategory(false);
-    setToast({
-      show: true,
-      message: `Category "${cat.name}" created!`,
-      icon: <FaStar />,
-      type: "success",
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave({
+      ...formData,
+      id: Date.now().toString(),
+      created: new Date(),
+      completed: false,
+      type: "experience",
     });
   };
 
-  const handleAddWish = (wish) => {
-    setWishes((w) => ({
-      ...w,
-      [wish.category]: [...(w[wish.category] || []), wish],
-    }));
-    setShowAddWish(false);
-    setEditWish(null);
-    setToast({
-      show: true,
-      message: `"${wish.title}" added!`,
-      icon: <FaPlus />,
-      type: "success",
-    });
-  };
-
-  const handleEditWish = (wish) => {
-    setWishes((w) => ({
-      ...w,
-      [wish.category]: w[wish.category].map((wi) =>
-        wi.id === wish.id ? wish : wi
-      ),
-    }));
-    setShowAddWish(false);
-    setEditWish(null);
-    setToast({
-      show: true,
-      message: `"${wish.title}" updated!`,
-      icon: <FaEdit />,
-      type: "success",
-    });
-  };
-
-  const handleDeleteWish = (wish) => {
-    setWishes((w) => ({
-      ...w,
-      [wish.category]: w[wish.category].filter((wi) => wi.id !== wish.id),
-    }));
-    setToast({
-      show: true,
-      message: `"${wish.title}" deleted!`,
-      icon: <FaTrash />,
-      type: "warning",
-    });
-  };
-
-  const handleCompleteWish = (wish) => {
-    handleDeleteWish(wish);
-    setCompleted((c) => [
-      { ...wish, dateCompleted: new Date().toISOString().split("T")[0] },
-      ...c,
-    ]);
-    setShowConfetti(true);
-    setConfettiType("success");
-    setTimeout(() => setShowConfetti(false), 1800);
-    setToast({
-      show: true,
-      message: `"${wish.title}" completed!`,
-      icon: <FaCheckCircle />,
-      type: "success",
-    });
-  };
-
-  const handleLikeWish = (wishId, liked) => {
-    setWishes((w) => {
-      const updatedWishes = { ...w };
-      Object.keys(updatedWishes).forEach(category => {
-        updatedWishes[category] = updatedWishes[category].map(wish => {
-          if (wish.id === wishId) {
-            return {
-              ...wish,
-              likes: liked ? wish.likes + 1 : Math.max(0, wish.likes - 1)
-            };
-          }
-          return wish;
-        });
-      });
-      return updatedWishes;
-    });
-  };
-
-  const handleShareWish = (wish) => {
-    setWishes((w) => {
-      const updatedWishes = { ...w };
-      Object.keys(updatedWishes).forEach(category => {
-        updatedWishes[category] = updatedWishes[category].map(w => {
-          if (w.id === wish.id) {
-            return { ...w, shared: w.shared + 1 };
-          }
-          return w;
-        });
-      });
-      return updatedWishes;
-    });
-    setToast({
-      show: true,
-      message: `"${wish.title}" shared!`,
-      icon: <FaShareAlt />,
-      type: "info",
-    });
-  };
-
-  const handleCommentWish = (wishId) => {
-    setToast({
-      show: true,
-      message: "Comment feature coming soon!",
-      icon: <FaComments />,
-      type: "info",
-    });
-  };
-
-  // --- Render ---
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       style={{
-        fontFamily: "Inter, sans-serif",
-        minHeight: "100vh",
-        color: dark ? "#f6f7f9" : "#22223b",
-        background: "none",
-        position: "relative",
-        overflowX: "hidden",
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        zIndex: 1000,
+        padding: 0,
       }}
-      className={dark ? "dark" : ""}
+      onClick={onClose}
     >
-      <AnimatedBackground dark={dark} theme={theme} />
-      <Confetti show={showConfetti} type={confettiType} />
-      <Toast {...toast} />
-
-      {/* Top Navigation Bar */}
-      <div
+      <motion.div
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
         style={{
-          position: "fixed",
-          top: 24,
-          left: "50%",
-          transform: "translateX(-50%)",
-          background: "rgba(255,255,255,0.85)",
-          padding: "8px 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          zIndex: 100,
-          boxShadow: "0 2px 12px #0001",
-          borderRadius: 24,
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          width: "min(96vw, 680px)",
+          background: theme.colors.bg,
+          width: '100%',
+          maxHeight: '85vh',
+          borderRadius: '20px 20px 0 0',
+          overflow: 'hidden',
         }}
-        className={dark ? "glass" : ""}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 24,
-              color: dark ? "#f6f7f9" : "#22223b",
-              cursor: "pointer",
-            }}
-            onClick={() => setPage("home")}
-          >
-            <FaHome />
-          </motion.button>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600 }}>WishList Adventure</h2>
+        {/* Handle */}
+        <div style={{
+          padding: '10px 0 4px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
+          <div style={{
+            width: 36,
+            height: 4,
+            background: theme.colors.border,
+            borderRadius: 2,
+          }} />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 20,
-              color: dark ? "#f6f7f9" : "#22223b",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            onClick={() => setToast({
-              show: true,
-              message: "Notifications coming soon!",
-              icon: <FaBell />,
-              type: "info",
-            })}
-          >
-            <FaBell />
-            {notifications > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -5,
-                  right: -5,
-                  background: "#e0e7ef",
-                  color: "#22223b",
-                  borderRadius: "50%",
-                  width: 18,
-                  height: 18,
-                  fontSize: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 600,
-                }}
-              >
-                {notifications}
-              </span>
-            )}
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 20,
-              color: dark ? "#f6f7f9" : "#22223b",
-              cursor: "pointer",
-            }}
-            onClick={() => setPage("profile")}
-          >
-            <FaUser />
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.85, rotate: 20 }}
-            onClick={handleToggleDark}
-            style={{
-              background: dark ? "rgba(34,34,59,0.85)" : "rgba(255,255,255,0.85)",
-              color: dark ? "#f6f7f9" : "#22223b",
-              border: "none",
-              borderRadius: "50%",
-              width: 40,
-              height: 40,
-              boxShadow: "0 2px 8px #0001",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 20,
-              cursor: "pointer",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-            }}
-            aria-label="Toggle dark mode"
-          >
-            {dark ? <FaSun /> : <FaMoon />}
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Main Container */}
-      <div
-        style={{
-          maxWidth: 720,
-          margin: "80px auto 40px auto",
-          borderRadius: 32,
-          boxShadow: "0 16px 48px #0001",
-          padding: 0,
-          position: "relative",
-          zIndex: 1,
-          minHeight: 600,
-        }}
-        className="glass"
-      >
         {/* Header */}
-        <motion.header
-          style={{
-            background: "rgba(255,255,255,0.65)",
-            borderRadius: "32px 32px 0 0",
-            padding: "32px 24px 16px 24px",
-            textAlign: "center",
-            boxShadow: "0 4px 24px #0001",
-            borderBottom: "1px solid rgba(0,0,0,0.04)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-          }}
-          initial={{ y: -40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          <motion.h1
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 20px 16px',
+        }}>
+          <h2 style={{ fontSize: 18, fontWeight: 600 }}>Add New Wish</h2>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={onClose}
             style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: 32,
-              color: "#22223b",
-              fontWeight: 700,
-              letterSpacing: 0.01,
-              marginBottom: 4,
-              textShadow: "none",
-            }}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 12 }}
-          >
-            WishList Adventure
-          </motion.h1>
-          <div
-            style={{
-              color: "#22223b",
-              fontSize: 16,
-              marginBottom: 8,
-              opacity: 0.7,
-              fontWeight: 400,
+              background: 'transparent',
+              border: 'none',
+              padding: 8,
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
             }}
           >
-            Your dreams, your journey!
-          </div>
-        </motion.header>
-
-        {/* Pages */}
-        <div style={{ padding: 24 }}>
-          {/* Home Page */}
-          <AnimatePresence>
-            {page === "home" && (
-              <motion.div
-                key="home"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-              >
-                {/* Stats */}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 16,
-                    margin: "24px 0 12px 0",
-                  }}
-                >
-                  <StatCard
-                    icon={<FaStar />}
-                    value={allWishes.length}
-                    label="Total Wishes"
-                    color="#bdbdbd"
-                    trend={5}
-                  />
-                  <StatCard
-                    icon={<FaCheckCircle />}
-                    value={completed.length}
-                    label="Completed"
-                    color="#bdbdbd"
-                    trend={12}
-                  />
-                  <StatCard
-                    icon={<FaBook />}
-                    value={categories.length}
-                    label="Categories"
-                    color="#bdbdbd"
-                    trend={3}
-                  />
-                </div>
-
-                {/* Progress Bar */}
-                <ProgressBar
-                  value={completed.length}
-                  total={allWishes.length + completed.length}
-                  label="Completion Progress"
-                />
-
-                {/* Search and Filters */}
-                <div style={{ margin: "18px 0 8px 0", position: "relative" }}>
-                  <FaSearch
-                    style={{
-                      position: "absolute",
-                      left: 16,
-                      top: 14,
-                      color: "#888",
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Search your wishes..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px 12px 40px",
-                      borderRadius: 16,
-                      border: "none",
-                      background: "#f6f7f9",
-                      fontSize: 16,
-                      boxShadow: "0 1px 4px #0001",
-                    }}
-                  />
-                </div>
-
-                <div style={{ display: "flex", gap: 12, margin: "12px 0" }}>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      flex: 1,
-                      background: "rgba(0,0,0,0.04)",
-                      border: "none",
-                      borderRadius: 24,
-                      padding: "8px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setShowFilters(!showFilters)}
-                  >
-                    <FaFilter /> Filters
-                  </motion.button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      flex: 1,
-                      background: "rgba(0,0,0,0.04)",
-                      border: "none",
-                      borderRadius: 24,
-                      padding: "8px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Sorting options coming soon!",
-                      icon: <FaSort />,
-                      type: "info",
-                    })}
-                  >
-                    <FaSort /> Sort
-                  </motion.button>
-                </div>
-
-                {showFilters && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    style={{
-                      background: "#f6f7f9",
-                      borderRadius: 16,
-                      padding: 16,
-                      margin: "12px 0",
-                    }}
-                  >
-                    <h4 style={{ margin: "0 0 12px 0", color: "#22223b" }}>Filter Options</h4>
-                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                      {["all", "high", "medium", "low"].map((priority) => (
-                        <button
-                          key={priority}
-                          style={{
-                            background: filterOption === priority ? "#e0e7ef" : "transparent",
-                            border: "1px solid #e0e7ef",
-                            borderRadius: 20,
-                            padding: "6px 12px",
-                            color: "#22223b",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => setFilterOption(priority)}
-                        >
-                          {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Categories */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: 18,
-                    margin: "18px 0",
-                  }}
-                >
-                  {categories.map((cat) => (
-                    <CategoryCard
-                      key={cat.key}
-                      category={cat}
-                      count={wishes[cat.key]?.length || 0}
-                      onClick={() => {
-                        setCurrentCategory(cat.key);
-                        setPage("category");
-                      }}
-                      isSelected={currentCategory === cat.key}
-                    />
-                  ))}
-                </div>
-
-                {/* Add Category */}
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  style={{
-                    width: "100%",
-                    marginTop: 18,
-                    background: "#e0e7ef",
-                    color: "#22223b",
-                    fontWeight: 700,
-                    fontSize: 18,
-                    border: "none",
-                    borderRadius: 24,
-                    padding: "16px 0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 10,
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setShowAddCategory(true)}
-                >
-                  <FaPlus /> Create New Category
-                </motion.button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Category Page */}
-          <AnimatePresence>
-            {page === "category" && (
-              <motion.div
-                key="category"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 12,
-                  }}
-                >
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    style={{
-                      background: "#e0e7ef",
-                      border: "none",
-                      borderRadius: 24,
-                      width: 40,
-                      height: 40,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setPage("home")}
-                  >
-                    <FaHome />
-                  </motion.button>
-                  <div
-                    style={{
-                      fontSize: 28,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      color: "#22223b",
-                    }}
-                  >
-                    {getCategory(categories, currentCategory).icon}
-                    {getCategory(categories, currentCategory).name} Wishes
-                  </div>
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    style={{
-                      background: "#e0e7ef",
-                      border: "none",
-                      borderRadius: 24,
-                      width: 40,
-                      height: 40,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      color: "#22223b",
-                      marginLeft: "auto",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      setEditWish(null);
-                      setShowAddWish(true);
-                    }}
-                  >
-                    <FaPlus />
-                  </motion.button>
-                </div>
-                <WishDeck
-                  wishes={wishes[currentCategory] || []}
-                  category={getCategory(categories, currentCategory)}
-                  onEdit={(wish) => {
-                    setEditWish(wish);
-                    setShowAddWish(true);
-                  }}
-                  onDelete={handleDeleteWish}
-                  onComplete={handleCompleteWish}
-                  dark={dark}
-                  onLike={handleLikeWish}
-                  onShare={handleShareWish}
-                  onComment={handleCommentWish}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Completed Page */}
-          <AnimatePresence>
-            {page === "completed" && (
-              <motion.div
-                key="completed"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 12,
-                  }}
-                >
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    style={{
-                      background: "#e0e7ef",
-                      border: "none",
-                      borderRadius: 24,
-                      width: 40,
-                      height: 40,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setPage("home")}
-                  >
-                    <FaHome />
-                  </motion.button>
-                  <div
-                    style={{
-                      fontSize: 28,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      color: "#22223b",
-                    }}
-                  >
-                    <FaCheckCircle />
-                    Completed Wishes
-                  </div>
-                </div>
-                <div style={{ marginTop: 18 }}>
-                  {completed.length === 0 ? (
-                    <div
-                      style={{
-                        textAlign: "center",
-                        color: "#888",
-                        fontSize: 20,
-                        padding: 40,
-                      }}
-                    >
-                      No completed wishes yet!
-                    </div>
-                  ) : (
-                    <ul style={{ listStyle: "none", padding: 0 }}>
-                      {completed.map((wish) => (
-                        <motion.li
-                          key={wish.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 20 }}
-                          style={{
-                            background: "rgba(0,0,0,0.04)",
-                            borderRadius: 16,
-                            marginBottom: 12,
-                            padding: "16px 20px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 16,
-                          }}
-                        >
-                          <span style={{ fontSize: 22, color: "#bdbdbd" }}>
-                            {getCategory(categories, wish.category).icon}
-                          </span>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 700, fontSize: 18, color: "#22223b" }}>
-                              {wish.title}
-                            </div>
-                            <div style={{ fontSize: 14, color: "#888" }}>
-                              Completed: {formatDate(wish.dateCompleted)}
-                            </div>
-                          </div>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Profile Page */}
-          <AnimatePresence>
-            {page === "profile" && (
-              <motion.div
-                key="profile"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 24,
-                  }}
-                >
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    style={{
-                      background: "#e0e7ef",
-                      border: "none",
-                      borderRadius: 24,
-                      width: 40,
-                      height: 40,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setPage("home")}
-                  >
-                    <FaHome />
-                  </motion.button>
-                  <div
-                    style={{
-                      fontSize: 28,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      color: "#22223b",
-                    }}
-                  >
-                    <FaUser />
-                    Your Profile
-                  </div>
-                </div>
-
-                <div
-                  className="glass"
-                  style={{
-                    borderRadius: 24,
-                    padding: 24,
-                    textAlign: "center",
-                    marginBottom: 24,
-                  }}
-                >
-                  <img
-                    src={user.avatar}
-                    alt="Profile"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: "50%",
-                      border: "4px solid #e0e7ef",
-                      marginBottom: 16,
-                    }}
-                  />
-                  <h2 style={{ margin: "0 0 8px 0", color: "#22223b" }}>{user.name}</h2>
-                  <div style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 16 }}>
-                    <div style={{ textAlign: "center" }}>
-                      <div style={{ fontWeight: 700, fontSize: 20, color: "#22223b" }}>{user.level}</div>
-                      <div style={{ fontSize: 14, color: "#888" }}>Level</div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                      <div style={{ fontWeight: 700, fontSize: 20, color: "#22223b" }}>{user.xp}/{user.nextLevelXp}</div>
-                      <div style={{ fontSize: 14, color: "#888" }}>XP</div>
-                    </div>
-                  </div>
-
-                  <ProgressBar
-                    value={user.xp}
-                    total={user.nextLevelXp}
-                    label="Next Level Progress"
-                    color="#e0e7ef"
-                  />
-
-                  <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
-                    {user.badges.map((badge, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          background: "#e0e7ef",
-                          color: "#22223b",
-                          borderRadius: 20,
-                          padding: "4px 12px",
-                          fontSize: 14,
-                        }}
-                      >
-                        {badge}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="glass"
-                    style={{
-                      border: "none",
-                      borderRadius: 16,
-                      padding: "16px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setPage("settings")}
-                  >
-                    <FaCog size={24} />
-                    <span>Settings</span>
-                  </motion.button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="glass"
-                    style={{
-                      border: "none",
-                      borderRadius: 16,
-                      padding: "16px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Achievements coming soon!",
-                      icon: <FaTrophy />,
-                      type: "info",
-                    })}
-                  >
-                    <FaTrophy size={24} />
-                    <span>Achievements</span>
-                  </motion.button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="glass"
-                    style={{
-                      border: "none",
-                      borderRadius: 16,
-                      padding: "16px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Friends feature coming soon!",
-                      icon: <FaUsers />,
-                      type: "info",
-                    })}
-                  >
-                    <FaUsers size={24} />
-                    <span>Friends</span>
-                  </motion.button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="glass"
-                    style={{
-                      border: "none",
-                      borderRadius: 16,
-                      padding: "16px 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Export feature coming soon!",
-                      icon: <FaDownload />,
-                      type: "info",
-                    })}
-                  >
-                    <FaDownload size={24} />
-                    <span>Export Data</span>
-                  </motion.button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Settings Page */}
-          <AnimatePresence>
-            {page === "settings" && (
-              <motion.div
-                key="settings"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 24,
-                  }}
-                >
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    style={{
-                      background: "#e0e7ef",
-                      border: "none",
-                      borderRadius: 24,
-                      width: 40,
-                      height: 40,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      cursor: "pointer",
-                      color: "#22223b",
-                    }}
-                    onClick={() => setPage("profile")}
-                  >
-                    <FaArrowLeft />
-                  </motion.button>
-                  <div
-                    style={{
-                      fontSize: 28,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      color: "#22223b",
-                    }}
-                  >
-                    <FaCog />
-                    Settings
-                  </div>
-                </div>
-
-                <div
-                  className="glass"
-                  style={{
-                    borderRadius: 16,
-                    padding: 20,
-                    marginBottom: 16,
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Appearance</h3>
-
-                  <div style={{ marginBottom: 16 }}>
-                    <label style={{ fontWeight: 600, display: "block", marginBottom: 8, color: "#22223b" }}>
-                      Theme
-                    </label>
-                    <select
-                      value={theme}
-                      onChange={(e) => setTheme(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        borderRadius: 16,
-                        border: "none",
-                        background: "#f6f7f9",
-                        fontSize: 16,
-                        boxShadow: "0 1px 4px #0001",
-                        color: "#22223b",
-                      }}
-                    >
-                      <option value="default">Default</option>
-                      <option value="ocean">Ocean</option>
-                      <option value="sunset">Sunset</option>
-                      <option value="forest">Forest</option>
-                      <option value="cosmic">Cosmic</option>
-                      <option value="neon">Neon</option>
-                    </select>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ fontWeight: 600, color: "#22223b" }}>Dark Mode</label>
-                    <label className="switch">
-                      <input
-                        type="checkbox"
-                        checked={dark}
-                        onChange={handleToggleDark}
-                      />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div
-                  className="glass"
-                  style={{
-                    borderRadius: 16,
-                    padding: 20,
-                    marginBottom: 16,
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Notifications</h3>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                    <label style={{ fontWeight: 600, color: "#22223b" }}>Push Notifications</label>
-                    <label className="switch">
-                      <input type="checkbox" defaultChecked />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                    <label style={{ fontWeight: 600, color: "#22223b" }}>Email Updates</label>
-                    <label className="switch">
-                      <input type="checkbox" defaultChecked />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ fontWeight: 600, color: "#22223b" }}>Weekly Summary</label>
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div
-                  className="glass"
-                  style={{
-                    borderRadius: 16,
-                    padding: 20,
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 16px 0", color: "#22223b" }}>Account</h3>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      width: "100%",
-                      background: "#e0e7ef",
-                      color: "#22223b",
-                      border: "none",
-                      borderRadius: 16,
-                      padding: "12px 0",
-                      fontWeight: 600,
-                      marginBottom: 12,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Premium upgrade coming soon!",
-                      icon: <FaRocket />,
-                      type: "premium",
-                    })}
-                  >
-                    <FaRocket /> Upgrade to Premium
-                  </motion.button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      width: "100%",
-                      background: "transparent",
-                      color: "#888",
-                      border: "1px solid #888",
-                      borderRadius: 16,
-                      padding: "12px 0",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => setToast({
-                      show: true,
-                      message: "Account deletion coming soon!",
-                      icon: <FaBan />,
-                      type: "warning",
-                    })}
-                  >
-                    <FaBan /> Delete Account
-                  </motion.button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <FiX size={20} />
+          </motion.button>
         </div>
-      </div>
 
-      {/* Add Category Modal */}
-      <Modal
-        show={showAddCategory}
-        onClose={() => setShowAddCategory(false)}
-        title="Create New Category"
-        size="large"
-      >
-        <AddCategoryForm
-          onSubmit={handleAddCategory}
-          existingKeys={categories.map((c) => c.key)}
-        />
-      </Modal>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ padding: '0 20px 32px' }}>
+          <div style={{ marginBottom: 20 }}>
+            <label style={{
+              display: 'block',
+              fontSize: 12,
+              fontWeight: 500,
+              color: theme.colors.text.secondary,
+              marginBottom: 6,
+            }}>
+              Title
+            </label>
+            <input
+              type="text"
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              placeholder="e.g., Visit Japan"
+              required
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                fontSize: 16,
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.md,
+                outline: 'none',
+                WebkitAppearance: 'none',
+              }}
+            />
+          </div>
 
-      {/* Add/Edit Wish Modal */}
-      <Modal
-        show={showAddWish}
-        onClose={() => {
-          setShowAddWish(false);
-          setEditWish(null);
-        }}
-        title={editWish ? "Edit Wish" : "Add New Wish"}
-        size="large"
-      >
-        <AddWishForm
-          onSubmit={editWish ? handleEditWish : handleAddWish}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{
+              display: 'block',
+              fontSize: 12,
+              fontWeight: 500,
+              color: theme.colors.text.secondary,
+              marginBottom: 6,
+            }}>
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                fontSize: 16,
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.md,
+                outline: 'none',
+                WebkitAppearance: 'none',
+                background: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
+                backgroundPosition: 'right 12px center',
+                backgroundSize: '16px',
+                paddingRight: '40px',
+              }}
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: 20 }}>
+            <label style={{
+              display: 'block',
+              fontSize: 12,
+              fontWeight: 500,
+              color: theme.colors.text.secondary,
+              marginBottom: 6,
+            }}>
+              Description
+            </label>
+            <textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="Lorem ipsum logum et amet..."
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                fontSize: 16,
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: theme.radius.md,
+                outline: 'none',
+                resize: 'none',
+                WebkitAppearance: 'none',
+              }}
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            whileTap={{ scale: 0.98 }}
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: theme.colors.accent,
+              color: '#fff',
+              border: 'none',
+              borderRadius: theme.radius.md,
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            Add Wishlist Card
+          </motion.button>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Main App Component
+export default function App() {
+  const [wishes, setWishes] = useState(initialWishes);
+  const [categories, setCategories] = useState(defaultCategories);
+  const [selectedCategory, setSelectedCategory] = useState("Adventure");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [activeBottomTab, setActiveBottomTab] = useState('home');
+
+  // Filter wishes by category
+  const filteredWishes = useMemo(() => {
+    return wishes.filter(wish => wish.category === selectedCategory);
+  }, [wishes, selectedCategory]);
+
+  // Handlers
+  const handleAddWish = (wishData) => {
+    setWishes([...wishes, wishData]);
+    setShowAddModal(false);
+    if (wishData.category) {
+      setSelectedCategory(wishData.category);
+    }
+  };
+
+  const handleCardClick = (wish) => {
+    // Handle card click - could open detail view
+    console.log('Card clicked:', wish);
+  };
+
+  const handleBottomTabChange = (tab) => {
+    setActiveBottomTab(tab);
+    if (tab === 'add') {
+      setShowAddModal(true);
+    }
+  };
+
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      background: theme.colors.bg,
+      paddingBottom: 80,
+      WebkitTouchCallout: 'none',
+      WebkitUserSelect: 'none',
+      userSelect: 'none',
+    }}>
+      {/* Header */}
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        background: 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderBottom: `1px solid ${theme.colors.border}`,
+        zIndex: 50,
+      }}>
+        <div style={{
+          padding: '14px 20px',
+          textAlign: 'center',
+        }}>
+          <h1 style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: theme.colors.text.primary,
+            marginBottom: 2,
+          }}>
+            Wishli
+          </h1>
+          <p style={{
+            fontSize: 11,
+            color: theme.colors.text.tertiary,
+            fontWeight: 400,
+          }}>
+            Use HorizontalPager in Compose for fanning
+          </p>
+        </div>
+
+        {/* Category Tabs */}
+        <CategoryTabs
           categories={categories}
-          initial={editWish}
+          selected={selectedCategory}
+          onSelect={setSelectedCategory}
         />
-      </Modal>
+      </header>
+
+      {/* Main Content */}
+      <main>
+        {filteredWishes.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '100px 20px',
+            color: theme.colors.text.tertiary,
+          }}>
+            <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.2 }}>×</div>
+            <p style={{ fontSize: 15, marginBottom: 24 }}>
+              No wishes in {selectedCategory} yet
+            </p>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowAddModal(true)}
+              style={{
+                padding: '12px 24px',
+                background: theme.colors.accent,
+                color: '#fff',
+                border: 'none',
+                borderRadius: theme.radius.md,
+                fontSize: 14,
+                fontWeight: 500,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
+              <FiPlus size={16} />
+              Add Your First Wish
+            </motion.button>
+          </div>
+        ) : (
+          <FannedCardStack
+            wishes={filteredWishes}
+            onCardClick={handleCardClick}
+          />
+        )}
+      </main>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        activeTab={activeBottomTab}
+        onTabChange={handleBottomTabChange}
+      />
+
+      {/* Modals */}
+      <AnimatePresence>
+        {showAddModal && (
+          <CreateWishModal
+            categories={categories}
+            onSave={handleAddWish}
+            onClose={() => setShowAddModal(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* CSS for hiding scrollbars */}
+      <style jsx>{`
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }

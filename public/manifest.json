@@ -1,6 +1,6 @@
 {
-  "short_name": "WishList",
-  "name": "WishList Adventure",
+  "short_name": "Wishli",
+  "name": "Wishli - Wishlist Card Swiper",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,9 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#f6f7f9",
-  "background_color": "#f6f7f9"
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "description": "Use HorizontalPager in Compose for fanning",
+  "orientation": "portrait",
+  "prefer_related_applications": false
 }
