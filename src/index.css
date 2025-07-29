@@ -43,6 +43,7 @@
   --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.1);
   --shadow-glass-lg: 0 16px 48px rgba(31, 38, 135, 0.15);
   --shadow-glow: 0 0 20px rgba(91, 91, 214, 0.3);
+  --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
   
   /* Blur Effects */
   --blur-sm: blur(8px);
@@ -54,11 +55,13 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-full: 9999px;
   
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 /* Font Setup */
@@ -139,6 +142,179 @@ body {
   box-shadow: var(--shadow-xl);
 }
 
+/* Media Picker Styles */
+.media-picker-container {
+  margin-bottom: 24px;
+}
+
+.media-preview {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+  background: var(--color-surface);
+}
+
+.media-preview img,
+.media-preview video {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.media-preview-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-sm);
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.media-preview-remove:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.media-picker-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-sm);
+  color: var(--color-text-primary);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-fast);
+}
+
+.media-picker-button:hover {
+  border-color: var(--color-accent-primary);
+  background: var(--color-surface);
+  transform: translateY(-1px);
+}
+
+/* Swipe Action Menu Styles */
+.swipe-action-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 28px;
+  z-index: 10;
+}
+
+.swipe-action-buttons {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 12px;
+}
+
+.swipe-action-button {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-spring);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-3d);
+}
+
+.swipe-action-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0.3;
+  transition: transform 0.5s ease;
+  transform: scale(0);
+}
+
+.swipe-action-button:hover::before {
+  transform: scale(1.2);
+}
+
+.swipe-action-button:active {
+  transform: scale(0.92);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.08);
+}
+
+.swipe-action-button.edit {
+  background: linear-gradient(135deg, #5B5BD6 0%, #B794F6 100%);
+}
+
+.swipe-action-button.delete {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FFB5D8 100%);
+}
+
+.swipe-action-label {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+  font-family: 'Nexus Sherif', 'Playfair Display', serif;
+}
+
+/* Enhanced Card Animations */
+.wishli-fancy-card {
+  transition: all var(--transition-base);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.wishli-fancy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3d);
+}
+
+.wishli-card-img {
+  transition: transform 0.5s cubic-bezier(0.4, 2, 0.6, 1), filter 0.5s ease;
+}
+
+.wishli-fancy-card:hover .wishli-card-img {
+  transform: scale(1.04) rotate(-1deg);
+  filter: brightness(1.08) saturate(1.1);
+}
+
+.wishli-card-glass {
+  transition: all 0.3s cubic-bezier(0.4, 2, 0.6, 1);
+}
+
+.wishli-fancy-card:hover .wishli-card-glass {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+}
+
 /* Liquid Button Effects */
 .liquid-button {
   position: relative;
@@ -146,22 +322,23 @@ body {
   transition: all var(--transition-base);
 }
 
-.liquid-button::before {
-  content: '';
+.liquid-effect {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100%;
   transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.liquid-button:hover::before {
-  width: 300px;
-  height: 300px;
+.liquid-button:hover .liquid-effect,
+.fab-liquid:hover .liquid-effect {
+  opacity: 1;
+  animation: liquid-pulse 1.5s ease-in-out infinite;
 }
 
 /* Typography */
@@ -266,6 +443,12 @@ button:active {
 .fab-liquid {
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-3d);
+  transition: all var(--transition-base);
+}
+
+.fab-liquid:hover {
+  box-shadow: 0 24px 48px rgba(91, 91, 214, 0.4);
 }
 
 .fab-liquid::after {
@@ -442,15 +625,26 @@ button:active {
 }
 
 @keyframes liquid-pulse {
-  0% { transform: scale(0.8); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 0.8; }
-  100% { transform: scale(0.8); opacity: 0.5; }
+  0% { transform: translate(-50%, -50%) scale(0.8); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(-50%, -50%) scale(0.8); }
 }
 
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+@keyframes wishli-check-pop {
+  0% { transform: scale(0.7); opacity: 0;}
+  60% { transform: scale(1.2);}
+  100% { transform: scale(1); opacity: 1;}
+}
+
+@keyframes wishli-gradient-border {
+  0% { filter: hue-rotate(0deg);}
+  100% { filter: hue-rotate(360deg);}
 }
 
 /* Glass Avatar */
@@ -502,6 +696,11 @@ button:active {
   select {
     font-size: 16px !important;
     min-height: 44px;
+  }
+  
+  .swipe-action-button {
+    width: 78px;
+    height: 78px;
   }
 }
 

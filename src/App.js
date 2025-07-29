@@ -1,23 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FiPlus,
-  FiChevronLeft,
-  FiChevronRight,
-  FiHome,
-  FiSearch,
-  FiUser,
-  FiX,
-  FiCheck,
-  FiMapPin,
-  FiTag,
-  FiBookmark,
-  FiHeart,
-  FiVideo,
-  FiMusic,
-  FiStar,
-  FiTrendingUp,
-  FiFolder,
+  FiPlus, FiChevronLeft, FiChevronRight, FiHome, FiSearch, FiUser, FiX, FiCheck,
+  FiMapPin, FiTag, FiBookmark, FiHeart, FiVideo, FiMusic, FiStar, FiTrendingUp, FiFolder, FiEdit2, FiTrash2, FiImage, FiUpload
 } from "react-icons/fi";
 
 // Enhanced theme with mymind-inspired colors and liquid glass effects
@@ -430,6 +415,138 @@ const getCategoryGradient = (category) => {
   return gradients[category] || theme.colors.gradient.ocean;
 };
 
+// --- Media Picker Component ---
+const MediaPicker = ({ value, onChange, onRemove }) => {
+  const inputRef = useRef();
+  const [preview, setPreview] = useState(value ? { url: value, type: value.endsWith('.mp4') ? 'video' : 'image' } : null);
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const type = file.type.startsWith('video') ? 'video' : 'image';
+    setPreview({ url, type, file });
+    onChange({ url, file, type });
+  };
+
+  const handleRemove = () => {
+    setPreview(null);
+    onRemove && onRemove();
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  useEffect(() => {
+    if (value && !preview) {
+      setPreview({ url: value, type: value.endsWith('.mp4') ? 'video' : 'image' });
+    }
+  }, [value]);
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <label style={{
+        display: 'block',
+        fontSize: 14,
+        fontWeight: 600,
+        color: theme.colors.text.secondary,
+        marginBottom: 8,
+        fontFamily: 'Nexus Sherif, Playfair Display, serif',
+      }}>
+        Media (Image or Video)
+      </label>
+      {preview ? (
+        <div style={{ 
+          marginBottom: 16, 
+          position: 'relative', 
+          width: '100%',
+          borderRadius: theme.radius.lg,
+          overflow: 'hidden',
+          boxShadow: theme.shadows.md,
+        }}>
+          {preview.type === "image" ? (
+            <img 
+              src={preview.url} 
+              alt="preview" 
+              style={{ 
+                width: '100%', 
+                height: 200, 
+                objectFit: 'cover',
+                display: 'block',
+              }} 
+            />
+          ) : (
+            <video 
+              src={preview.url} 
+              controls 
+              style={{ 
+                width: '100%', 
+                height: 200, 
+                objectFit: 'cover',
+                display: 'block',
+              }} 
+            />
+          )}
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.9 }}
+            onClick={handleRemove}
+            style={{
+              position: 'absolute', 
+              top: 8, 
+              right: 8, 
+              background: theme.colors.glass,
+              backdropFilter: theme.blur.sm,
+              border: 'none', 
+              borderRadius: theme.radius.full, 
+              padding: 8,
+              cursor: 'pointer', 
+              boxShadow: theme.shadows.md,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            aria-label="Remove media"
+          >
+            <FiX size={18} color={theme.colors.text.primary} />
+          </motion.button>
+        </div>
+      ) : null}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,video/*"
+        style={{ display: 'none' }}
+        onChange={handleFile}
+      />
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.95 }}
+        onClick={() => inputRef.current && inputRef.current.click()}
+        style={{
+          padding: '12px 24px',
+          background: theme.colors.glass,
+          backdropFilter: theme.blur.sm,
+          color: theme.colors.text.primary,
+          border: `2px dashed ${theme.colors.border}`,
+          borderRadius: theme.radius.lg,
+          fontSize: 15,
+          fontWeight: 600,
+          cursor: 'pointer',
+          fontFamily: 'Nexus Sherif, Playfair Display, serif',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          width: '100%',
+          justifyContent: 'center',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        {preview ? <FiImage size={18} /> : <FiUpload size={18} />}
+        {preview ? "Change Media" : "Add Media"}
+      </motion.button>
+    </div>
+  );
+};
+
 // Category Tabs Component (Optimized for S25)
 const CategoryTabs = ({ categories, selected, onSelect }) => {
   const scrollRef = useRef(null);
@@ -492,15 +609,17 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
   );
 };
 
-// --- FannedCardStack with improved glass overlay and fixed overlay position ---
-const FannedCardStack = ({ wishes, onCardClick }) => {
+// --- FannedCardStack with Swipe Up Action Menu ---
+const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showAction, setShowAction] = useState(false);
 
   const handlePrevious = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev - 1 + wishes.length) % wishes.length);
+    setShowAction(false);
     setTimeout(() => setIsAnimating(false), 300);
   }, [wishes.length, isAnimating]);
 
@@ -508,32 +627,41 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
     if (isAnimating) return;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev + 1) % wishes.length);
+    setShowAction(false);
     setTimeout(() => setIsAnimating(false), 300);
   }, [wishes.length, isAnimating]);
 
-  // Touch handling for swipe
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  // Touch handling for swipe left/right/up
+  const touchStart = useRef({ x: 0, y: 0 });
+  const touchEnd = useRef({ x: 0, y: 0 });
 
   const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+    touchEnd.current = { x: t.clientX, y: t.clientY };
   };
 
   const handleTouchMove = (e) => {
-    touchEndX.current = e.touches[0].clientX;
+    const t = e.touches[0];
+    touchEnd.current = { x: t.clientX, y: t.clientY };
   };
 
   const handleTouchEnd = () => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        handleNext();
-      } else {
-        handlePrevious();
-      }
+    const dx = touchEnd.current.x - touchStart.current.x;
+    const dy = touchEnd.current.y - touchStart.current.y;
+    
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      // horizontal swipe
+      if (dx < 0) handleNext();
+      else handlePrevious();
+    } else if (dy < -60 && Math.abs(dy) > Math.abs(dx)) {
+      // swipe up
+      setShowAction(true);
     }
+  };
+
+  const handleActionClose = () => {
+    setShowAction(false);
   };
 
   const getCardStyle = (index, wishIndex) => {
@@ -569,6 +697,8 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
     };
   };
 
+  const currentWish = wishes[currentIndex];
+
   return (
     <div style={{
       position: 'relative',
@@ -593,7 +723,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
           <div
             key={wish.id}
             style={getCardStyle(currentIndex, idx)}
-            onClick={() => idx === currentIndex && onCardClick(wish)}
+            onClick={() => idx === currentIndex && !showAction && onCardClick(wish)}
           >
             <motion.div
               whileTap={{ scale: 0.98 }}
@@ -611,25 +741,47 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 transition: 'box-shadow 0.3s',
               }}
             >
-              {/* Full Image Fill */}
+              {/* Full Image/Video Fill */}
               {wish.media ? (
-                <img
-                  src={wish.media}
-                  alt={wish.content}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                    transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
-                    filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
-                  }}
-                  className="wishli-card-img"
-                />
+                wish.mediaType === "video" ? (
+                  <video
+                    src={wish.media}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      zIndex: 1,
+                      transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
+                      filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
+                    }}
+                    className="wishli-card-img"
+                    muted
+                    loop
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    src={wish.media}
+                    alt={wish.content}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      zIndex: 1,
+                      transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
+                      filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
+                    }}
+                    className="wishli-card-img"
+                  />
+                )
               ) : (
                 <div
                   style={{
@@ -665,7 +817,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                   width: '90%',
                   padding: '22px 20px 18px 20px',
                   borderRadius: 22,
-                  background: 'rgba(30,40,60,0.32)', // darker, more liquid glass
+                  background: 'rgba(30,40,60,0.32)',
                   boxShadow: '0 8px 32px 0 rgba(31,38,135,0.18)',
                   backdropFilter: 'blur(22px) saturate(1.4)',
                   WebkitBackdropFilter: 'blur(22px) saturate(1.4)',
@@ -675,7 +827,6 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                   flexDirection: 'column',
                   alignItems: 'flex-start',
                   transition: 'bottom 0.3s cubic-bezier(.4,2,.6,1), transform 0.3s cubic-bezier(.4,2,.6,1)',
-                  // Fixes overlay "jump" bug on tab switch
                   willChange: 'bottom, transform',
                 }}
               >
@@ -787,91 +938,207 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                   animation: 'wishli-gradient-border 3s linear infinite',
                 }}
               />
+
+              {/* Swipe Up Action Overlay */}
+              <AnimatePresence>
+                {showAction && idx === currentIndex && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: 0,
+                      zIndex: 10,
+                      background: 'rgba(0,0,0,0.3)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 28,
+                      pointerEvents: 'auto',
+                      backdropFilter: 'blur(4px)',
+                    }}
+                    onClick={handleActionClose}
+                  >
+                    <motion.div
+                      initial={{ scale: 0.6, opacity: 0, y: 40 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      exit={{ scale: 0.6, opacity: 0, y: 40 }}
+                      transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 40,
+                        marginBottom: 12,
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <motion.button
+                        whileTap={{ scale: 0.85 }}
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => { onEdit(wish); setShowAction(false); }}
+                        style={{
+                          width: 72,
+                          height: 72,
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #5B5BD6 0%, #B794F6 100%)',
+                          boxShadow: '0 10px 40px rgba(91,91,214,0.4)',
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                        aria-label="Edit"
+                      >
+                        <div className="liquid-effect" style={{ opacity: 0.3 }} />
+                        <FiEdit2 size={28} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
+                      </motion.button>
+                      <motion.button
+                        whileTap={{ scale: 0.85 }}
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => { onDelete(wish); setShowAction(false); }}
+                        style={{
+                          width: 72,
+                          height: 72,
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #FF6B6B 0%, #FFB5D8 100%)',
+                          boxShadow: '0 10px 40px rgba(255,107,107,0.4)',
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                        aria-label="Delete"
+                      >
+                        <div className="liquid-effect" style={{ opacity: 0.3 }} />
+                        <FiTrash2 size={28} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
+                      </motion.button>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 0.9, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      style={{
+                        color: '#fff',
+                        fontWeight: 700,
+                        fontSize: 16,
+                        textShadow: '0 2px 12px #0008',
+                        marginTop: 12,
+                        letterSpacing: 0.5,
+                        fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                      }}
+                    >
+                      Edit or Delete
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
         ))}
       </div>
 
-      {/* Navigation Controls - Lowered */}
-      <div style={{
-        position: 'absolute',
-        bottom: 60,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 32,
-      }}>
-        {/* Left Arrow */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={handlePrevious}
-          className="glass-button"
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            background: theme.colors.glass,
-            backdropFilter: theme.blur.md,
-            WebkitBackdropFilter: theme.blur.md,
-            border: `1px solid ${theme.colors.borderLight}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            WebkitTapHighlightColor: 'transparent',
-            boxShadow: theme.shadows.glass,
-          }}
-        >
-          <FiChevronLeft size={20} color={theme.colors.text.primary} />
-        </motion.button>
-
-        {/* Page Indicators */}
-        <div style={{
-          display: 'flex',
-          gap: 8,
-        }}>
-          {wishes.map((_, idx) => (
-            <div
-              key={idx}
+      {/* Navigation Controls - Fade out when action menu is open */}
+      <AnimatePresence>
+        {!showAction && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'absolute',
+              bottom: 60,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 32,
+            }}
+          >
+            {/* Left Arrow */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handlePrevious}
+              className="glass-button"
               style={{
-                width: idx === currentIndex ? 24 : 8,
-                height: 8,
-                borderRadius: 4,
-                background: idx === currentIndex
-                  ? getCategoryGradient(wishes[currentIndex].category)
-                  : theme.colors.border,
-                transition: 'all 0.3s ease',
-                boxShadow: idx === currentIndex ? theme.shadows.glow : 'none',
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                background: theme.colors.glass,
+                backdropFilter: theme.blur.md,
+                WebkitBackdropFilter: theme.blur.md,
+                border: `1px solid ${theme.colors.borderLight}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
+                boxShadow: theme.shadows.glass,
               }}
-            />
-          ))}
-        </div>
+            >
+              <FiChevronLeft size={20} color={theme.colors.text.primary} />
+            </motion.button>
 
-        {/* Right Arrow */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={handleNext}
-          className="glass-button"
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            background: theme.colors.glass,
-            backdropFilter: theme.blur.md,
-            WebkitBackdropFilter: theme.blur.md,
-            border: `1px solid ${theme.colors.borderLight}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            WebkitTapHighlightColor: 'transparent',
-            boxShadow: theme.shadows.glass,
-          }}
-        >
-          <FiChevronRight size={20} color={theme.colors.text.primary} />
-        </motion.button>
-      </div>
+            {/* Page Indicators */}
+            <div style={{
+              display: 'flex',
+              gap: 8,
+            }}>
+              {wishes.map((_, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    width: idx === currentIndex ? 24 : 8,
+                    height: 8,
+                    borderRadius: 4,
+                    background: idx === currentIndex
+                      ? getCategoryGradient(wishes[currentIndex].category)
+                      : theme.colors.border,
+                    transition: 'all 0.3s ease',
+                    boxShadow: idx === currentIndex ? theme.shadows.glow : 'none',
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Right Arrow */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleNext}
+              className="glass-button"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                background: theme.colors.glass,
+                backdropFilter: theme.blur.md,
+                WebkitBackdropFilter: theme.blur.md,
+                border: `1px solid ${theme.colors.borderLight}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
+                boxShadow: theme.shadows.glass,
+              }}
+            >
+              <FiChevronRight size={20} color={theme.colors.text.primary} />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -979,24 +1246,42 @@ const FloatingActionButton = ({ onClick }) => (
   </motion.button>
 );
 
-// Create Wish Modal (Optimized for S25)
-const CreateWishModal = ({ categories, onSave, onClose }) => {
+// Create/Edit Wish Modal (Optimized for S25)
+const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
   const [formData, setFormData] = useState({
-    content: "",
-    category: categories[0],
-    notes: "",
-    media: "",
+    content: initial?.content || "",
+    category: initial?.category || categories[0],
+    notes: initial?.notes || "",
+    media: initial?.media || "",
+    mediaType: initial?.mediaType || "",
   });
+  const [mediaObj, setMediaObj] = useState(null);
+
+  const handleMediaChange = (obj) => {
+    setMediaObj(obj);
+    setFormData(f => ({ ...f, media: obj.url, mediaType: obj.type }));
+  };
+
+  const handleMediaRemove = () => {
+    setMediaObj(null);
+    setFormData(f => ({ ...f, media: "", mediaType: "" }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({
+    let wish = {
       ...formData,
-      id: Date.now().toString(),
-      created: new Date(),
-      completed: false,
-      type: "experience",
-    });
+      id: initial?.id || Date.now().toString(),
+      created: initial?.created || new Date(),
+      completed: initial?.completed || false,
+      type: initial?.type || "experience",
+    };
+    if (mediaObj && mediaObj.file) {
+      // For demo, just use object URL. In real app, upload to server.
+      wish.media = mediaObj.url;
+      wish.mediaType = mediaObj.type;
+    }
+    onSave(wish);
   };
 
   return (
@@ -1030,7 +1315,7 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
           backdropFilter: theme.blur.lg,
           WebkitBackdropFilter: theme.blur.lg,
           width: '100%',
-          maxHeight: '85vh',
+          maxHeight: '90vh',
           borderRadius: '24px 24px 0 0',
           overflow: 'hidden',
           boxShadow: theme.shadows.xl,
@@ -1064,7 +1349,7 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             fontFamily: 'Nexus Sherif, Playfair Display, serif',
             color: theme.colors.text.primary,
           }}>
-            Add New Wish
+            {isEdit ? "Edit Wish" : "Add New Wish"}
           </h2>
           <motion.button
             whileTap={{ scale: 0.9 }}
@@ -1081,143 +1366,156 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
           </motion.button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} style={{ padding: '0 24px 36px' }}>
-          <div style={{ marginBottom: 24 }}>
-            <label style={{
-              display: 'block',
-              fontSize: 14,
-              fontWeight: 600,
-              color: theme.colors.text.secondary,
-              marginBottom: 8,
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            }}>
-              Title
-            </label>
-            <input
-              type="text"
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="e.g., Visit Japan"
-              required
-              autoFocus
-              className="glass-input"
-              style={{
-                width: '100%',
-                padding: '14px 16px',
-                fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: theme.radius.lg,
-                outline: 'none',
-                WebkitAppearance: 'none',
+        {/* Scrollable Form Container */}
+        <div style={{
+          overflowY: 'auto',
+          maxHeight: 'calc(90vh - 120px)',
+          WebkitOverflowScrolling: 'touch',
+        }}>
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ padding: '0 24px 36px' }}>
+            <div style={{ marginBottom: 24 }}>
+              <label style={{
+                display: 'block',
+                fontSize: 14,
+                fontWeight: 600,
+                color: theme.colors.text.secondary,
+                marginBottom: 8,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                background: theme.colors.glassDark,
-                backdropFilter: theme.blur.sm,
-                color: theme.colors.text.primary,
-                transition: 'all 0.2s ease',
-              }}
-            />
-          </div>
+              }}>
+                Title
+              </label>
+              <input
+                type="text"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="e.g., Visit Japan"
+                required
+                autoFocus
+                className="glass-input"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  fontSize: 16,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radius.lg,
+                  outline: 'none',
+                  WebkitAppearance: 'none',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  background: theme.colors.glassDark,
+                  backdropFilter: theme.blur.sm,
+                  color: theme.colors.text.primary,
+                  transition: 'all 0.2s ease',
+                }}
+              />
+            </div>
 
-          <div style={{ marginBottom: 24 }}>
-            <label style={{
-              display: 'block',
-              fontSize: 14,
-              fontWeight: 600,
-              color: theme.colors.text.secondary,
-              marginBottom: 8,
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            }}>
-              Category
-            </label>
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="glass-select"
+            <div style={{ marginBottom: 24 }}>
+              <label style={{
+                display: 'block',
+                fontSize: 14,
+                fontWeight: 600,
+                color: theme.colors.text.secondary,
+                marginBottom: 8,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              }}>
+                Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="glass-select"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  fontSize: 16,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radius.lg,
+                  outline: 'none',
+                  WebkitAppearance: 'none',
+                  background: `${theme.colors.glassDark} url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A7D85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
+                  backgroundPosition: 'right 14px center',
+                  backgroundSize: '18px',
+                  paddingRight: '44px',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  backdropFilter: theme.blur.sm,
+                  color: theme.colors.text.primary,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: 24 }}>
+              <label style={{
+                display: 'block',
+                fontSize: 14,
+                fontWeight: 600,
+                color: theme.colors.text.secondary,
+                marginBottom: 8,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              }}>
+                Description
+              </label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Add some notes..."
+                rows={4}
+                className="glass-textarea"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  fontSize: 16,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radius.lg,
+                  outline: 'none',
+                  resize: 'none',
+                  WebkitAppearance: 'none',
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  background: theme.colors.glassDark,
+                  backdropFilter: theme.blur.sm,
+                  color: theme.colors.text.primary,
+                  transition: 'all 0.2s ease',
+                }}
+              />
+            </div>
+
+            <MediaPicker
+              value={formData.media}
+              onChange={handleMediaChange}
+              onRemove={handleMediaRemove}
+            />
+
+            <motion.button
+              type="submit"
+              whileTap={{ scale: 0.98 }}
+              className="liquid-button"
               style={{
                 width: '100%',
-                padding: '14px 16px',
-                fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
+                padding: '16px',
+                background: getCategoryGradient(formData.category),
+                color: '#fff',
+                border: 'none',
                 borderRadius: theme.radius.lg,
-                outline: 'none',
-                WebkitAppearance: 'none',
-                background: `${theme.colors.glassDark} url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A7D85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
-                backgroundPosition: 'right 14px center',
-                backgroundSize: '18px',
-                paddingRight: '44px',
+                fontSize: 17,
+                fontWeight: 700,
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                backdropFilter: theme.blur.sm,
-                color: theme.colors.text.primary,
-                transition: 'all 0.2s ease',
+                boxShadow: theme.shadows.md,
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ marginBottom: 28 }}>
-            <label style={{
-              display: 'block',
-              fontSize: 14,
-              fontWeight: 600,
-              color: theme.colors.text.secondary,
-              marginBottom: 8,
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            }}>
-              Description
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Add some notes..."
-              rows={4}
-              className="glass-textarea"
-              style={{
-                width: '100%',
-                padding: '14px 16px',
-                fontSize: 16,
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: theme.radius.lg,
-                outline: 'none',
-                resize: 'none',
-                WebkitAppearance: 'none',
-                fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                background: theme.colors.glassDark,
-                backdropFilter: theme.blur.sm,
-                color: theme.colors.text.primary,
-                transition: 'all 0.2s ease',
-              }}
-            />
-          </div>
-
-          <motion.button
-            type="submit"
-            whileTap={{ scale: 0.98 }}
-            className="liquid-button"
-            style={{
-              width: '100%',
-              padding: '16px',
-              background: getCategoryGradient(formData.category),
-              color: '#fff',
-              border: 'none',
-              borderRadius: theme.radius.lg,
-              fontSize: 17,
-              fontWeight: 700,
-              cursor: 'pointer',
-              WebkitTapHighlightColor: 'transparent',
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-              boxShadow: theme.shadows.md,
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <span style={{ position: 'relative', zIndex: 1 }}>Add Wishlist Card</span>
-            <div className="liquid-effect" />
-          </motion.button>
-        </form>
+              <span style={{ position: 'relative', zIndex: 1 }}>{isEdit ? "Save Changes" : "Add Wishlist Card"}</span>
+              <div className="liquid-effect" />
+            </motion.button>
+          </form>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -1229,6 +1527,8 @@ export default function App() {
   const [categories] = useState(defaultCategories);
   const [selectedCategory, setSelectedCategory] = useState("Restaurant");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editWish, setEditWish] = useState(null);
   const [activeBottomTab, setActiveBottomTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState({
@@ -1274,6 +1574,16 @@ export default function App() {
     if (wishData.category) {
       setSelectedCategory(wishData.category);
     }
+  };
+
+  const handleEditWish = (wishData) => {
+    setWishes(wishes.map(w => w.id === wishData.id ? wishData : w));
+    setShowEditModal(false);
+    setEditWish(null);
+  };
+
+  const handleDeleteWish = (wish) => {
+    setWishes(wishes.filter(w => w.id !== wish.id));
   };
 
   const handleCardClick = (wish) => {
@@ -1382,6 +1692,11 @@ export default function App() {
             <FannedCardStack
               wishes={filteredWishes}
               onCardClick={handleCardClick}
+              onEdit={(wish) => {
+                setEditWish(wish);
+                setShowEditModal(true);
+              }}
+              onDelete={handleDeleteWish}
             />
           )
         )}
@@ -1426,12 +1741,20 @@ export default function App() {
                     }}
                   >
                     {wish.media ? (
-                      <img
-                        className="wish-list-thumbnail"
-                        src={wish.media}
-                        alt={wish.content}
-                        style={{ objectFit: 'cover' }}
-                      />
+                      wish.mediaType === "video" ? (
+                        <video
+                          className="wish-list-thumbnail"
+                          src={wish.media}
+                          style={{ objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <img
+                          className="wish-list-thumbnail"
+                          src={wish.media}
+                          alt={wish.content}
+                          style={{ objectFit: 'cover' }}
+                        />
+                      )
                     ) : (
                       <div className="wish-list-thumbnail" style={{
                         display: 'flex',
@@ -1574,7 +1897,11 @@ export default function App() {
                     }}
                   >
                     {wish.media ? (
-                      <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} />
+                      wish.mediaType === "video" ? (
+                        <video className="wish-list-thumbnail" src={wish.media} />
+                      ) : (
+                        <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} />
+                      )
                     ) : (
                       <div className="wish-list-thumbnail" style={{
                         display: 'flex',
@@ -1632,6 +1959,18 @@ export default function App() {
             categories={categories}
             onSave={handleAddWish}
             onClose={() => setShowAddModal(false)}
+          />
+        )}
+        {showEditModal && editWish && (
+          <CreateWishModal
+            categories={categories}
+            onSave={handleEditWish}
+            onClose={() => {
+              setShowEditModal(false);
+              setEditWish(null);
+            }}
+            initial={editWish}
+            isEdit
           />
         )}
       </AnimatePresence>
