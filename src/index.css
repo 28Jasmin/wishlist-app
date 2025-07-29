@@ -1,58 +1,64 @@
 /* Import Playfair Display as alternative to Nexus Sherif */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-/* CSS Variables for Enhanced 3D Theme optimized for S25 */
+/* CSS Variables for Enhanced mymind-inspired Theme */
 :root {
-  /* Colors */
-  --color-bg: #ffffff;
-  --color-surface: #fafafa;
-  --color-surface-hover: #f5f5f5;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6e6e6e;
-  --color-text-tertiary: #a0a0a0;
-  --color-border: #efefef;
-  --color-border-light: #f8f8f8;
-  --color-accent: #2a2a2a;
-  --color-accent-light: #e8e8e8;
-  --color-success: #4ade80;
-  --color-warning: #fb923c;
-  --color-error: #f87171;
-  --color-info: #60a5fa;
+  /* MyMind-inspired Colors */
+  --color-bg: #FDFBF7;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F9F7F4;
+  --color-glass: rgba(255, 255, 255, 0.7);
+  --color-glass-dark: rgba(255, 255, 255, 0.5);
   
-  /* Enhanced Shadows for 3D effect */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.10);
-  --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.05);
-  --shadow-text-3d: 1px 1px 2px rgba(0, 0, 0, 0.1), 2px 2px 4px rgba(0, 0, 0, 0.08);
+  --color-text-primary: #2D2D2F;
+  --color-text-secondary: #7A7D85;
+  --color-text-tertiary: #B5B7C0;
   
-  /* Radius - Smoother for modern Android */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --color-border: rgba(225, 227, 234, 0.5);
+  --color-border-light: rgba(225, 227, 234, 0.3);
   
-  /* Transitions - Faster for better responsiveness */
-  --transition-fast: 120ms ease;
-  --transition-base: 180ms ease;
-  --transition-slow: 280ms ease;
+  /* Accent Colors */
+  --color-accent-primary: #5B5BD6;
+  --color-accent-secondary: #FF6B6B;
+  --color-accent-tertiary: #4ECDC4;
+  --color-accent-quaternary: #FFE66D;
+  --color-accent-pink: #FFB5D8;
+  --color-accent-purple: #B794F6;
+  --color-accent-mint: #81E6D9;
+  --color-accent-peach: #FBBAA3;
   
-  /* Typography */
-  --font-size-xs: 11px;
-  --font-size-sm: 12px;
-  --font-size-base: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-2xl: 20px;
-  --font-size-3xl: 24px;
+  /* Gradients */
+  --gradient-sunset: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
+  --gradient-ocean: linear-gradient(135deg, #4ECDC4 0%, #5B5BD6 100%);
+  --gradient-lavender: linear-gradient(135deg, #B794F6 0%, #FFB5D8 100%);
+  --gradient-mint: linear-gradient(135deg, #81E6D9 0%, #4ECDC4 100%);
+  --gradient-peach: linear-gradient(135deg, #FBBAA3 0%, #FF6B6B 100%);
   
-  /* Safe areas for modern phones */
-  --safe-area-inset-top: env(safe-area-inset-top);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom);
-  --safe-area-inset-left: env(safe-area-inset-left);
-  --safe-area-inset-right: env(safe-area-inset-right);
+  /* Glass Shadows */
+  --shadow-xs: 0 2px 4px rgba(45, 45, 47, 0.02);
+  --shadow-sm: 0 4px 8px rgba(45, 45, 47, 0.03);
+  --shadow-md: 0 8px 16px rgba(45, 45, 47, 0.04);
+  --shadow-lg: 0 16px 32px rgba(45, 45, 47, 0.06);
+  --shadow-xl: 0 24px 48px rgba(45, 45, 47, 0.08);
+  --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.1);
+  --shadow-glass-lg: 0 16px 48px rgba(31, 38, 135, 0.15);
+  --shadow-glow: 0 0 20px rgba(91, 91, 214, 0.3);
+  
+  /* Blur Effects */
+  --blur-sm: blur(8px);
+  --blur-md: blur(16px);
+  --blur-lg: blur(24px);
+  
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Font Setup */
@@ -84,7 +90,7 @@ body {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
   background: var(--color-bg);
   color: var(--color-text-primary);
-  font-size: var(--font-size-base);
+  font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
   min-height: 100vh;
@@ -97,13 +103,73 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Typography with 3D effects */
+/* Glass Card Effects */
+.glass-card {
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-base);
+}
+
+.glass-card-mini {
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.glass-button {
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-fast);
+}
+
+.glass-modal {
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-lg);
+  -webkit-backdrop-filter: var(--blur-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Liquid Button Effects */
+.liquid-button {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.liquid-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.liquid-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-text-primary);
-  text-shadow: var(--shadow-text-3d);
 }
 
 /* Custom Scrollbar - Hidden for cleaner look */
@@ -118,32 +184,31 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Selection */
 ::selection {
-  background: rgba(42, 42, 42, 0.1);
+  background: rgba(91, 91, 214, 0.2);
   color: inherit;
 }
 
-/* Focus States - Enhanced for 3D */
+/* Focus States */
 :focus {
   outline: none;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 8px rgba(42, 42, 42, 0.2);
 }
 
-/* Input Styles - Enhanced 3D */
+/* Input Styles */
 input,
 textarea,
 select {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
-  font-size: 16px; /* Prevents zoom on iOS/Android */
+  font-size: 16px;
   line-height: 1.5;
   color: var(--color-text-primary);
-  background: white;
-  border: 2px solid var(--color-border);
+  background: var(--color-glass-dark);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 14px 16px;
   width: 100%;
@@ -151,36 +216,34 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 input:hover,
 textarea:hover,
 select:hover {
   border-color: var(--color-text-tertiary);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--color-accent);
-  background: white;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(42, 42, 42, 0.1);
+  border-color: var(--color-accent-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
 }
 
-/* Button Styles - Enhanced 3D */
+/* Button Styles */
 button {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
-  font-size: var(--font-size-base);
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
   color: var(--color-text-primary);
-  background: linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%);
+  background: var(--color-glass);
   border: none;
   border-radius: var(--radius-md);
   padding: 12px 20px;
-  min-height: 44px; /* Android touch target recommendation */
+  min-height: 44px;
   cursor: pointer;
   transition: all var(--transition-fast);
   display: inline-flex;
@@ -193,64 +256,35 @@ button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 -1px 2px rgba(0, 0, 0, 0.04);
 }
 
 button:active {
-  transform: scale(0.98) translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  transform: scale(0.98);
 }
 
-/* 3D FAB Styles */
-.fab-3d {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow:
-    0 4px 24px 0 rgba(0,0,0,0.18),
-    0 1.5px 0 0 #e0e0e0,
-    0 0 0 4px #fff inset,
-    0 0 0 2.5px #00c3ff,
-    0 0 0 5px #ff006a,
-    0 0 0 7.5px #00ff85,
-    0 0 0 10px #fff inset;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
-  z-index: 200;
-  border: none;
-  cursor: pointer;
-  transition: box-shadow 0.18s, transform 0.12s;
-  outline: none;
-  background-clip: padding-box;
+/* FAB Liquid Effect */
+.fab-liquid {
+  position: relative;
+  overflow: hidden;
 }
 
-.fab-3d:active {
-  transform: scale(0.96) translateY(2px);
-  box-shadow:
-    0 2px 8px 0 rgba(0,0,0,0.12),
-    0 1.5px 0 0 #e0e0e0,
-    0 0 0 4px #fff inset,
-    0 0 0 2.5px #00c3ff,
-    0 0 0 5px #ff006a,
-    0 0 0 7.5px #00ff85,
-    0 0 0 10px #fff inset;
+.fab-liquid::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
 }
 
-.fab-3d-icon {
-  font-size: 32px;
-  background: linear-gradient(135deg, #00c3ff 0%, #ff006a 50%, #00ff85 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.10));
+.fab-liquid:hover::after {
+  transform: translate(-50%, -50%) scale(1);
 }
 
-/* Search Container */
+/* Search Styles */
 .search-container {
   position: relative;
   width: 100%;
@@ -259,10 +293,11 @@ button:active {
 .search-input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   font-size: 16px;
-  background: var(--color-bg);
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-sm);
   color: var(--color-text-primary);
   transition: all var(--transition-fast);
 }
@@ -288,8 +323,8 @@ button:active {
   display: flex;
   align-items: center;
   padding: 16px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
   gap: 16px;
   cursor: pointer;
@@ -299,7 +334,7 @@ button:active {
 .wish-list-item:hover {
   background: var(--color-surface);
   transform: translateX(2px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .wish-list-thumbnail {
@@ -343,12 +378,13 @@ button:active {
 }
 
 .stat-card {
-  background: var(--color-surface);
+  background: var(--color-glass);
+  backdrop-filter: var(--blur-sm);
   padding: 20px;
   border-radius: var(--radius-lg);
   text-align: center;
   transition: all var(--transition-base);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
 }
 
 .stat-value {
@@ -393,7 +429,7 @@ button:active {
   margin-right: auto;
 }
 
-/* Enhanced Animations - GPU accelerated */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -405,24 +441,43 @@ button:active {
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes liquid-pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(0.8); opacity: 0.5; }
 }
 
-@keyframes float3d {
-  0%, 100% {
-    transform: translateY(0) rotateX(0);
-  }
-  50% {
-    transform: translateY(-10px) rotateX(5deg);
-  }
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glass Avatar */
+.glass-avatar {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-avatar::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: rotate(45deg);
+  transition: all 0.5s;
+}
+
+.glass-avatar:hover::before {
+  animation: shine 0.5s ease-in-out;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 /* Performance optimizations */
@@ -438,7 +493,6 @@ button:active {
 
 /* S25 specific optimizations */
 @media (hover: none) and (pointer: coarse) {
-  /* Touch device optimizations */
   button {
     min-height: 48px;
   }
@@ -451,9 +505,8 @@ button:active {
   }
 }
 
-/* High DPI screens (S25 has high pixel density) */
+/* High DPI screens */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* Use GPU acceleration for animations */
   * {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
@@ -489,28 +542,6 @@ button:active {
   }
 }
 
-/* Loading states */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface) 25%,
-    var(--color-border) 50%,
-    var(--color-surface) 75%
-  );
-  background-size: 200% 100%;
-  animation: skeleton 1.2s ease-in-out infinite;
-  border-radius: var(--radius-md);
-}
-
-@keyframes skeleton {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 /* App specific */
 #root {
   min-height: 100vh;
@@ -523,10 +554,6 @@ button:active {
 .text-secondary { color: var(--color-text-secondary); }
 .text-tertiary { color: var(--color-text-tertiary); }
 
-.text-3d {
-  text-shadow: var(--shadow-text-3d);
-}
-
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -537,44 +564,7 @@ button:active {
 }
 
 /* Safe area padding */
-.safe-top {
-  padding-top: var(--safe-area-inset-top);
-}
-
-.safe-bottom {
-  padding-bottom: var(--safe-area-inset-bottom);
-}
-
-.safe-left {
-  padding-left: var(--safe-area-inset-left);
-}
-
-.safe-right {
-  padding-right: var(--safe-area-inset-right);
-}
-
-/* 3D Card Effects */
-.card-3d {
-  transform-style: preserve-3d;
-  transform: perspective(1000px);
-}
-
-.card-3d:hover {
-  transform: perspective(1000px) rotateY(5deg) rotateX(-5deg);
-}
-
-/* Enhanced button effects */
-.button-3d {
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.button-3d:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-.button-3d:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.2);
-}
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-left { padding-left: env(safe-area-inset-left); }
+.safe-right { padding-right: env(safe-area-inset-right); }

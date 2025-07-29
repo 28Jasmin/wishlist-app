@@ -20,46 +20,69 @@ import {
   FiFolder,
 } from "react-icons/fi";
 
-// Enhanced theme with 3D effects
+// Enhanced theme with mymind-inspired colors and liquid glass effects
 const theme = {
   colors: {
-    bg: "#ffffff",
-    surface: "#fafafa",
-    surfaceHover: "#f5f5f5",
+    bg: "#FDFBF7",
+    surface: "#FFFFFF",
+    surfaceHover: "#F9F7F4",
+    glass: "rgba(255, 255, 255, 0.7)",
+    glassDark: "rgba(255, 255, 255, 0.5)",
     text: {
-      primary: "#1a1a1a",
-      secondary: "#6e6e6e",
-      tertiary: "#a0a0a0",
+      primary: "#2D2D2F",
+      secondary: "#7A7D85",
+      tertiary: "#B5B7C0",
     },
-    border: "#efefef",
-    borderLight: "#f8f8f8",
-    accent: "#2a2a2a",
-    accentLight: "#e8e8e8",
-    success: "#4ade80",
-    warning: "#fb923c",
-    error: "#f87171",
-    info: "#60a5fa",
+    border: "rgba(225, 227, 234, 0.5)",
+    borderLight: "rgba(225, 227, 234, 0.3)",
+    accent: {
+      primary: "#5B5BD6",
+      secondary: "#FF6B6B",
+      tertiary: "#4ECDC4",
+      quaternary: "#FFE66D",
+      pink: "#FFB5D8",
+      purple: "#B794F6",
+      mint: "#81E6D9",
+      peach: "#FBBAA3",
+    },
+    gradient: {
+      sunset: "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)",
+      ocean: "linear-gradient(135deg, #4ECDC4 0%, #5B5BD6 100%)",
+      lavender: "linear-gradient(135deg, #B794F6 0%, #FFB5D8 100%)",
+      mint: "linear-gradient(135deg, #81E6D9 0%, #4ECDC4 100%)",
+      peach: "linear-gradient(135deg, #FBBAA3 0%, #FF6B6B 100%)",
+    },
+    success: "#4ECDC4",
+    warning: "#FFE66D",
+    error: "#FF6B6B",
+    info: "#5B5BD6",
   },
   shadows: {
-    xs: "0 1px 2px rgba(0, 0, 0, 0.03)",
-    sm: "0 2px 4px rgba(0, 0, 0, 0.04)",
-    md: "0 4px 8px rgba(0, 0, 0, 0.06)",
-    lg: "0 8px 16px rgba(0, 0, 0, 0.08)",
-    xl: "0 16px 32px rgba(0, 0, 0, 0.10)",
-    "3d": "0 20px 40px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.05)",
-    "text3d": "1px 1px 2px rgba(0, 0, 0, 0.1), 2px 2px 4px rgba(0, 0, 0, 0.08)",
+    xs: "0 2px 4px rgba(45, 45, 47, 0.02)",
+    sm: "0 4px 8px rgba(45, 45, 47, 0.03)",
+    md: "0 8px 16px rgba(45, 45, 47, 0.04)",
+    lg: "0 16px 32px rgba(45, 45, 47, 0.06)",
+    xl: "0 24px 48px rgba(45, 45, 47, 0.08)",
+    glass: "0 8px 32px rgba(31, 38, 135, 0.1)",
+    glassLg: "0 16px 48px rgba(31, 38, 135, 0.15)",
+    glow: "0 0 20px rgba(91, 91, 214, 0.3)",
+  },
+  blur: {
+    sm: "blur(8px)",
+    md: "blur(16px)",
+    lg: "blur(24px)",
   },
   radius: {
-    sm: "6px",
-    md: "10px",
-    lg: "14px",
-    xl: "20px",
+    sm: "8px",
+    md: "12px",
+    lg: "16px",
+    xl: "24px",
     full: "9999px",
   },
   transitions: {
-    fast: "120ms ease",
-    base: "180ms ease",
-    slow: "280ms ease",
+    fast: "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+    base: "250ms cubic-bezier(0.4, 0, 0.2, 1)",
+    slow: "350ms cubic-bezier(0.4, 0, 0.2, 1)",
   },
 };
 
@@ -75,24 +98,104 @@ const defaultCategories = [
   "Shopping"
 ];
 
-// Sample data with categories
+// Enhanced sample data with more items
 const initialWishes = [
+  // Restaurant Category
   {
     id: "1",
-    content: "Canada",
-    type: "travel",
-    category: "Adventure",
-    media: "https://images.unsplash.com/photo-1609963095806-c6b65827e8d0?w=800&q=80",
+    content: "Le Bernardin NYC",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
     mediaType: "image",
-    created: new Date(2024, 0, 15),
-    tags: ["nature", "mountains", "hiking"],
-    notes: "Lorem ipsum logum et amet, consectetur du. Visit Banff National Park and see the Northern Lights.",
-    location: "Banff, Canada",
+    created: new Date(2024, 1, 18),
+    tags: ["fine-dining", "seafood", "michelin"],
+    notes: "Three Michelin stars. Known for exquisite seafood preparations and impeccable service.",
     priority: "high",
     completed: false,
   },
   {
     id: "2",
+    content: "Osteria Francescana",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 20),
+    tags: ["italian", "modena", "michelin"],
+    notes: "Chef Massimo Bottura's three-Michelin-starred restaurant in Modena, Italy.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "3",
+    content: "Narisawa Tokyo",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 5),
+    tags: ["japanese", "innovative", "tokyo"],
+    notes: "Innovative Satoyama cuisine celebrating Japanese nature and sustainability.",
+    priority: "medium",
+    completed: false,
+  },
+  {
+    id: "4",
+    content: "Central Lima",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 10),
+    tags: ["peruvian", "altitude-dining", "lima"],
+    notes: "Experience Peru's biodiversity through altitude-based tasting menu.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "5",
+    content: "Noma Copenhagen",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 15),
+    tags: ["nordic", "foraging", "seasonal"],
+    notes: "World-renowned restaurant focusing on foraging and fermentation.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "6",
+    content: "Blue Hill at Stone Barns",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 20),
+    tags: ["farm-to-table", "new-york", "sustainable"],
+    notes: "Farm-to-table dining experience at Pocantico Hills, New York.",
+    priority: "medium",
+    completed: false,
+  },
+  {
+    id: "7",
+    content: "Eleven Madison Park",
+    type: "food",
+    category: "Restaurant",
+    media: "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 25),
+    tags: ["plant-based", "nyc", "fine-dining"],
+    notes: "Michelin three-star restaurant with entirely plant-based menu.",
+    priority: "medium",
+    completed: false,
+  },
+  
+  // Adventure Category
+  {
+    id: "8",
     content: "Skydiving in Dubai",
     type: "experience",
     category: "Adventure",
@@ -100,25 +203,92 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 0, 20),
     tags: ["extreme", "dubai", "bucket-list"],
-    notes: "Lorem ipsum logum et amet, consectetur du. Jump from 13,000 feet over Palm Jumeirah.",
+    notes: "Jump from 13,000 feet over Palm Jumeirah with stunning views of Dubai skyline.",
     priority: "high",
     completed: false,
   },
   {
-    id: "3",
-    content: "Scuba Diving Great Barrier Reef",
+    id: "9",
+    content: "Great Barrier Reef Diving",
     type: "experience",
     category: "Adventure",
     media: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
     mediaType: "image",
     created: new Date(2024, 1, 5),
     tags: ["ocean", "australia", "diving"],
-    notes: "Lorem ipsum logum et amet, consectetur du. Explore the underwater world of coral reefs.",
+    notes: "Explore the underwater world of colorful coral reefs and marine life.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "10",
+    content: "Mount Everest Base Camp",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 10),
+    tags: ["trekking", "nepal", "himalayas"],
+    notes: "14-day trek to Everest Base Camp at 5,364 meters altitude.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "11",
+    content: "Bungee Jump Queenstown",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 15),
+    tags: ["extreme", "new-zealand", "adrenaline"],
+    notes: "134m jump from Nevis Bungy, one of the highest in the world.",
     priority: "medium",
     completed: false,
   },
   {
-    id: "4",
+    id: "12",
+    content: "Amazon Rainforest Trek",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 20),
+    tags: ["jungle", "brazil", "wildlife"],
+    notes: "5-day survival trek through the Amazon with indigenous guides.",
+    priority: "medium",
+    completed: false,
+  },
+  {
+    id: "13",
+    content: "Antarctica Expedition",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 1, 25),
+    tags: ["expedition", "polar", "wildlife"],
+    notes: "2-week expedition cruise to the Antarctic Peninsula.",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "14",
+    content: "Sahara Desert Camel Trek",
+    type: "experience",
+    category: "Adventure",
+    media: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 1),
+    tags: ["desert", "morocco", "camping"],
+    notes: "3-day camel trek through Sahara with Berber guides and desert camping.",
+    priority: "medium",
+    completed: false,
+  },
+  
+  // Travel Category
+  {
+    id: "15",
     content: "Northern Lights in Iceland",
     type: "travel",
     category: "Travel",
@@ -126,37 +296,94 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 10),
     tags: ["iceland", "aurora", "winter"],
-    notes: "Best time: September to March",
+    notes: "Best viewing from September to March, away from Reykjavik's lights.",
     location: "Reykjavik, Iceland",
     priority: "high",
     completed: false,
   },
   {
-    id: "5",
-    content: "La Bernardin NYC",
-    type: "food",
-    category: "Restaurant",
-    media: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+    id: "16",
+    content: "Santorini Sunset",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&q=80",
     mediaType: "image",
-    created: new Date(2024, 1, 18),
-    tags: ["fine-dining", "seafood", "michelin"],
-    notes: "Book 2 months in advance, try the tasting menu",
+    created: new Date(2024, 0, 15),
+    tags: ["greece", "island", "romantic"],
+    notes: "Watch sunset from Oia castle, arrive early for best viewing spots.",
+    location: "Santorini, Greece",
     priority: "medium",
     completed: false,
   },
   {
-    id: "6",
-    content: "Watch Dune Part Two",
-    type: "movie",
-    category: "Movies",
-    media: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80",
+    id: "17",
+    content: "Cherry Blossoms Japan",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=800&q=80",
     mediaType: "image",
-    created: new Date(2024, 2, 1),
-    tags: ["sci-fi", "epic", "villeneuve"],
-    notes: "Watch in IMAX for best experience",
+    created: new Date(2024, 1, 28),
+    tags: ["japan", "sakura", "spring"],
+    notes: "Peak bloom typically late March to early April in Tokyo and Kyoto.",
+    location: "Kyoto, Japan",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "18",
+    content: "Machu Picchu Trek",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 5),
+    tags: ["peru", "inca", "hiking"],
+    notes: "4-day Inca Trail trek or take train from Cusco to Aguas Calientes.",
+    location: "Cusco, Peru",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "19",
+    content: "Safari in Kenya",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 10),
+    tags: ["africa", "wildlife", "safari"],
+    notes: "Visit during Great Migration (July-October) in Masai Mara.",
+    location: "Masai Mara, Kenya",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: "20",
+    content: "Banff National Park",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1609963095806-c6b65827e8d0?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 15),
+    tags: ["canada", "mountains", "nature"],
+    notes: "Visit Lake Louise and Moraine Lake, best in summer for hiking.",
+    location: "Alberta, Canada",
     priority: "medium",
-    completed: true,
-    completedDate: new Date(2024, 2, 15),
+    completed: false,
+  },
+  {
+    id: "21",
+    content: "Maldives Overwater Villa",
+    type: "travel",
+    category: "Travel",
+    media: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=80",
+    mediaType: "image",
+    created: new Date(2024, 2, 20),
+    tags: ["maldives", "beach", "luxury"],
+    notes: "Stay in overwater bungalow, best weather November to April.",
+    location: "Maldives",
+    priority: "medium",
+    completed: false,
   },
 ];
 
@@ -188,6 +415,21 @@ const getTypeIcon = (type) => {
   return icons[type] || <FiFolder />;
 };
 
+// Get gradient for category
+const getCategoryGradient = (category) => {
+  const gradients = {
+    Restaurant: theme.colors.gradient.peach,
+    Adventure: theme.colors.gradient.sunset,
+    Travel: theme.colors.gradient.ocean,
+    Games: theme.colors.gradient.lavender,
+    Movies: theme.colors.gradient.mint,
+    Books: theme.colors.gradient.ocean,
+    Music: theme.colors.gradient.lavender,
+    Shopping: theme.colors.gradient.peach,
+  };
+  return gradients[category] || theme.colors.gradient.ocean;
+};
+
 // Category Tabs Component (Optimized for S25)
 const CategoryTabs = ({ categories, selected, onSelect }) => {
   const scrollRef = useRef(null);
@@ -216,7 +458,7 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
         scrollSnapType: 'x mandatory',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
+        boxShadow: theme.shadows.xs,
       }}
       className="hide-scrollbar"
     >
@@ -230,18 +472,17 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
             border: 'none',
             background: 'none',
             fontWeight: selected === cat ? 700 : 500,
-            borderBottom: selected === cat ? '3px solid #2a2a2a' : '3px solid transparent',
-            color: selected === cat ? '#2a2a2a' : '#a0a0a0',
+            borderBottom: selected === cat ? `3px solid ${theme.colors.accent.primary}` : '3px solid transparent',
+            color: selected === cat ? theme.colors.text.primary : theme.colors.text.tertiary,
             padding: '16px 20px',
             fontSize: 15,
             cursor: 'pointer',
-            transition: 'all 0.15s',
+            transition: 'all 0.2s',
             whiteSpace: 'nowrap',
             flexShrink: 0,
             scrollSnapAlign: 'start',
             WebkitTapHighlightColor: 'transparent',
             fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            textShadow: selected === cat ? theme.shadows.text3d : 'none',
           }}
         >
           {cat}
@@ -356,113 +597,190 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
           >
             <motion.div
               whileTap={{ scale: 0.98 }}
+              className="wishli-fancy-card"
               style={{
                 width: 280,
                 height: 467,
-                borderRadius: 24,
-                background: 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
-                boxShadow: theme.shadows["3d"],
+                borderRadius: 28,
                 overflow: 'hidden',
+                position: 'relative',
+                boxShadow: theme.shadows.glassLg,
+                background: getCategoryGradient(wish.category),
                 WebkitTapHighlightColor: 'transparent',
-                border: '1px solid rgba(0, 0, 0, 0.05)',
+                border: `1.5px solid ${theme.colors.borderLight}`,
+                transition: 'box-shadow 0.3s',
               }}
             >
-              {/* Card Image */}
+              {/* Full Image Fill */}
               {wish.media ? (
-                <div style={{
-                  width: '100%',
-                  height: 200,
-                  background: `url(${wish.media}) center/cover`,
-                  position: 'relative',
-                }}>
-                  {wish.completed && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      borderRadius: '50%',
-                      width: 32,
-                      height: 32,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: theme.shadows.md,
-                    }}>
-                      <FiCheck size={16} color={theme.colors.success} />
-                    </div>
-                  )}
-                </div>
+                <img
+                  src={wish.media}
+                  alt={wish.content}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 1,
+                    transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
+                    filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
+                  }}
+                  className="wishli-card-img"
+                />
               ) : (
-                <div style={{
-                  width: '100%',
-                  height: 200,
-                  background: `linear-gradient(135deg, ${theme.colors.surface}, ${theme.colors.surfaceHover})`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 60,
-                  color: theme.colors.text.tertiary,
-                  fontWeight: 300,
-                }}>
-                  ×
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    background: getCategoryGradient(wish.category),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 80,
+                    color: 'rgba(255,255,255,0.8)',
+                    fontWeight: 300,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  {getTypeIcon(wish.type)}
                 </div>
               )}
-              
-              {/* Card Content */}
-              <div style={{ padding: '24px' }}>
-                <div style={{ 
-                  fontWeight: 800, 
-                  fontSize: 20, 
-                  marginBottom: 12,
-                  lineHeight: 1.3,
-                  color: wish.completed ? theme.colors.text.tertiary : theme.colors.text.primary,
-                  textDecoration: wish.completed ? 'line-through' : 'none',
-                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                  textShadow: theme.shadows.text3d,
-                }}>
+
+              {/* Glassmorphic Text Overlay */}
+              <div
+                className="wishli-card-glass"
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  bottom: 32,
+                  transform: 'translateX(-50%)',
+                  minWidth: 220,
+                  maxWidth: 240,
+                  padding: '22px 20px 18px 20px',
+                  borderRadius: 22,
+                  background: 'rgba(255,255,255,0.22)',
+                  boxShadow: '0 8px 32px 0 rgba(31,38,135,0.18)',
+                  backdropFilter: 'blur(18px) saturate(1.2)',
+                  WebkitBackdropFilter: 'blur(18px) saturate(1.2)',
+                  border: '1.5px solid rgba(255,255,255,0.25)',
+                  zIndex: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  animation: 'wishli-glass-fadein 0.7s cubic-bezier(.4,2,.6,1)',
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 800,
+                    fontSize: 20,
+                    marginBottom: 8,
+                    lineHeight: 1.3,
+                    color: wish.completed ? theme.colors.text.tertiary : theme.colors.text.primary,
+                    textDecoration: wish.completed ? 'line-through' : 'none',
+                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                    textShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    letterSpacing: 0.1,
+                  }}
+                >
                   {wish.content}
                 </div>
-                
                 {wish.notes && (
-                  <div style={{ 
-                    color: theme.colors.text.secondary, 
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    marginBottom: 16,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                  }}>
+                  <div
+                    style={{
+                      color: theme.colors.text.secondary,
+                      fontSize: 14,
+                      lineHeight: 1.5,
+                      marginBottom: 10,
+                      maxHeight: 60,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                    }}
+                  >
                     {wish.notes}
                   </div>
                 )}
-                
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  fontSize: 12,
-                  color: theme.colors.text.tertiary,
-                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                }}>
-                  <span style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 6,
-                    background: theme.colors.surface,
-                    padding: '6px 12px',
-                    borderRadius: theme.radius.md,
-                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)',
-                  }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    fontSize: 12,
+                    color: theme.colors.text.tertiary,
+                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                    marginTop: 2,
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      background: 'rgba(255,255,255,0.18)',
+                      backdropFilter: 'blur(6px)',
+                      borderRadius: 10,
+                      padding: '4px 10px',
+                      border: '1px solid rgba(255,255,255,0.18)',
+                    }}
+                  >
                     {getTypeIcon(wish.type)}
                     {wish.type}
                   </span>
                   <span>{formatDate(wish.created)}</span>
                 </div>
               </div>
+
+              {/* Completed Checkmark */}
+              {wish.completed && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 18,
+                    right: 18,
+                    background: 'rgba(255,255,255,0.7)',
+                    backdropFilter: 'blur(8px)',
+                    borderRadius: '50%',
+                    width: 36,
+                    height: 36,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: theme.shadows.md,
+                    border: `1.5px solid ${theme.colors.success}55`,
+                    zIndex: 3,
+                    animation: 'wishli-check-pop 0.5s cubic-bezier(.4,2,.6,1)',
+                  }}
+                >
+                  <FiCheck size={18} color={theme.colors.success} />
+                </div>
+              )}
+
+              {/* Animated Gradient Border */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  zIndex: 0,
+                  borderRadius: 28,
+                  pointerEvents: 'none',
+                  border: '2.5px solid transparent',
+                  background: `linear-gradient(120deg, #fff0 60%, ${theme.colors.accent.primary} 100%) border-box`,
+                  maskImage: 'linear-gradient(#fff 0 0)',
+                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
+                  animation: 'wishli-gradient-border 3s linear infinite',
+                }}
+              />
             </motion.div>
           </div>
         ))}
@@ -482,21 +800,24 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handlePrevious}
+          className="glass-button"
           style={{
             width: 48,
             height: 48,
             borderRadius: '50%',
-            background: 'linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%)',
-            border: 'none',
+            background: theme.colors.glass,
+            backdropFilter: theme.blur.md,
+            WebkitBackdropFilter: theme.blur.md,
+            border: `1px solid ${theme.colors.borderLight}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             WebkitTapHighlightColor: 'transparent',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.05)',
+            boxShadow: theme.shadows.glass,
           }}
         >
-          <FiChevronLeft size={20} />
+          <FiChevronLeft size={20} color={theme.colors.text.primary} />
         </motion.button>
 
         {/* Page Indicators */}
@@ -511,9 +832,11 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 width: idx === currentIndex ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                background: idx === currentIndex ? theme.colors.accent : theme.colors.border,
-                transition: 'all 0.2s ease',
-                boxShadow: idx === currentIndex ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none',
+                background: idx === currentIndex 
+                  ? getCategoryGradient(wishes[currentIndex].category)
+                  : theme.colors.border,
+                transition: 'all 0.3s ease',
+                boxShadow: idx === currentIndex ? theme.shadows.glow : 'none',
               }}
             />
           ))}
@@ -523,28 +846,31 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleNext}
+          className="glass-button"
           style={{
             width: 48,
             height: 48,
             borderRadius: '50%',
-            background: 'linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%)',
-            border: 'none',
+            background: theme.colors.glass,
+            backdropFilter: theme.blur.md,
+            WebkitBackdropFilter: theme.blur.md,
+            border: `1px solid ${theme.colors.borderLight}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             WebkitTapHighlightColor: 'transparent',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.05)',
+            boxShadow: theme.shadows.glass,
           }}
         >
-          <FiChevronRight size={20} />
+          <FiChevronRight size={20} color={theme.colors.text.primary} />
         </motion.button>
       </div>
     </div>
   );
 };
 
-// Bottom Navigation Component - Modified to 3 buttons
+// Bottom Navigation Component - Modified with narrower height
 const BottomNavigation = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'home', icon: <FiHome />, label: 'Home' },
@@ -558,19 +884,19 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
       bottom: 0,
       left: 0,
       right: 0,
-      background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95))',
-      borderTop: `1px solid ${theme.colors.border}`,
+      background: theme.colors.glass,
+      backdropFilter: theme.blur.lg,
+      WebkitBackdropFilter: theme.blur.lg,
+      borderTop: `1px solid ${theme.colors.borderLight}`,
       paddingBottom: 'env(safe-area-inset-bottom)',
       zIndex: 100,
-      boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.04)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
+      boxShadow: theme.shadows.glass,
     }}>
       <div style={{
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: '10px 0',
+        padding: '6px 0',
       }}>
         {tabs.map(tab => (
           <motion.button
@@ -581,27 +907,29 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 6,
-              padding: '10px 20px',
+              gap: 4,
+              padding: '8px 20px',
               border: 'none',
               background: 'none',
               cursor: 'pointer',
-              color: activeTab === tab.id ? theme.colors.accent : theme.colors.text.tertiary,
-              fontSize: 22,
+              color: activeTab === tab.id ? theme.colors.accent.primary : theme.colors.text.tertiary,
+              fontSize: 20,
               WebkitTapHighlightColor: 'transparent',
               transition: 'all 0.2s ease',
             }}
           >
             <div style={{
-              padding: 8,
+              padding: 6,
               borderRadius: 12,
-              background: activeTab === tab.id ? theme.colors.accentLight : 'transparent',
+              background: activeTab === tab.id 
+                ? `linear-gradient(135deg, ${theme.colors.accent.primary}20 0%, ${theme.colors.accent.secondary}20 100%)`
+                : 'transparent',
               transition: 'all 0.2s ease',
             }}>
               {tab.icon}
             </div>
             <span style={{ 
-              fontSize: 11, 
+              fontSize: 10, 
               fontWeight: 600,
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
@@ -614,11 +942,35 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
   );
 };
 
-// Updated Floating Action Button Component with 3D styling
+// Updated Floating Action Button Component with liquid glass effect
 const FloatingActionButton = ({ onClick }) => (
-  <button className="fab-3d" onClick={onClick} aria-label="Add Wish">
-    <FiPlus className="fab-3d-icon" />
-  </button>
+  <motion.button 
+    className="fab-liquid" 
+    onClick={onClick} 
+    aria-label="Add Wish"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    style={{
+      width: 64,
+      height: 64,
+      borderRadius: '50%',
+      background: theme.colors.gradient.ocean,
+      boxShadow: theme.shadows.glassLg,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'fixed',
+      bottom: 90,
+      right: 20,
+      zIndex: 200,
+      border: 'none',
+      cursor: 'pointer',
+      overflow: 'hidden',
+    }}
+  >
+    <div className="liquid-effect" />
+    <FiPlus className="fab-icon" size={28} color="white" style={{ zIndex: 1 }} />
+  </motion.button>
 );
 
 // Create Wish Modal (Optimized for S25)
@@ -649,7 +1001,7 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0, 0, 0, 0.6)',
+        background: 'rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -666,13 +1018,17 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
+        className="glass-modal"
         style={{
-          background: 'linear-gradient(to bottom, #ffffff, #fafafa)',
+          background: theme.colors.glass,
+          backdropFilter: theme.blur.lg,
+          WebkitBackdropFilter: theme.blur.lg,
           width: '100%',
           maxHeight: '85vh',
           borderRadius: '24px 24px 0 0',
           overflow: 'hidden',
-          boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.15)',
+          boxShadow: theme.shadows.xl,
+          border: `1px solid ${theme.colors.borderLight}`,
         }}
       >
         {/* Handle */}
@@ -700,7 +1056,7 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             fontSize: 22, 
             fontWeight: 800,
             fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            textShadow: theme.shadows.text3d,
+            color: theme.colors.text.primary,
           }}>
             Add New Wish
           </h2>
@@ -739,17 +1095,19 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
               placeholder="e.g., Visit Japan"
               required
               autoFocus
+              className="glass-input"
               style={{
                 width: '100%',
                 padding: '14px 16px',
                 fontSize: 16,
-                border: `2px solid ${theme.colors.border}`,
+                border: `1px solid ${theme.colors.border}`,
                 borderRadius: theme.radius.lg,
                 outline: 'none',
                 WebkitAppearance: 'none',
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                background: 'white',
-                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                background: theme.colors.glassDark,
+                backdropFilter: theme.blur.sm,
+                color: theme.colors.text.primary,
                 transition: 'all 0.2s ease',
               }}
             />
@@ -769,20 +1127,22 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="glass-select"
               style={{
                 width: '100%',
                 padding: '14px 16px',
                 fontSize: 16,
-                border: `2px solid ${theme.colors.border}`,
+                border: `1px solid ${theme.colors.border}`,
                 borderRadius: theme.radius.lg,
                 outline: 'none',
                 WebkitAppearance: 'none',
-                background: `white url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
+                background: `${theme.colors.glassDark} url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A7D85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
                 backgroundPosition: 'right 14px center',
                 backgroundSize: '18px',
                 paddingRight: '44px',
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                backdropFilter: theme.blur.sm,
+                color: theme.colors.text.primary,
                 transition: 'all 0.2s ease',
               }}
             >
@@ -806,20 +1166,22 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Lorem ipsum logum et amet..."
+              placeholder="Add some notes..."
               rows={4}
+              className="glass-textarea"
               style={{
                 width: '100%',
                 padding: '14px 16px',
                 fontSize: 16,
-                border: `2px solid ${theme.colors.border}`,
+                border: `1px solid ${theme.colors.border}`,
                 borderRadius: theme.radius.lg,
                 outline: 'none',
                 resize: 'none',
                 WebkitAppearance: 'none',
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                background: 'white',
-                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+                background: theme.colors.glassDark,
+                backdropFilter: theme.blur.sm,
+                color: theme.colors.text.primary,
                 transition: 'all 0.2s ease',
               }}
             />
@@ -828,10 +1190,11 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
           <motion.button
             type="submit"
             whileTap={{ scale: 0.98 }}
+            className="liquid-button"
             style={{
               width: '100%',
               padding: '16px',
-              background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
+              background: getCategoryGradient(formData.category),
               color: '#fff',
               border: 'none',
               borderRadius: theme.radius.lg,
@@ -840,10 +1203,13 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+              boxShadow: theme.shadows.md,
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            Add Wishlist Card
+            <span style={{ position: 'relative', zIndex: 1 }}>Add Wishlist Card</span>
+            <div className="liquid-effect" />
           </motion.button>
         </form>
       </motion.div>
@@ -855,7 +1221,7 @@ const CreateWishModal = ({ categories, onSave, onClose }) => {
 export default function App() {
   const [wishes, setWishes] = useState(initialWishes);
   const [categories] = useState(defaultCategories);
-  const [selectedCategory, setSelectedCategory] = useState("Adventure");
+  const [selectedCategory, setSelectedCategory] = useState("Restaurant");
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeBottomTab, setActiveBottomTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
@@ -916,7 +1282,7 @@ export default function App() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: `linear-gradient(to bottom, ${theme.colors.bg}, ${theme.colors.surface})`,
+      background: theme.colors.bg,
       paddingBottom: 80,
       WebkitTouchCallout: 'none',
       WebkitUserSelect: 'none',
@@ -927,12 +1293,12 @@ export default function App() {
         <header style={{
           position: 'sticky',
           top: 0,
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.98))',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: theme.colors.glass,
+          backdropFilter: theme.blur.lg,
+          WebkitBackdropFilter: theme.blur.lg,
           borderBottom: `1px solid ${theme.colors.border}`,
           zIndex: 50,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+          boxShadow: theme.shadows.sm,
         }}>
           <div style={{
             padding: '16px 24px',
@@ -941,10 +1307,12 @@ export default function App() {
             <h1 style={{
               fontSize: 26,
               fontWeight: 800,
-              color: theme.colors.text.primary,
+              background: theme.colors.gradient.ocean,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
               marginBottom: 0,
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
-              textShadow: theme.shadows.text3d,
             }}>
               Wishli
             </h1>
@@ -979,9 +1347,10 @@ export default function App() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowAddModal(true)}
+                className="liquid-button"
                 style={{
                   padding: '14px 28px',
-                  background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%)',
+                  background: getCategoryGradient(selectedCategory),
                   color: '#fff',
                   border: 'none',
                   borderRadius: theme.radius.lg,
@@ -993,11 +1362,14 @@ export default function App() {
                   cursor: 'pointer',
                   WebkitTapHighlightColor: 'transparent',
                   fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                  boxShadow: theme.shadows.md,
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
               >
                 <FiPlus size={18} />
                 Add Your First Wish
+                <div className="liquid-effect" />
               </motion.button>
             </div>
           ) : (
@@ -1012,12 +1384,17 @@ export default function App() {
           <div style={{ padding: 24 }}>
             <div className="search-container" style={{ marginBottom: 24 }}>
               <input
-                className="search-input"
+                className="search-input glass-input"
                 type="text"
                 placeholder="Search wishes..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 autoFocus
+                style={{
+                  background: theme.colors.glass,
+                  backdropFilter: theme.blur.sm,
+                  border: `1px solid ${theme.colors.border}`,
+                }}
               />
               <FiSearch className="search-icon" />
             </div>
@@ -1030,10 +1407,17 @@ export default function App() {
             ) : (
               <div className="wishes-list">
                 {searchedWishes.map(wish => (
-                  <div
-                    className="wish-list-item"
+                  <motion.div
+                    className="wish-list-item glass-card-mini"
                     key={wish.id}
                     onClick={() => handleCardClick(wish)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      background: theme.colors.glass,
+                      backdropFilter: theme.blur.sm,
+                      border: `1px solid ${theme.colors.borderLight}`,
+                    }}
                   >
                     {wish.media ? (
                       <img
@@ -1047,8 +1431,8 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: theme.colors.surface,
-                        color: theme.colors.text.tertiary,
+                        background: getCategoryGradient(wish.category),
+                        color: 'white',
                       }}>
                         {getTypeIcon(wish.type)}
                       </div>
@@ -1063,7 +1447,7 @@ export default function App() {
                     {wish.completed && (
                       <FiCheck size={18} color={theme.colors.success} />
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -1073,12 +1457,13 @@ export default function App() {
         {activeBottomTab === 'profile' && (
           <div style={{ padding: 24, maxWidth: 400, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
-              <div style={{
+              <div className="glass-avatar" style={{
                 width: 80, height: 80, borderRadius: '50%',
-                background: theme.colors.surface, margin: '0 auto 12px',
+                background: theme.colors.gradient.lavender,
+                margin: '0 auto 12px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 36, color: theme.colors.text.tertiary,
-                border: `2px solid ${theme.colors.border}`,
+                fontSize: 36, color: 'white',
+                boxShadow: theme.shadows.glassLg,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
               }}>
                 {user.avatar ? (
@@ -1092,6 +1477,7 @@ export default function App() {
                   fontSize: 20, fontWeight: 700, textAlign: 'center',
                   border: 'none', background: 'transparent', outline: 'none', width: '100%',
                   fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                  color: theme.colors.text.primary,
                 }}
                 value={user.name}
                 onChange={e => setUser({ ...user, name: e.target.value })}
@@ -1099,23 +1485,70 @@ export default function App() {
             </div>
             
             <div className="stats-container" style={{ marginBottom: 32 }}>
-              <div className="stat-card">
-                <div className="stat-value">{totalWishes}</div>
+              <motion.div 
+                className="stat-card glass-card-mini"
+                whileHover={{ scale: 1.05 }}
+                style={{
+                  background: theme.colors.glass,
+                  backdropFilter: theme.blur.sm,
+                  border: `1px solid ${theme.colors.borderLight}`,
+                }}
+              >
+                <div className="stat-value" style={{ 
+                  background: theme.colors.gradient.ocean,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>
+                  {totalWishes}
+                </div>
                 <div className="stat-label">Total Wishes</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value">{completedCount}</div>
+              </motion.div>
+              <motion.div 
+                className="stat-card glass-card-mini"
+                whileHover={{ scale: 1.05 }}
+                style={{
+                  background: theme.colors.glass,
+                  backdropFilter: theme.blur.sm,
+                  border: `1px solid ${theme.colors.borderLight}`,
+                }}
+              >
+                <div className="stat-value" style={{ 
+                  background: theme.colors.gradient.mint,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>
+                  {completedCount}
+                </div>
                 <div className="stat-label">Completed</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value">{mostPopularCategory || '-'}</div>
+              </motion.div>
+              <motion.div 
+                className="stat-card glass-card-mini"
+                whileHover={{ scale: 1.05 }}
+                style={{
+                  background: theme.colors.glass,
+                  backdropFilter: theme.blur.sm,
+                  border: `1px solid ${theme.colors.borderLight}`,
+                }}
+              >
+                <div className="stat-value" style={{ 
+                  fontSize: 24,
+                  background: theme.colors.gradient.sunset,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>
+                  {mostPopularCategory || '-'}
+                </div>
                 <div className="stat-label">Top Category</div>
-              </div>
+              </motion.div>
             </div>
             
             <h3 style={{ 
               fontSize: 16, fontWeight: 700, marginBottom: 12,
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              color: theme.colors.text.primary,
             }}>
               Completed Wishes
             </h3>
@@ -1124,7 +1557,16 @@ export default function App() {
             ) : (
               <div className="wishes-list">
                 {completedWishes.map(wish => (
-                  <div className="wish-list-item" key={wish.id}>
+                  <motion.div 
+                    className="wish-list-item glass-card-mini" 
+                    key={wish.id}
+                    whileHover={{ scale: 1.02 }}
+                    style={{
+                      background: theme.colors.glass,
+                      backdropFilter: theme.blur.sm,
+                      border: `1px solid ${theme.colors.borderLight}`,
+                    }}
+                  >
                     {wish.media ? (
                       <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} />
                     ) : (
@@ -1132,8 +1574,8 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: theme.colors.surface,
-                        color: theme.colors.text.tertiary,
+                        background: getCategoryGradient(wish.category),
+                        color: 'white',
                       }}>
                         {getTypeIcon(wish.type)}
                       </div>
@@ -1158,7 +1600,7 @@ export default function App() {
                     >
                       <FiX />
                     </button>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -1188,7 +1630,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* CSS for hiding scrollbars */}
+      {/* CSS for hiding scrollbars and liquid effects */}
       <style jsx>{`
         .hide-scrollbar {
           -ms-overflow-style: none;
@@ -1196,6 +1638,69 @@ export default function App() {
         }
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
+        }
+        
+        .liquid-effect {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100%;
+          height: 100%;
+          transform: translate(-50%, -50%);
+          background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none;
+        }
+        
+        .liquid-button:hover .liquid-effect,
+        .fab-liquid:hover .liquid-effect {
+          opacity: 1;
+          animation: liquid-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes liquid-pulse {
+          0% { transform: translate(-50%, -50%) scale(0.8); }
+          50% { transform: translate(-50%, -50%) scale(1.2); }
+          100% { transform: translate(-50%, -50%) scale(0.8); }
+        }
+        
+        @keyframes wishli-glass-fadein {
+          from { opacity: 0; transform: translateY(30px) scale(0.95);}
+          to { opacity: 1; transform: translateY(0) scale(1);}
+        }
+        
+        @keyframes wishli-check-pop {
+          0% { transform: scale(0.7); opacity: 0;}
+          60% { transform: scale(1.2);}
+          100% { transform: scale(1); opacity: 1;}
+        }
+        
+        @keyframes wishli-gradient-border {
+          0% { filter: hue-rotate(0deg);}
+          100% { filter: hue-rotate(360deg);}
+        }
+        
+        .wishli-fancy-card:hover .wishli-card-img {
+          transform: scale(1.04) rotate(-1deg);
+          filter: brightness(1.08) saturate(1.1);
+        }
+        
+        .glass-card:hover {
+          transform: translateY(-2px);
+          box-shadow: ${theme.shadows.glassLg};
+        }
+        
+        .glass-button:hover {
+          background: ${theme.colors.surface};
+          transform: scale(1.05);
+        }
+        
+        .glass-input:focus,
+        .glass-select:focus,
+        .glass-textarea:focus {
+          border-color: ${theme.colors.accent.primary};
+          background: ${theme.colors.surface};
         }
       `}</style>
     </div>
