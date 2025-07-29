@@ -492,11 +492,11 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
   );
 };
 
-// Enhanced Fanned Card Stack Component with 3:5 ratio
+// --- FannedCardStack with improved glass overlay and fixed overlay position ---
 const FannedCardStack = ({ wishes, onCardClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  
+
   const handlePrevious = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -539,7 +539,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
   const getCardStyle = (index, wishIndex) => {
     const diff = (wishIndex - currentIndex + wishes.length) % wishes.length;
     const adjustedDiff = diff > wishes.length / 2 ? diff - wishes.length : diff;
-    
+
     const isActive = adjustedDiff === 0;
     const scale = 1 - Math.abs(adjustedDiff) * 0.05;
     const rotate = adjustedDiff * 6;
@@ -570,8 +570,8 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
   };
 
   return (
-    <div style={{ 
-      position: 'relative', 
+    <div style={{
+      position: 'relative',
       width: '100%',
       padding: '40px 20px 140px',
       minHeight: 600,
@@ -652,7 +652,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 </div>
               )}
 
-              {/* Glassmorphic Text Overlay */}
+              {/* --- GLASSMORPHIC TEXT OVERLAY (IMPROVED) --- */}
               <div
                 className="wishli-card-glass"
                 style={{
@@ -662,18 +662,21 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                   transform: 'translateX(-50%)',
                   minWidth: 220,
                   maxWidth: 240,
+                  width: '90%',
                   padding: '22px 20px 18px 20px',
                   borderRadius: 22,
-                  background: 'rgba(255,255,255,0.22)',
+                  background: 'rgba(30,40,60,0.32)', // darker, more liquid glass
                   boxShadow: '0 8px 32px 0 rgba(31,38,135,0.18)',
-                  backdropFilter: 'blur(18px) saturate(1.2)',
-                  WebkitBackdropFilter: 'blur(18px) saturate(1.2)',
-                  border: '1.5px solid rgba(255,255,255,0.25)',
+                  backdropFilter: 'blur(22px) saturate(1.4)',
+                  WebkitBackdropFilter: 'blur(22px) saturate(1.4)',
+                  border: '1.5px solid rgba(255,255,255,0.18)',
                   zIndex: 2,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
-                  animation: 'wishli-glass-fadein 0.7s cubic-bezier(.4,2,.6,1)',
+                  transition: 'bottom 0.3s cubic-bezier(.4,2,.6,1), transform 0.3s cubic-bezier(.4,2,.6,1)',
+                  // Fixes overlay "jump" bug on tab switch
+                  willChange: 'bottom, transform',
                 }}
               >
                 <div
@@ -682,10 +685,10 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                     fontSize: 20,
                     marginBottom: 8,
                     lineHeight: 1.3,
-                    color: wish.completed ? theme.colors.text.tertiary : theme.colors.text.primary,
+                    color: '#fff',
                     textDecoration: wish.completed ? 'line-through' : 'none',
                     fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                    textShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    textShadow: '0 2px 12px rgba(0,0,0,0.22), 0 1px 0 #fff4',
                     letterSpacing: 0.1,
                   }}
                 >
@@ -694,7 +697,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 {wish.notes && (
                   <div
                     style={{
-                      color: theme.colors.text.secondary,
+                      color: '#fff',
                       fontSize: 14,
                       lineHeight: 1.5,
                       marginBottom: 10,
@@ -705,7 +708,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                      textShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                      textShadow: '0 2px 12px rgba(0,0,0,0.18), 0 1px 0 #fff3',
                     }}
                   >
                     {wish.notes}
@@ -717,9 +720,10 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                     alignItems: 'center',
                     gap: 10,
                     fontSize: 12,
-                    color: theme.colors.text.tertiary,
+                    color: '#fff',
                     fontFamily: 'Nexus Sherif, Playfair Display, serif',
                     marginTop: 2,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.18)',
                   }}
                 >
                   <span
@@ -727,11 +731,13 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 5,
-                      background: 'rgba(255,255,255,0.18)',
+                      background: 'rgba(255,255,255,0.10)',
                       backdropFilter: 'blur(6px)',
                       borderRadius: 10,
                       padding: '4px 10px',
-                      border: '1px solid rgba(255,255,255,0.18)',
+                      border: '1px solid rgba(255,255,255,0.13)',
+                      color: '#fff',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.18)',
                     }}
                   >
                     {getTypeIcon(wish.type)}
@@ -832,7 +838,7 @@ const FannedCardStack = ({ wishes, onCardClick }) => {
                 width: idx === currentIndex ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                background: idx === currentIndex 
+                background: idx === currentIndex
                   ? getCategoryGradient(wishes[currentIndex].category)
                   : theme.colors.border,
                 transition: 'all 0.3s ease',
