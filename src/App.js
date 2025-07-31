@@ -5,7 +5,12 @@ import {
   FiMapPin, FiTag, FiBookmark, FiHeart, FiVideo, FiMusic, FiStar, FiTrendingUp, FiFolder, FiEdit2, FiTrash2, FiImage, FiUpload
 } from "react-icons/fi";
 
-// Enhanced theme with mymind-inspired colors and liquid glass effects
+// Import animation variants
+import { pageFade, slideUp, slideDown, staggerContainer, itemFade, scaleIn, fabEntry } from "./animations/variants";
+// Import new Siena-style card
+import SienaStyleCard from "./components/SienaStyleCard";
+
+// Enhanced theme optimized for S25 Ultra
 const theme = {
   colors: {
     bg: "#FDFBF7",
@@ -65,9 +70,9 @@ const theme = {
     full: "9999px",
   },
   transitions: {
-    fast: "150ms cubic-bezier(0.4, 0, 0.2, 1)",
-    base: "250ms cubic-bezier(0.4, 0, 0.2, 1)",
-    slow: "350ms cubic-bezier(0.4, 0, 0.2, 1)",
+    fast: "120ms cubic-bezier(0.4, 0, 0.2, 1)",
+    base: "200ms cubic-bezier(0.4, 0, 0.2, 1)",
+    slow: "300ms cubic-bezier(0.4, 0, 0.2, 1)",
   },
 };
 
@@ -83,7 +88,7 @@ const defaultCategories = [
   "Shopping"
 ];
 
-// Enhanced sample data with more items
+// Enhanced sample data with more items and reviews
 const initialWishes = [
   // Restaurant Category
   {
@@ -95,6 +100,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 18),
     tags: ["fine-dining", "seafood", "michelin"],
+    reviews: [
+      { source: "Michelin Guide", quote: "Exceptional seafood artistry" },
+      { source: "NY Times", quote: "Poetry in motion on every plate" },
+      { source: "Food & Wine", quote: "A temple to the sea's bounty" }
+    ],
     notes: "Three Michelin stars. Known for exquisite seafood preparations and impeccable service.",
     priority: "high",
     completed: false,
@@ -108,6 +118,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 20),
     tags: ["italian", "modena", "michelin"],
+    reviews: [
+      { source: "World's 50 Best", quote: "Emotional Italian storytelling through food" },
+      { source: "Gambero Rosso", quote: "Bottura's genius knows no bounds" },
+      { source: "La Repubblica", quote: "A cathedral of modern Italian cuisine" }
+    ],
     notes: "Chef Massimo Bottura's three-Michelin-starred restaurant in Modena, Italy.",
     priority: "high",
     completed: false,
@@ -121,6 +136,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 5),
     tags: ["japanese", "innovative", "tokyo"],
+    reviews: [
+      { source: "Asia's 50 Best", quote: "Revolutionary Satoyama cuisine philosophy" },
+      { source: "Time Out Tokyo", quote: "Nature transformed into edible art" },
+      { source: "Gourmet Traveller", quote: "Sustainability never tasted so extraordinary" }
+    ],
     notes: "Innovative Satoyama cuisine celebrating Japanese nature and sustainability.",
     priority: "medium",
     completed: false,
@@ -134,6 +154,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 10),
     tags: ["peruvian", "altitude-dining", "lima"],
+    reviews: [
+      { source: "Latin America's 50 Best", quote: "A vertical journey through Peru's ecosystems" },
+      { source: "Condé Nast Traveler", quote: "Culinary expedition of a lifetime" },
+      { source: "El Comercio", quote: "Peru's biodiversity on a plate" }
+    ],
     notes: "Experience Peru's biodiversity through altitude-based tasting menu.",
     priority: "high",
     completed: false,
@@ -147,6 +172,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 15),
     tags: ["nordic", "foraging", "seasonal"],
+    reviews: [
+      { source: "The Guardian", quote: "Redefined what restaurant dining can be" },
+      { source: "Bon Appétit", quote: "Foraging elevated to high art" },
+      { source: "Copenhagen Post", quote: "Nordic cuisine's crown jewel" }
+    ],
     notes: "World-renowned restaurant focusing on foraging and fermentation.",
     priority: "high",
     completed: false,
@@ -160,6 +190,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 20),
     tags: ["farm-to-table", "new-york", "sustainable"],
+    reviews: [
+      { source: "New York Magazine", quote: "Farm-to-table dining perfected" },
+      { source: "Eater NY", quote: "A love letter to sustainable agriculture" },
+      { source: "Village Voice", quote: "Every bite tells a story of the land" }
+    ],
     notes: "Farm-to-table dining experience at Pocantico Hills, New York.",
     priority: "medium",
     completed: false,
@@ -173,6 +208,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 25),
     tags: ["plant-based", "nyc", "fine-dining"],
+    reviews: [
+      { source: "James Beard Foundation", quote: "Plant-based fine dining revolutionized" },
+      { source: "Grub Street", quote: "Vegetables have never been this luxurious" },
+      { source: "TimeOut NY", quote: "A bold new chapter in fine dining" }
+    ],
     notes: "Michelin three-star restaurant with entirely plant-based menu.",
     priority: "medium",
     completed: false,
@@ -188,6 +228,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 0, 20),
     tags: ["extreme", "dubai", "bucket-list"],
+    reviews: [
+      { source: "Adventure Travel Magazine", quote: "The ultimate adrenaline rush over Dubai's skyline" },
+      { source: "National Geographic", quote: "A bird's eye view of architectural wonder" },
+      { source: "Travel + Leisure", quote: "Pure exhilaration meets breathtaking beauty" }
+    ],
     notes: "Jump from 13,000 feet over Palm Jumeirah with stunning views of Dubai skyline.",
     priority: "high",
     completed: false,
@@ -201,6 +246,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 5),
     tags: ["ocean", "australia", "diving"],
+    reviews: [
+      { source: "Scuba Diving Magazine", quote: "An underwater paradise like no other" },
+      { source: "Australian Geographic", quote: "Nature's most spectacular light show" },
+      { source: "BBC Earth", quote: "The world's largest living structure awaits" }
+    ],
     notes: "Explore the underwater world of colorful coral reefs and marine life.",
     priority: "high",
     completed: false,
@@ -214,6 +264,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 10),
     tags: ["trekking", "nepal", "himalayas"],
+    reviews: [
+      { source: "Outside Magazine", quote: "Life-changing journey to the roof of the world" },
+      { source: "Himalayan Times", quote: "A spiritual pilgrimage through stunning landscapes" },
+      { source: "Adventure Journal", quote: "The ultimate test of endurance and spirit" }
+    ],
     notes: "14-day trek to Everest Base Camp at 5,364 meters altitude.",
     priority: "high",
     completed: false,
@@ -227,6 +282,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 15),
     tags: ["extreme", "new-zealand", "adrenaline"],
+    reviews: [
+      { source: "Adrenaline Junkie", quote: "The most terrifying 8.5 seconds of pure bliss" },
+      { source: "Queenstown Tourism", quote: "Adventure capital's crown jewel experience" },
+      { source: "Thrill Seeker Weekly", quote: "Gravity defying leap into paradise" }
+    ],
     notes: "134m jump from Nevis Bungy, one of the highest in the world.",
     priority: "medium",
     completed: false,
@@ -240,6 +300,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 20),
     tags: ["jungle", "brazil", "wildlife"],
+    reviews: [
+      { source: "National Geographic", quote: "Immersion in Earth's lungs" },
+      { source: "Amazon Conservation", quote: "A humbling journey through nature's cathedral" },
+      { source: "Wild Life Magazine", quote: "Biodiversity beyond imagination" }
+    ],
     notes: "5-day survival trek through the Amazon with indigenous guides.",
     priority: "medium",
     completed: false,
@@ -253,6 +318,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 25),
     tags: ["expedition", "polar", "wildlife"],
+    reviews: [
+      { source: "Polar Expeditions", quote: "The last great wilderness on Earth" },
+      { source: "Scientific American", quote: "A journey to the edge of the world" },
+      { source: "Adventure Travel Trade", quote: "Pristine beauty that changes you forever" }
+    ],
     notes: "2-week expedition cruise to the Antarctic Peninsula.",
     priority: "high",
     completed: false,
@@ -266,6 +336,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 1),
     tags: ["desert", "morocco", "camping"],
+    reviews: [
+      { source: "Morocco Tourism", quote: "Ancient nomadic traditions come alive" },
+      { source: "Desert Magazine", quote: "Silence and solitude in endless golden dunes" },
+      { source: "Berber Cultural Center", quote: "A timeless journey through shifting sands" }
+    ],
     notes: "3-day camel trek through Sahara with Berber guides and desert camping.",
     priority: "medium",
     completed: false,
@@ -281,6 +356,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 10),
     tags: ["iceland", "aurora", "winter"],
+    reviews: [
+      { source: "Iceland Review", quote: "Nature's most spectacular light show" },
+      { source: "Aurora Watch", quote: "Dancing curtains of ethereal beauty" },
+      { source: "Visit Iceland", quote: "A celestial ballet across the Arctic sky" }
+    ],
     notes: "Best viewing from September to March, away from Reykjavik's lights.",
     location: "Reykjavik, Iceland",
     priority: "high",
@@ -295,6 +375,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 0, 15),
     tags: ["greece", "island", "romantic"],
+    reviews: [
+      { source: "Greek Islands Guide", quote: "The world's most romantic sunset" },
+      { source: "Condé Nast Traveler", quote: "Postcard perfection in every moment" },
+      { source: "Travel & Leisure", quote: "Blue and white paradise kissed by golden light" }
+    ],
     notes: "Watch sunset from Oia castle, arrive early for best viewing spots.",
     location: "Santorini, Greece",
     priority: "medium",
@@ -309,6 +394,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 1, 28),
     tags: ["japan", "sakura", "spring"],
+    reviews: [
+      { source: "Japan National Tourism", quote: "Fleeting beauty that captures the soul" },
+      { source: "Sakura Forecast", quote: "Pink petals painting ancient temples" },
+      { source: "Time Out Tokyo", quote: "Spring's most celebrated celebration" }
+    ],
     notes: "Peak bloom typically late March to early April in Tokyo and Kyoto.",
     location: "Kyoto, Japan",
     priority: "high",
@@ -323,6 +413,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 5),
     tags: ["peru", "inca", "hiking"],
+    reviews: [
+      { source: "UNESCO World Heritage", quote: "Lost city that time forgot" },
+      { source: "Inca Trail Society", quote: "Ancient stones whispering stories of the past" },
+      { source: "Peru Tourism", quote: "Crown jewel of the Inca Empire" }
+    ],
     notes: "4-day Inca Trail trek or take train from Cusco to Aguas Calientes.",
     location: "Cusco, Peru",
     priority: "high",
@@ -337,6 +432,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 10),
     tags: ["africa", "wildlife", "safari"],
+    reviews: [
+      { source: "Kenya Wildlife Service", quote: "Front row seats to nature's greatest drama" },
+      { source: "Safari Magazine", quote: "Where the circle of life unfolds daily" },
+      { source: "African Geographic", quote: "Endless plains teeming with magnificent wildlife" }
+    ],
     notes: "Visit during Great Migration (July-October) in Masai Mara.",
     location: "Masai Mara, Kenya",
     priority: "high",
@@ -351,6 +451,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 15),
     tags: ["canada", "mountains", "nature"],
+    reviews: [
+      { source: "Parks Canada", quote: "Canadian Rockies at their most majestic" },
+      { source: "Outside Magazine", quote: "Turquoise lakes reflecting snow-capped peaks" },
+      { source: "Canadian Geographic", quote: "Alpine paradise in the heart of the Rockies" }
+    ],
     notes: "Visit Lake Louise and Moraine Lake, best in summer for hiking.",
     location: "Alberta, Canada",
     priority: "medium",
@@ -365,6 +470,11 @@ const initialWishes = [
     mediaType: "image",
     created: new Date(2024, 2, 20),
     tags: ["maldives", "beach", "luxury"],
+    reviews: [
+      { source: "Maldives Tourism", quote: "Paradise floating on crystal clear waters" },
+      { source: "Luxury Travel Magazine", quote: "Ultimate tropical escape redefined" },
+      { source: "Travel + Leisure", quote: "Where luxury meets pristine natural beauty" }
+    ],
     notes: "Stay in overwater bungalow, best weather November to April.",
     location: "Maldives",
     priority: "medium",
@@ -415,7 +525,7 @@ const getCategoryGradient = (category) => {
   return gradients[category] || theme.colors.gradient.ocean;
 };
 
-// --- Media Picker Component ---
+// --- Media Picker Component (S25 Ultra Optimized) ---
 const MediaPicker = ({ value, onChange, onRemove }) => {
   const inputRef = useRef();
   const [preview, setPreview] = useState(value ? { url: value, type: value.endsWith('.mp4') ? 'video' : 'image' } : null);
@@ -423,8 +533,30 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
+
     const type = file.type.startsWith('video') ? 'video' : 'image';
+    if (type === 'video') {
+      // create a temp video element to measure duration
+      const tempVideo = document.createElement('video');
+      tempVideo.preload = 'metadata';
+      tempVideo.src = URL.createObjectURL(file);
+      tempVideo.onloadedmetadata = () => {
+        URL.revokeObjectURL(tempVideo.src);
+        if (tempVideo.duration > 60) {
+          alert('Sorry, videos longer than 60 seconds are not allowed.');
+          e.target.value = '';
+          return;
+        }
+        // OK to proceed
+        const url = URL.createObjectURL(file);
+        setPreview({ url, type, file });
+        onChange({ url, file, type });
+      };
+      return;
+    }
+
+    // image path (or very short video fallback)
+    const url = URL.createObjectURL(file);
     setPreview({ url, type, file });
     onChange({ url, file, type });
   };
@@ -442,20 +574,23 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
   }, [value]);
 
   return (
-    <div style={{ marginBottom: 24 }}>
+    <motion.div 
+      variants={itemFade}
+      style={{ marginBottom: 28 }}
+    >
       <label style={{
         display: 'block',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 600,
         color: theme.colors.text.secondary,
-        marginBottom: 8,
+        marginBottom: 12,
         fontFamily: 'Nexus Sherif, Playfair Display, serif',
       }}>
         Media (Image or Video)
       </label>
       {preview ? (
         <div style={{ 
-          marginBottom: 16, 
+          marginBottom: 20, 
           position: 'relative', 
           width: '100%',
           borderRadius: theme.radius.lg,
@@ -468,7 +603,7 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
               alt="preview" 
               style={{ 
                 width: '100%', 
-                height: 200, 
+                height: 240, 
                 objectFit: 'cover',
                 display: 'block',
               }} 
@@ -476,10 +611,13 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
           ) : (
             <video 
               src={preview.url} 
-              controls 
+              autoPlay
+              muted
+              loop
+              playsInline
               style={{ 
                 width: '100%', 
-                height: 200, 
+                height: 240, 
                 objectFit: 'cover',
                 display: 'block',
               }} 
@@ -491,22 +629,24 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
             onClick={handleRemove}
             style={{
               position: 'absolute', 
-              top: 8, 
-              right: 8, 
+              top: 12, 
+              right: 12, 
               background: theme.colors.glass,
               backdropFilter: theme.blur.sm,
               border: 'none', 
               borderRadius: theme.radius.full, 
-              padding: 8,
+              padding: 12,
               cursor: 'pointer', 
               boxShadow: theme.shadows.md,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              minWidth: 48,
+              minHeight: 48,
             }}
             aria-label="Remove media"
           >
-            <FiX size={18} color={theme.colors.text.primary} />
+            <FiX size={20} color={theme.colors.text.primary} />
           </motion.button>
         </div>
       ) : null}
@@ -522,32 +662,33 @@ const MediaPicker = ({ value, onChange, onRemove }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => inputRef.current && inputRef.current.click()}
         style={{
-          padding: '12px 24px',
+          padding: '16px 28px',
           background: theme.colors.glass,
           backdropFilter: theme.blur.sm,
           color: theme.colors.text.primary,
           border: `2px dashed ${theme.colors.border}`,
           borderRadius: theme.radius.lg,
-          fontSize: 15,
+          fontSize: 17,
           fontWeight: 600,
           cursor: 'pointer',
           fontFamily: 'Nexus Sherif, Playfair Display, serif',
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
+          gap: 12,
           width: '100%',
           justifyContent: 'center',
           transition: 'all 0.2s ease',
+          minHeight: 56,
         }}
       >
-        {preview ? <FiImage size={18} /> : <FiUpload size={18} />}
+        {preview ? <FiImage size={20} /> : <FiUpload size={20} />}
         {preview ? "Change Media" : "Add Media"}
       </motion.button>
-    </div>
+    </motion.div>
   );
 };
 
-// Category Tabs Component (Optimized for S25)
+// Category Tabs Component (S25 Ultra Optimized)
 const CategoryTabs = ({ categories, selected, onSelect }) => {
   const scrollRef = useRef(null);
   
@@ -562,8 +703,11 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
   }, [selected]);
   
   return (
-    <div
+    <motion.div
       ref={scrollRef}
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
       style={{
         display: 'flex',
         overflowX: 'auto',
@@ -584,15 +728,17 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
           key={cat}
           data-category={cat}
           onClick={() => onSelect(cat)}
+          variants={itemFade}
           whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.05 }}
           style={{
             border: 'none',
             background: 'none',
             fontWeight: selected === cat ? 700 : 500,
             borderBottom: selected === cat ? `3px solid ${theme.colors.accent.primary}` : '3px solid transparent',
             color: selected === cat ? theme.colors.text.primary : theme.colors.text.tertiary,
-            padding: '16px 20px',
-            fontSize: 15,
+            padding: '20px 24px',
+            fontSize: 17,
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap',
@@ -600,16 +746,17 @@ const CategoryTabs = ({ categories, selected, onSelect }) => {
             scrollSnapAlign: 'start',
             WebkitTapHighlightColor: 'transparent',
             fontFamily: 'Nexus Sherif, Playfair Display, serif',
+            minHeight: 64,
           }}
         >
           {cat}
         </motion.button>
       ))}
-    </div>
+    </motion.div>
   );
 };
 
-// --- FannedCardStack with Swipe Up Action Menu ---
+// --- FannedCardStack with Swipe Up Action Menu (S25 Ultra Optimized) ---
 const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -620,7 +767,7 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev - 1 + wishes.length) % wishes.length);
     setShowAction(false);
-    setTimeout(() => setIsAnimating(false), 300);
+    setTimeout(() => setIsAnimating(false), 350);
   }, [wishes.length, isAnimating]);
 
   const handleNext = useCallback(() => {
@@ -628,10 +775,10 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev + 1) % wishes.length);
     setShowAction(false);
-    setTimeout(() => setIsAnimating(false), 300);
+    setTimeout(() => setIsAnimating(false), 350);
   }, [wishes.length, isAnimating]);
 
-  // Touch handling for swipe left/right/up
+  // Touch handling for swipe left/right/up (S25 Ultra optimized)
   const touchStart = useRef({ x: 0, y: 0 });
   const touchEnd = useRef({ x: 0, y: 0 });
 
@@ -650,12 +797,12 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
     const dx = touchEnd.current.x - touchStart.current.x;
     const dy = touchEnd.current.y - touchStart.current.y;
     
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-      // horizontal swipe
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+      // horizontal swipe (increased threshold for S25 Ultra)
       if (dx < 0) handleNext();
       else handlePrevious();
-    } else if (dy < -60 && Math.abs(dy) > Math.abs(dx)) {
-      // swipe up
+    } else if (dy < -80 && Math.abs(dy) > Math.abs(dx)) {
+      // swipe up (increased threshold for S25 Ultra)
       setShowAction(true);
     }
   };
@@ -669,12 +816,12 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
     const adjustedDiff = diff > wishes.length / 2 ? diff - wishes.length : diff;
 
     const isActive = adjustedDiff === 0;
-    const scale = 1 - Math.abs(adjustedDiff) * 0.05;
-    const rotate = adjustedDiff * 6;
-    const translateX = adjustedDiff * 55;
-    const translateY = Math.abs(adjustedDiff) * 15;
+    const scale = 1 - Math.abs(adjustedDiff) * 0.04; // Slightly less dramatic for S25 Ultra
+    const rotate = adjustedDiff * 5; // Reduced rotation
+    const translateX = adjustedDiff * 60; // Increased for larger screen
+    const translateY = Math.abs(adjustedDiff) * 18;
     const zIndex = wishes.length - Math.abs(adjustedDiff);
-    const opacity = 1 - Math.abs(adjustedDiff) * 0.2;
+    const opacity = 1 - Math.abs(adjustedDiff) * 0.15;
 
     return {
       position: 'absolute',
@@ -689,31 +836,36 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
       `,
       zIndex,
       opacity: Math.abs(adjustedDiff) > 2 ? 0 : opacity,
-      transition: isAnimating ? 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      transition: isAnimating ? 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
       cursor: isActive ? 'pointer' : 'default',
       pointerEvents: isActive ? 'auto' : 'none',
       willChange: 'transform',
-      filter: isActive ? 'none' : 'brightness(0.95)',
+      filter: isActive ? 'none' : 'brightness(0.96)',
     };
   };
 
   const currentWish = wishes[currentIndex];
 
   return (
-    <div style={{
-      position: 'relative',
-      width: '100%',
-      padding: '40px 20px 140px',
-      minHeight: 600,
-    }}>
+    <motion.div 
+      variants={slideUp}
+      initial="hidden"
+      animate="visible"
+      style={{
+        position: 'relative',
+        width: '100%',
+        padding: '48px 24px 160px',
+        minHeight: 680,
+      }}
+    >
       {/* Cards Container */}
       <div
         style={{
           position: 'relative',
-          height: 500,
-          maxWidth: 320,
+          height: 560, // Increased for S25 Ultra
+          maxWidth: 360, // Increased for S25 Ultra
           margin: '0 auto',
-          perspective: '1000px',
+          perspective: '1200px',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -725,327 +877,120 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
             style={getCardStyle(currentIndex, idx)}
             onClick={() => idx === currentIndex && !showAction && onCardClick(wish)}
           >
-            <motion.div
+            <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="wishli-fancy-card"
-              style={{
-                width: 280,
-                height: 467,
-                borderRadius: 28,
-                overflow: 'hidden',
-                position: 'relative',
-                boxShadow: theme.shadows.glassLg,
-                background: getCategoryGradient(wish.category),
-                WebkitTapHighlightColor: 'transparent',
-                border: `1.5px solid ${theme.colors.borderLight}`,
-                transition: 'box-shadow 0.3s',
-              }}
+              whileHover={{ scale: 1.05, rotate: 0 }}
+              style={{ perspective: 900 }}
             >
-              {/* Full Image/Video Fill */}
-              {wish.media ? (
-                wish.mediaType === "video" ? (
-                  <video
-                    src={wish.media}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      zIndex: 1,
-                      transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
-                      filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
-                    }}
-                    className="wishli-card-img"
-                    muted
-                    loop
-                    playsInline
-                  />
-                ) : (
-                  <img
-                    src={wish.media}
-                    alt={wish.content}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      zIndex: 1,
-                      transition: 'transform 0.5s cubic-bezier(.4,2,.6,1)',
-                      filter: wish.completed ? 'grayscale(0.7) blur(1px)' : 'none',
-                    }}
-                    className="wishli-card-img"
-                  />
-                )
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    background: getCategoryGradient(wish.category),
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 80,
-                    color: 'rgba(255,255,255,0.8)',
-                    fontWeight: 300,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                  }}
-                >
-                  {getTypeIcon(wish.type)}
-                </div>
-              )}
-
-              {/* --- GLASSMORPHIC TEXT OVERLAY (IMPROVED) --- */}
-              <div
-                className="wishli-card-glass"
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  bottom: 32,
-                  transform: 'translateX(-50%)',
-                  minWidth: 220,
-                  maxWidth: 240,
-                  width: '90%',
-                  padding: '22px 20px 18px 20px',
-                  borderRadius: 22,
-                  background: 'rgba(30,40,60,0.32)',
-                  boxShadow: '0 8px 32px 0 rgba(31,38,135,0.18)',
-                  backdropFilter: 'blur(22px) saturate(1.4)',
-                  WebkitBackdropFilter: 'blur(22px) saturate(1.4)',
-                  border: '1.5px solid rgba(255,255,255,0.18)',
-                  zIndex: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  transition: 'bottom 0.3s cubic-bezier(.4,2,.6,1), transform 0.3s cubic-bezier(.4,2,.6,1)',
-                  willChange: 'bottom, transform',
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 800,
-                    fontSize: 20,
-                    marginBottom: 8,
-                    lineHeight: 1.3,
-                    color: '#fff',
-                    textDecoration: wish.completed ? 'line-through' : 'none',
-                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                    textShadow: '0 2px 12px rgba(0,0,0,0.22), 0 1px 0 #fff4',
-                    letterSpacing: 0.1,
-                  }}
-                >
-                  {wish.content}
-                </div>
-                {wish.notes && (
-                  <div
-                    style={{
-                      color: '#fff',
-                      fontSize: 14,
-                      lineHeight: 1.5,
-                      marginBottom: 10,
-                      maxHeight: 60,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                      textShadow: '0 2px 12px rgba(0,0,0,0.18), 0 1px 0 #fff3',
-                    }}
-                  >
-                    {wish.notes}
-                  </div>
-                )}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    fontSize: 12,
-                    color: '#fff',
-                    fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                    marginTop: 2,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                  }}
-                >
-                  <span
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 5,
-                      background: 'rgba(255,255,255,0.10)',
-                      backdropFilter: 'blur(6px)',
-                      borderRadius: 10,
-                      padding: '4px 10px',
-                      border: '1px solid rgba(255,255,255,0.13)',
-                      color: '#fff',
-                      textShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                    }}
-                  >
-                    {getTypeIcon(wish.type)}
-                    {wish.type}
-                  </span>
-                  <span>{formatDate(wish.created)}</span>
-                </div>
-              </div>
-
-              {/* Completed Checkmark */}
-              {wish.completed && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 18,
-                    right: 18,
-                    background: 'rgba(255,255,255,0.7)',
-                    backdropFilter: 'blur(8px)',
-                    borderRadius: '50%',
-                    width: 36,
-                    height: 36,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: theme.shadows.md,
-                    border: `1.5px solid ${theme.colors.success}55`,
-                    zIndex: 3,
-                    animation: 'wishli-check-pop 0.5s cubic-bezier(.4,2,.6,1)',
-                  }}
-                >
-                  <FiCheck size={18} color={theme.colors.success} />
-                </div>
-              )}
-
-              {/* Animated Gradient Border */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  zIndex: 0,
-                  borderRadius: 28,
-                  pointerEvents: 'none',
-                  border: '2.5px solid transparent',
-                  background: `linear-gradient(120deg, #fff0 60%, ${theme.colors.accent.primary} 100%) border-box`,
-                  maskImage: 'linear-gradient(#fff 0 0)',
-                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
-                  animation: 'wishli-gradient-border 3s linear infinite',
-                }}
-              />
-
-              {/* Swipe Up Action Overlay */}
-              <AnimatePresence>
-                {showAction && idx === currentIndex && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      top: 0,
-                      zIndex: 10,
-                      background: 'rgba(0,0,0,0.3)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 28,
-                      pointerEvents: 'auto',
-                      backdropFilter: 'blur(4px)',
-                    }}
-                    onClick={handleActionClose}
-                  >
-                    <motion.div
-                      initial={{ scale: 0.6, opacity: 0, y: 40 }}
-                      animate={{ scale: 1, opacity: 1, y: 0 }}
-                      exit={{ scale: 0.6, opacity: 0, y: 40 }}
-                      transition={{ type: 'spring', damping: 15, stiffness: 200 }}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 40,
-                        marginBottom: 12,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => { onEdit(wish); setShowAction(false); }}
-                        style={{
-                          width: 72,
-                          height: 72,
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #5B5BD6 0%, #B794F6 100%)',
-                          boxShadow: '0 10px 40px rgba(91,91,214,0.4)',
-                          border: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          position: 'relative',
-                          overflow: 'hidden',
-                        }}
-                        aria-label="Edit"
-                      >
-                        <div className="liquid-effect" style={{ opacity: 0.3 }} />
-                        <FiEdit2 size={28} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
-                      </motion.button>
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => { onDelete(wish); setShowAction(false); }}
-                        style={{
-                          width: 72,
-                          height: 72,
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #FF6B6B 0%, #FFB5D8 100%)',
-                          boxShadow: '0 10px 40px rgba(255,107,107,0.4)',
-                          border: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          position: 'relative',
-                          overflow: 'hidden',
-                        }}
-                        aria-label="Delete"
-                      >
-                        <div className="liquid-effect" style={{ opacity: 0.3 }} />
-                        <FiTrash2 size={28} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
-                      </motion.button>
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 0.9, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      style={{
-                        color: '#fff',
-                        fontWeight: 700,
-                        fontSize: 16,
-                        textShadow: '0 2px 12px #0008',
-                        marginTop: 12,
-                        letterSpacing: 0.5,
-                        fontFamily: 'Nexus Sherif, Playfair Display, serif',
-                      }}
-                    >
-                      Edit or Delete
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <SienaStyleCard wish={wish} />
             </motion.div>
+
+            {/* Swipe Up Action Overlay */}
+            <AnimatePresence>
+              {showAction && idx === currentIndex && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: 0,
+                    zIndex: 10,
+                    background: 'rgba(0,0,0,0.35)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 28,
+                    pointerEvents: 'auto',
+                    backdropFilter: 'blur(6px)',
+                  }}
+                  onClick={handleActionClose}
+                >
+                  <motion.div
+                    initial={{ scale: 0.6, opacity: 0, y: 48 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.6, opacity: 0, y: 48 }}
+                    transition={{ type: 'spring', damping: 18, stiffness: 250 }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: 48,
+                      marginBottom: 16,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.1, boxShadow: "0 28px 56px rgba(91,91,214,0.4)" }}
+                      onClick={() => { onEdit(wish); setShowAction(false); }}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #5B5BD6 0%, #B794F6 100%)',
+                        boxShadow: '0 12px 48px rgba(91,91,214,0.4)',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s',
+                        position: 'relative',
+                        overflow: 'hidden',
+                      }}
+                      aria-label="Edit"
+                    >
+                      <div className="liquid-effect" style={{ opacity: 0.3 }} />
+                      <FiEdit2 size={32} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.1, boxShadow: "0 28px 56px rgba(255,107,107,0.4)" }}
+                      onClick={() => { onDelete(wish); setShowAction(false); }}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #FF6B6B 0%, #FFB5D8 100%)',
+                        boxShadow: '0 12px 48px rgba(255,107,107,0.4)',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s',
+                        position: 'relative',
+                        overflow: 'hidden',
+                      }}
+                      aria-label="Delete"
+                    >
+                      <div className="liquid-effect" style={{ opacity: 0.3 }} />
+                      <FiTrash2 size={32} color="#fff" style={{ filter: 'drop-shadow(0 2px 8px #0004)', zIndex: 1 }} />
+                    </motion.button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 0.9, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    style={{
+                      color: '#fff',
+                      fontWeight: 700,
+                      fontSize: 18,
+                      textShadow: '0 2px 16px #0008',
+                      marginTop: 16,
+                      letterSpacing: 0.5,
+                      fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                    }}
+                  >
+                    Edit or Delete
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>
@@ -1059,22 +1004,23 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
             exit={{ opacity: 0 }}
             style={{
               position: 'absolute',
-              bottom: 60,
+              bottom: 80,
               left: '50%',
               transform: 'translateX(-50%)',
               display: 'flex',
               alignItems: 'center',
-              gap: 32,
+              gap: 40,
             }}
           >
             {/* Left Arrow */}
             <motion.button
               whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.2 }}
               onClick={handlePrevious}
               className="glass-button"
               style={{
-                width: 48,
-                height: 48,
+                width: 56,
+                height: 56,
                 borderRadius: '50%',
                 background: theme.colors.glass,
                 backdropFilter: theme.blur.md,
@@ -1088,21 +1034,23 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
                 boxShadow: theme.shadows.glass,
               }}
             >
-              <FiChevronLeft size={20} color={theme.colors.text.primary} />
+              <FiChevronLeft size={24} color={theme.colors.text.primary} />
             </motion.button>
 
             {/* Page Indicators */}
             <div style={{
               display: 'flex',
-              gap: 8,
+              gap: 10,
             }}>
               {wishes.map((_, idx) => (
-                <div
+                <motion.div
                   key={idx}
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: idx === currentIndex ? 1.3 : 1 }}
                   style={{
-                    width: idx === currentIndex ? 24 : 8,
-                    height: 8,
-                    borderRadius: 4,
+                    width: idx === currentIndex ? 28 : 10,
+                    height: 10,
+                    borderRadius: 5,
                     background: idx === currentIndex
                       ? getCategoryGradient(wishes[currentIndex].category)
                       : theme.colors.border,
@@ -1116,11 +1064,12 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
             {/* Right Arrow */}
             <motion.button
               whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.2 }}
               onClick={handleNext}
               className="glass-button"
               style={{
-                width: 48,
-                height: 48,
+                width: 56,
+                height: 56,
                 borderRadius: '50%',
                 background: theme.colors.glass,
                 backdropFilter: theme.blur.md,
@@ -1134,16 +1083,16 @@ const FannedCardStack = ({ wishes, onCardClick, onEdit, onDelete }) => {
                 boxShadow: theme.shadows.glass,
               }}
             >
-              <FiChevronRight size={20} color={theme.colors.text.primary} />
+              <FiChevronRight size={24} color={theme.colors.text.primary} />
             </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
 
-// Bottom Navigation Component - Modified with narrower height
+// Bottom Navigation Component (S25 Ultra Optimized)
 const BottomNavigation = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'home', icon: <FiHome />, label: 'Home' },
@@ -1152,48 +1101,61 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
   ];
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: theme.colors.glass,
-      backdropFilter: theme.blur.lg,
-      WebkitBackdropFilter: theme.blur.lg,
-      borderTop: `1px solid ${theme.colors.borderLight}`,
-      paddingBottom: 'env(safe-area-inset-bottom)',
-      zIndex: 100,
-      boxShadow: theme.shadows.glass,
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        padding: '6px 0',
-      }}>
+    <motion.div 
+      variants={slideUp}
+      initial="hidden"
+      animate="visible"
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: theme.colors.glass,
+        backdropFilter: theme.blur.lg,
+        WebkitBackdropFilter: theme.blur.lg,
+        borderTop: `1px solid ${theme.colors.borderLight}`,
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        zIndex: 100,
+        boxShadow: theme.shadows.glass,
+      }}
+    >
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          padding: '8px 0',
+        }}
+      >
         {tabs.map(tab => (
           <motion.button
             key={tab.id}
-            whileTap={{ scale: 0.9 }}
+            variants={itemFade}
+            whileTap={{ scale: 0.8 }}
+            whileHover={{ scale: 1.1 }}
             onClick={() => onTabChange(tab.id)}
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 4,
-              padding: '8px 20px',
+              gap: 6,
+              padding: '12px 24px',
               border: 'none',
               background: 'none',
               cursor: 'pointer',
               color: activeTab === tab.id ? theme.colors.accent.primary : theme.colors.text.tertiary,
-              fontSize: 20,
+              fontSize: 22,
               WebkitTapHighlightColor: 'transparent',
               transition: 'all 0.2s ease',
+              minHeight: 64,
             }}
           >
             <div style={{
-              padding: 6,
-              borderRadius: 12,
+              padding: 8,
+              borderRadius: 14,
               background: activeTab === tab.id 
                 ? `linear-gradient(135deg, ${theme.colors.accent.primary}20 0%, ${theme.colors.accent.secondary}20 100%)`
                 : 'transparent',
@@ -1202,7 +1164,7 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
               {tab.icon}
             </div>
             <span style={{ 
-              fontSize: 10, 
+              fontSize: 12, 
               fontWeight: 600,
               fontFamily: 'Nexus Sherif, Playfair Display, serif',
             }}>
@@ -1210,22 +1172,25 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
             </span>
           </motion.button>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-// Updated Floating Action Button Component with liquid glass effect
+// Updated Floating Action Button Component (S25 Ultra)
 const FloatingActionButton = ({ onClick }) => (
   <motion.button 
     className="fab-liquid" 
     onClick={onClick} 
     aria-label="Add Wish"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
+    variants={fabEntry}
+    initial="hidden"
+    animate="visible"
+    whileHover={{ scale: 1.1, boxShadow: "0 28px 56px rgba(91,91,214,0.4)" }}
+    whileTap={{ scale: 0.9 }}
     style={{
-      width: 64,
-      height: 64,
+      width: 72,
+      height: 72,
       borderRadius: '50%',
       background: theme.colors.gradient.ocean,
       boxShadow: theme.shadows.glassLg,
@@ -1233,8 +1198,8 @@ const FloatingActionButton = ({ onClick }) => (
       alignItems: 'center',
       justifyContent: 'center',
       position: 'fixed',
-      bottom: 90,
-      right: 20,
+      bottom: 100,
+      right: 24,
       zIndex: 200,
       border: 'none',
       cursor: 'pointer',
@@ -1242,11 +1207,11 @@ const FloatingActionButton = ({ onClick }) => (
     }}
   >
     <div className="liquid-effect" />
-    <FiPlus className="fab-icon" size={28} color="white" style={{ zIndex: 1 }} />
+    <FiPlus className="fab-icon" size={32} color="white" style={{ zIndex: 1 }} />
   </motion.button>
 );
 
-// Create/Edit Wish Modal (Optimized for S25)
+// Create/Edit Wish Modal (S25 Ultra Optimized)
 const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
   const [formData, setFormData] = useState({
     content: initial?.content || "",
@@ -1254,6 +1219,7 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
     notes: initial?.notes || "",
     media: initial?.media || "",
     mediaType: initial?.mediaType || "",
+    reviews: initial?.reviews || [],
   });
   const [mediaObj, setMediaObj] = useState(null);
 
@@ -1286,20 +1252,21 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      variants={pageFade}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0, 0, 0, 0.4)',
+        background: 'rgba(0, 0, 0, 0.45)',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
         zIndex: 1000,
         padding: 0,
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
       }}
       onClick={onClose}
     >
@@ -1307,7 +1274,7 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         onClick={(e) => e.stopPropagation()}
         className="glass-modal"
         style={{
@@ -1315,8 +1282,8 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
           backdropFilter: theme.blur.lg,
           WebkitBackdropFilter: theme.blur.lg,
           width: '100%',
-          maxHeight: '90vh',
-          borderRadius: '24px 24px 0 0',
+          maxHeight: '92vh',
+          borderRadius: '28px 28px 0 0',
           overflow: 'hidden',
           boxShadow: theme.shadows.xl,
           border: `1px solid ${theme.colors.borderLight}`,
@@ -1324,15 +1291,15 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
       >
         {/* Handle */}
         <div style={{
-          padding: '12px 0 6px',
+          padding: '16px 0 8px',
           display: 'flex',
           justifyContent: 'center',
         }}>
           <div style={{
-            width: 40,
-            height: 4,
+            width: 48,
+            height: 5,
             background: theme.colors.border,
-            borderRadius: 2,
+            borderRadius: 3,
           }} />
         </div>
 
@@ -1341,46 +1308,60 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '12px 24px 20px',
+          padding: '16px 28px 24px',
         }}>
-          <h2 style={{ 
-            fontSize: 22, 
-            fontWeight: 800,
-            fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            color: theme.colors.text.primary,
-          }}>
+          <motion.h2 
+            variants={itemFade} 
+            initial="hidden" 
+            animate="visible"
+            style={{ 
+              fontSize: 26, 
+              fontWeight: 800,
+              fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              color: theme.colors.text.primary,
+            }}
+          >
             {isEdit ? "Edit Wish" : "Add New Wish"}
-          </h2>
+          </motion.h2>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
             style={{
               background: 'transparent',
               border: 'none',
-              padding: 10,
+              padding: 12,
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
+              borderRadius: theme.radius.md,
+              minWidth: 48,
+              minHeight: 48,
             }}
           >
-            <FiX size={24} />
+            <FiX size={28} />
           </motion.button>
         </div>
 
         {/* Scrollable Form Container */}
         <div style={{
           overflowY: 'auto',
-          maxHeight: 'calc(90vh - 120px)',
+          maxHeight: 'calc(92vh - 140px)',
           WebkitOverflowScrolling: 'touch',
         }}>
           {/* Form */}
-          <form onSubmit={handleSubmit} style={{ padding: '0 24px 36px' }}>
-            <div style={{ marginBottom: 24 }}>
+          <motion.form 
+            onSubmit={handleSubmit} 
+            style={{ padding: '0 28px 40px' }}
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={itemFade} style={{ marginBottom: 28 }}>
               <label style={{
                 display: 'block',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 600,
                 color: theme.colors.text.secondary,
-                marginBottom: 8,
+                marginBottom: 12,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
               }}>
                 Title
@@ -1395,8 +1376,8 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                 className="glass-input"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
-                  fontSize: 16,
+                  padding: '18px 20px',
+                  fontSize: 18,
                   border: `1px solid ${theme.colors.border}`,
                   borderRadius: theme.radius.lg,
                   outline: 'none',
@@ -1406,17 +1387,18 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                   backdropFilter: theme.blur.sm,
                   color: theme.colors.text.primary,
                   transition: 'all 0.2s ease',
+                  minHeight: 56,
                 }}
               />
-            </div>
+            </motion.div>
 
-            <div style={{ marginBottom: 24 }}>
+            <motion.div variants={itemFade} style={{ marginBottom: 28 }}>
               <label style={{
                 display: 'block',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 600,
                 color: theme.colors.text.secondary,
-                marginBottom: 8,
+                marginBottom: 12,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
               }}>
                 Category
@@ -1427,35 +1409,36 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                 className="glass-select"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
-                  fontSize: 16,
+                  padding: '18px 20px',
+                  fontSize: 18,
                   border: `1px solid ${theme.colors.border}`,
                   borderRadius: theme.radius.lg,
                   outline: 'none',
                   WebkitAppearance: 'none',
                   background: `${theme.colors.glassDark} url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A7D85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat`,
-                  backgroundPosition: 'right 14px center',
-                  backgroundSize: '18px',
-                  paddingRight: '44px',
+                  backgroundPosition: 'right 18px center',
+                  backgroundSize: '20px',
+                  paddingRight: '52px',
                   fontFamily: 'Nexus Sherif, Playfair Display, serif',
                   backdropFilter: theme.blur.sm,
                   color: theme.colors.text.primary,
                   transition: 'all 0.2s ease',
+                  minHeight: 56,
                 }}
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
-            </div>
+            </motion.div>
 
-            <div style={{ marginBottom: 24 }}>
+            <motion.div variants={itemFade} style={{ marginBottom: 28 }}>
               <label style={{
                 display: 'block',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 600,
                 color: theme.colors.text.secondary,
-                marginBottom: 8,
+                marginBottom: 12,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
               }}>
                 Description
@@ -1468,8 +1451,8 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                 className="glass-textarea"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
-                  fontSize: 16,
+                  padding: '18px 20px',
+                  fontSize: 18,
                   border: `1px solid ${theme.colors.border}`,
                   borderRadius: theme.radius.lg,
                   outline: 'none',
@@ -1480,9 +1463,10 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                   backdropFilter: theme.blur.sm,
                   color: theme.colors.text.primary,
                   transition: 'all 0.2s ease',
+                  minHeight: 120,
                 }}
               />
-            </div>
+            </motion.div>
 
             <MediaPicker
               value={formData.media}
@@ -1492,16 +1476,17 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
 
             <motion.button
               type="submit"
-              whileTap={{ scale: 0.98 }}
+              variants={itemFade}
+              whileTap={{ scale: 0.95 }}
               className="liquid-button"
               style={{
                 width: '100%',
-                padding: '16px',
+                padding: '20px',
                 background: getCategoryGradient(formData.category),
                 color: '#fff',
                 border: 'none',
                 borderRadius: theme.radius.lg,
-                fontSize: 17,
+                fontSize: 19,
                 fontWeight: 700,
                 cursor: 'pointer',
                 WebkitTapHighlightColor: 'transparent',
@@ -1509,19 +1494,20 @@ const CreateWishModal = ({ categories, onSave, onClose, initial, isEdit }) => {
                 boxShadow: theme.shadows.md,
                 position: 'relative',
                 overflow: 'hidden',
+                minHeight: 64,
               }}
             >
               <span style={{ position: 'relative', zIndex: 1 }}>{isEdit ? "Save Changes" : "Add Wishlist Card"}</span>
               <div className="liquid-effect" />
             </motion.button>
-          </form>
+          </motion.form>
         </div>
       </motion.div>
     </motion.div>
   );
 };
 
-// Main App Component
+// Main App Component (S25 Ultra Optimized)
 export default function App() {
   const [wishes, setWishes] = useState(initialWishes);
   const [categories] = useState(defaultCategories);
@@ -1596,42 +1582,59 @@ export default function App() {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: theme.colors.bg,
-      paddingBottom: 80,
-      WebkitTouchCallout: 'none',
-      WebkitUserSelect: 'none',
-      userSelect: 'none',
-    }}>
+    <motion.div 
+      variants={pageFade}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      style={{ 
+        minHeight: '100vh', 
+        background: theme.colors.bg,
+        paddingBottom: 90,
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+      }}
+    >
       {/* Header - Only show on home tab */}
       {activeBottomTab === 'home' && (
-        <header style={{
-          position: 'sticky',
-          top: 0,
-          background: theme.colors.glass,
-          backdropFilter: theme.blur.lg,
-          WebkitBackdropFilter: theme.blur.lg,
-          borderBottom: `1px solid ${theme.colors.border}`,
-          zIndex: 50,
-          boxShadow: theme.shadows.sm,
-        }}>
+        <motion.header 
+          variants={slideDown}
+          initial="hidden"
+          animate="visible"
+          className="app-header"
+          style={{
+            position: 'sticky',
+            top: 0,
+            background: theme.colors.glass,
+            backdropFilter: theme.blur.lg,
+            WebkitBackdropFilter: theme.blur.lg,
+            borderBottom: `1px solid ${theme.colors.border}`,
+            zIndex: 50,
+            boxShadow: theme.shadows.sm,
+          }}
+        >
           <div style={{
-            padding: '16px 24px',
+            padding: '20px 28px',
             textAlign: 'center',
           }}>
-            <h1 style={{
-              fontSize: 26,
-              fontWeight: 800,
-              background: theme.colors.gradient.ocean,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              marginBottom: 0,
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-            }}>
+            <motion.h1 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 220 }}
+              style={{
+                fontSize: 30,
+                fontWeight: 800,
+                background: theme.colors.gradient.ocean,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: 0,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+              }}
+            >
               Wishli
-            </h1>
+            </motion.h1>
           </div>
 
           {/* Category Tabs */}
@@ -1640,54 +1643,72 @@ export default function App() {
             selected={selectedCategory}
             onSelect={setSelectedCategory}
           />
-        </header>
+        </motion.header>
       )}
 
       {/* Main Content */}
       <main>
         {activeBottomTab === 'home' && (
           filteredWishes.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '120px 20px',
-              color: theme.colors.text.tertiary,
-            }}>
-              <div style={{ fontSize: 64, marginBottom: 20, opacity: 0.15 }}>×</div>
-              <p style={{ 
-                fontSize: 18, 
-                marginBottom: 32,
-                fontFamily: 'Nexus Sherif, Playfair Display, serif',
-              }}>
+            <motion.div 
+              variants={slideUp}
+              initial="hidden"
+              animate="visible"
+              style={{
+                textAlign: 'center',
+                padding: '140px 24px',
+                color: theme.colors.text.tertiary,
+              }}
+            >
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: "spring" }}
+                style={{ fontSize: 72, marginBottom: 24, opacity: 0.15 }}
+              >
+                ×
+              </motion.div>
+              <motion.p 
+                variants={itemFade}
+                style={{ 
+                  fontSize: 20, 
+                  marginBottom: 36,
+                  fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                }}
+              >
                 No wishes in {selectedCategory} yet
-              </p>
+              </motion.p>
               <motion.button
+                variants={itemFade}
                 whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
                 onClick={() => setShowAddModal(true)}
                 className="liquid-button"
                 style={{
-                  padding: '14px 28px',
+                  padding: '18px 32px',
                   background: getCategoryGradient(selectedCategory),
                   color: '#fff',
                   border: 'none',
                   borderRadius: theme.radius.lg,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: 600,
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 10,
+                  gap: 12,
                   cursor: 'pointer',
                   WebkitTapHighlightColor: 'transparent',
                   fontFamily: 'Nexus Sherif, Playfair Display, serif',
                   boxShadow: theme.shadows.md,
                   position: 'relative',
                   overflow: 'hidden',
+                  minHeight: 56,
                 }}
               >
-                <FiPlus size={18} />
+                <FiPlus size={20} />
                 Add Your First Wish
                 <div className="liquid-effect" />
               </motion.button>
-            </div>
+            </motion.div>
           ) : (
             <FannedCardStack
               wishes={filteredWishes}
@@ -1702,8 +1723,17 @@ export default function App() {
         )}
 
         {activeBottomTab === 'search' && (
-          <div style={{ padding: 24 }}>
-            <div className="search-container" style={{ marginBottom: 24 }}>
+          <motion.div 
+            variants={slideUp}
+            initial="hidden"
+            animate="visible"
+            style={{ padding: 28 }}
+          >
+            <motion.div 
+              variants={itemFade}
+              className="search-container" 
+              style={{ marginBottom: 28 }}
+            >
               <input
                 className="search-input glass-input"
                 type="text"
@@ -1715,22 +1745,34 @@ export default function App() {
                   background: theme.colors.glass,
                   backdropFilter: theme.blur.sm,
                   border: `1px solid ${theme.colors.border}`,
+                  fontSize: 18,
+                  padding: '18px 24px 18px 60px',
+                  minHeight: 56,
                 }}
               />
-              <FiSearch className="search-icon" />
-            </div>
+              <FiSearch className="search-icon" size={20} />
+            </motion.div>
             {searchedWishes.length === 0 ? (
-              <div className="empty-state">
+              <motion.div 
+                variants={itemFade}
+                className="empty-state"
+              >
                 <div className="empty-state-icon">×</div>
                 <div className="empty-state-title">No results</div>
                 <div className="empty-state-description">Try a different keyword.</div>
-              </div>
+              </motion.div>
             ) : (
-              <div className="wishes-list">
+              <motion.div 
+                className="wishes-list"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
                 {searchedWishes.map(wish => (
                   <motion.div
                     className="wish-list-item glass-card-mini"
                     key={wish.id}
+                    variants={itemFade}
                     onClick={() => handleCardClick(wish)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -1738,6 +1780,8 @@ export default function App() {
                       background: theme.colors.glass,
                       backdropFilter: theme.blur.sm,
                       border: `1px solid ${theme.colors.borderLight}`,
+                      padding: '20px 24px',
+                      minHeight: 80,
                     }}
                   >
                     {wish.media ? (
@@ -1745,14 +1789,18 @@ export default function App() {
                         <video
                           className="wish-list-thumbnail"
                           src={wish.media}
-                          style={{ objectFit: 'cover' }}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          style={{ objectFit: 'cover', width: 56, height: 56 }}
                         />
                       ) : (
                         <img
                           className="wish-list-thumbnail"
                           src={wish.media}
                           alt={wish.content}
-                          style={{ objectFit: 'cover' }}
+                          style={{ objectFit: 'cover', width: 56, height: 56 }}
                         />
                       )
                     ) : (
@@ -1762,36 +1810,47 @@ export default function App() {
                         justifyContent: 'center',
                         background: getCategoryGradient(wish.category),
                         color: 'white',
+                        width: 56,
+                        height: 56,
+                        fontSize: 20,
                       }}>
                         {getTypeIcon(wish.type)}
                       </div>
                     )}
                     <div className="wish-list-content">
-                      <div className="wish-list-title">{wish.content}</div>
-                      <div className="wish-list-meta">
+                      <div className="wish-list-title" style={{ fontSize: 18 }}>{wish.content}</div>
+                      <div className="wish-list-meta" style={{ fontSize: 15 }}>
                         <span>{wish.category}</span>
                         <span>{formatDate(wish.created)}</span>
                       </div>
                     </div>
                     {wish.completed && (
-                      <FiCheck size={18} color={theme.colors.success} />
+                      <FiCheck size={20} color={theme.colors.success} />
                     )}
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {activeBottomTab === 'profile' && (
-          <div style={{ padding: 24, maxWidth: 400, margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <motion.div 
+            variants={slideUp}
+            initial="hidden"
+            animate="visible"
+            style={{ padding: 28, maxWidth: 480, margin: '0 auto' }}
+          >
+            <motion.div 
+              variants={itemFade}
+              style={{ textAlign: 'center', marginBottom: 36 }}
+            >
               <div className="glass-avatar" style={{
-                width: 80, height: 80, borderRadius: '50%',
+                width: 96, height: 96, borderRadius: '50%',
                 background: theme.colors.gradient.lavender,
-                margin: '0 auto 12px',
+                margin: '0 auto 16px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 36, color: 'white',
+                fontSize: 42, color: 'white',
                 boxShadow: theme.shadows.glassLg,
                 fontFamily: 'Nexus Sherif, Playfair Display, serif',
               }}>
@@ -1803,7 +1862,7 @@ export default function App() {
               </div>
               <input
                 style={{
-                  fontSize: 20, fontWeight: 700, textAlign: 'center',
+                  fontSize: 24, fontWeight: 700, textAlign: 'center',
                   border: 'none', background: 'transparent', outline: 'none', width: '100%',
                   fontFamily: 'Nexus Sherif, Playfair Display, serif',
                   color: theme.colors.text.primary,
@@ -1811,16 +1870,24 @@ export default function App() {
                 value={user.name}
                 onChange={e => setUser({ ...user, name: e.target.value })}
               />
-            </div>
+            </motion.div>
             
-            <div className="stats-container" style={{ marginBottom: 32 }}>
+            <motion.div 
+              className="stats-container" 
+              style={{ marginBottom: 36 }}
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
               <motion.div 
                 className="stat-card glass-card-mini"
+                variants={itemFade}
                 whileHover={{ scale: 1.05 }}
                 style={{
                   background: theme.colors.glass,
                   backdropFilter: theme.blur.sm,
                   border: `1px solid ${theme.colors.borderLight}`,
+                  padding: 32,
                 }}
               >
                 <div className="stat-value" style={{ 
@@ -1828,18 +1895,21 @@ export default function App() {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
+                  fontSize: 40,
                 }}>
                   {totalWishes}
                 </div>
-                <div className="stat-label">Total Wishes</div>
+                <div className="stat-label" style={{ fontSize: 17 }}>Total Wishes</div>
               </motion.div>
               <motion.div 
                 className="stat-card glass-card-mini"
+                variants={itemFade}
                 whileHover={{ scale: 1.05 }}
                 style={{
                   background: theme.colors.glass,
                   backdropFilter: theme.blur.sm,
                   border: `1px solid ${theme.colors.borderLight}`,
+                  padding: 32,
                 }}
               >
                 <div className="stat-value" style={{ 
@@ -1847,22 +1917,25 @@ export default function App() {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
+                  fontSize: 40,
                 }}>
                   {completedCount}
                 </div>
-                <div className="stat-label">Completed</div>
+                <div className="stat-label" style={{ fontSize: 17 }}>Completed</div>
               </motion.div>
               <motion.div 
                 className="stat-card glass-card-mini"
+                variants={itemFade}
                 whileHover={{ scale: 1.05 }}
                 style={{
                   background: theme.colors.glass,
                   backdropFilter: theme.blur.sm,
                   border: `1px solid ${theme.colors.borderLight}`,
+                  padding: 32,
                 }}
               >
                 <div className="stat-value" style={{ 
-                  fontSize: 24,
+                  fontSize: 28,
                   background: theme.colors.gradient.sunset,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -1870,37 +1943,62 @@ export default function App() {
                 }}>
                   {mostPopularCategory || '-'}
                 </div>
-                <div className="stat-label">Top Category</div>
+                <div className="stat-label" style={{ fontSize: 17 }}>Top Category</div>
               </motion.div>
-            </div>
+            </motion.div>
             
-            <h3 style={{ 
-              fontSize: 16, fontWeight: 700, marginBottom: 12,
-              fontFamily: 'Nexus Sherif, Playfair Display, serif',
-              color: theme.colors.text.primary,
-            }}>
+            <motion.h3 
+              variants={itemFade}
+              style={{ 
+                fontSize: 18, fontWeight: 700, marginBottom: 16,
+                fontFamily: 'Nexus Sherif, Playfair Display, serif',
+                color: theme.colors.text.primary,
+              }}
+            >
               Completed Wishes
-            </h3>
+            </motion.h3>
             {completedWishes.length === 0 ? (
-              <div className="empty-state-description">No completed wishes yet.</div>
+              <motion.div 
+                variants={itemFade}
+                className="empty-state-description"
+                style={{ fontSize: 17 }}
+              >
+                No completed wishes yet.
+              </motion.div>
             ) : (
-              <div className="wishes-list">
+              <motion.div 
+                className="wishes-list"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
                 {completedWishes.map(wish => (
                   <motion.div 
                     className="wish-list-item glass-card-mini" 
                     key={wish.id}
+                    variants={itemFade}
                     whileHover={{ scale: 1.02 }}
                     style={{
                       background: theme.colors.glass,
                       backdropFilter: theme.blur.sm,
                       border: `1px solid ${theme.colors.borderLight}`,
+                      padding: '20px 24px',
+                      minHeight: 80,
                     }}
                   >
                     {wish.media ? (
                       wish.mediaType === "video" ? (
-                        <video className="wish-list-thumbnail" src={wish.media} />
+                        <video 
+                          className="wish-list-thumbnail" 
+                          src={wish.media}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          style={{ width: 56, height: 56 }}
+                        />
                       ) : (
-                        <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} />
+                        <img className="wish-list-thumbnail" src={wish.media} alt={wish.content} style={{ width: 56, height: 56 }} />
                       )
                     ) : (
                       <div className="wish-list-thumbnail" style={{
@@ -1909,13 +2007,16 @@ export default function App() {
                         justifyContent: 'center',
                         background: getCategoryGradient(wish.category),
                         color: 'white',
+                        width: 56,
+                        height: 56,
+                        fontSize: 20,
                       }}>
                         {getTypeIcon(wish.type)}
                       </div>
                     )}
                     <div className="wish-list-content">
-                      <div className="wish-list-title">{wish.content}</div>
-                      <div className="wish-list-meta">
+                      <div className="wish-list-title" style={{ fontSize: 18 }}>{wish.content}</div>
+                      <div className="wish-list-meta" style={{ fontSize: 15 }}>
                         <span>{wish.category}</span>
                         <span>{formatDate(wish.completedDate || wish.created)}</span>
                       </div>
@@ -1923,8 +2024,9 @@ export default function App() {
                     <button
                       style={{ 
                         background: 'none', border: 'none', 
-                        color: theme.colors.warning, fontSize: 18,
-                        cursor: 'pointer', padding: 8,
+                        color: theme.colors.warning, fontSize: 20,
+                        cursor: 'pointer', padding: 12,
+                        minWidth: 48, minHeight: 48,
                       }}
                       onClick={() => setWishes(wishes.map(w => 
                         w.id === wish.id ? { ...w, completed: false } : w
@@ -1935,9 +2037,9 @@ export default function App() {
                     </button>
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         )}
       </main>
 
@@ -1974,80 +2076,6 @@ export default function App() {
           />
         )}
       </AnimatePresence>
-
-      {/* CSS for hiding scrollbars and liquid effects */}
-      <style jsx>{`
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .liquid-effect {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 100%;
-          height: 100%;
-          transform: translate(-50%, -50%);
-          background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          pointer-events: none;
-        }
-        
-        .liquid-button:hover .liquid-effect,
-        .fab-liquid:hover .liquid-effect {
-          opacity: 1;
-          animation: liquid-pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes liquid-pulse {
-          0% { transform: translate(-50%, -50%) scale(0.8); }
-          50% { transform: translate(-50%, -50%) scale(1.2); }
-          100% { transform: translate(-50%, -50%) scale(0.8); }
-        }
-        
-        @keyframes wishli-glass-fadein {
-          from { opacity: 0; transform: translateY(30px) scale(0.95);}
-          to { opacity: 1; transform: translateY(0) scale(1);}
-        }
-        
-        @keyframes wishli-check-pop {
-          0% { transform: scale(0.7); opacity: 0;}
-          60% { transform: scale(1.2);}
-          100% { transform: scale(1); opacity: 1;}
-        }
-        
-        @keyframes wishli-gradient-border {
-          0% { filter: hue-rotate(0deg);}
-          100% { filter: hue-rotate(360deg);}
-        }
-        
-        .wishli-fancy-card:hover .wishli-card-img {
-          transform: scale(1.04) rotate(-1deg);
-          filter: brightness(1.08) saturate(1.1);
-        }
-        
-        .glass-card:hover {
-          transform: translateY(-2px);
-          box-shadow: ${theme.shadows.glassLg};
-        }
-        
-        .glass-button:hover {
-          background: ${theme.colors.surface};
-          transform: scale(1.05);
-        }
-        
-        .glass-input:focus,
-        .glass-select:focus,
-        .glass-textarea:focus {
-          border-color: ${theme.colors.accent.primary};
-          background: ${theme.colors.surface};
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 }

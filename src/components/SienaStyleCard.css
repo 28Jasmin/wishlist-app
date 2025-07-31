@@ -1,0 +1,208 @@
+/* SienaStyleCard.css - Fixed version with proper gradient clipping and outline text */
+
+/* --- CARD SHELL ------------------------------------------------- */
+.siena-card {
+  position: relative;
+  width: 280px;
+  height: 460px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.6);
+}
+
+/* ambient gradient border behind card */
+.siena-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 2px; /* border thickness */
+  background: linear-gradient(45deg,
+    #5B5BD6, #B794F6, #FF6B6B, #FFE66D, #4ECDC4
+  );
+  background-size: 400% 400%;
+  -webkit-mask:
+    /* mask center inwards so we only see gradient-border */
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: gradientShift 12s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* full-bleed media + hover zoom */
+.siena-media {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.siena-card:hover .siena-media {
+  transform: scale(1.08);
+}
+
+/* --- DARKEN TOP+BOTTOM 20% WITH PROPER RADIUS --------------------------------- */
+.siena-dark-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.6) 0%,
+    rgba(0,0,0,0)   22%,
+    rgba(0,0,0,0)   78%,
+    rgba(0,0,0,0.6) 100%
+  );
+  z-index: 1;
+  /* Let the gradient respect the rounded corners */
+  border-radius: inherit;
+}
+
+/* TOP OVERLAY (title + quotes) */
+.siena-overlay-top {
+  position: absolute;
+  top: 16px; left: 16px; right: 16px;
+  z-index: 2;
+  color: #fff;
+}
+
+/* --- REBUILT BOTTOM GRADIENT & CONTENT WITH PROPER RADIUS ----------------------- */
+.siena-overlay-bottom {
+  position: absolute;
+  inset-inline: 0;                  /* full width */
+  bottom: 0;                        /* stick to real bottom to grab radius */
+  padding: 48px 16px 16px;          /* "48" pushes the description upward */
+  z-index: 2;
+  pointer-events: none;             /* ignore taps */
+
+  /* faded backdrop – will be clipped automatically */
+  --fade: linear-gradient(to top,
+              rgba(0,0,0,0.65) 0%,
+              rgba(0,0,0,0.45) 25%,
+              rgba(0,0,0,0.00) 100%);
+
+  background: var(--fade);
+  backdrop-filter: blur(1.5px);
+
+  /* makes sure the overlay never shows square edges in Safari iOS */
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+/* -------- CATEGORY WITH OUTLINE TEXT -------- */
+.siena-category {
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: .1em;
+  opacity: .9;
+  margin-bottom: 4px;
+  -webkit-text-stroke: 0.6px #000;   /* razor-sharp outline */
+  text-shadow: 0 0 6px rgba(255,255,255,0.7); /* subtle glow */
+}
+
+/* -------- TITLE WITH HARDWARE-ACCELERATED OUTLINE -------- */
+.siena-title {
+  position: relative;
+  font-size: 24px;
+  line-height: 1.1;
+  font-family: 'Nexus Sherif','Playfair Display',serif;
+  font-weight: 700;
+  color: #fff;
+
+  /* ✨ one node = perfect alignment */
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke: 1px #000;
+
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.8), /* glow */
+    0 0 2px rgba(0,0,0,0.5);       /* micro contrast */
+}
+
+/* Kill any old duplicate node rules */
+.siena-title::before { display: none; }
+.siena-category::before { display: none; }
+
+.siena-quotes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.3;
+  text-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+.siena-quotes li {
+  margin-bottom: 6px;
+  font-style: italic;
+}
+.siena-quote-source {
+  display: block;
+  font-size: 9px;
+  opacity: .7;
+  margin-top: 2px;
+  letter-spacing: .05em;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* increase description size */
+.siena-description {
+  font-size: 14px;   /* was 12px */
+  line-height: 1.4;
+  margin: 0 0 8px;
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 6px rgba(255,255,255,0.7);
+  color: #fff;
+  pointer-events: auto; /* allow text selection */
+}
+
+.siena-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 10px;
+  opacity: .8;
+  color: #fff;
+  pointer-events: auto;
+}
+.siena-tag {
+  text-transform: capitalize;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+.siena-date { 
+  font-weight: 500;
+}
+
+/* remove any old glass styles */
+.siena-card .wishli-card-glass,
+.siena-card .wishli-card-img { 
+  display: none; 
+}
+
+/* S25 Ultra optimizations */
+@media screen and (min-width: 900px) and (min-height: 2000px) {
+  .siena-card {
+    width: 320px;
+    height: 520px;
+  }
+  
+  .siena-title {
+    font-size: 28px;
+  }
+  
+  .siena-description {
+    font-size: 16px;
+  }
+}

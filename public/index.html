@@ -9,6 +9,12 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
+    <!-- S25 Ultra specific meta tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="format-detection" content="telephone=no" />
+    
     <!-- Playfair Display Font (similar to Nexus Sherif) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +31,7 @@
         font-style: normal;
       }
       
-      /* Prevent FOUC and optimize for S25 */
+      /* S25 Ultra optimizations */
       * {
         margin: 0;
         padding: 0;
@@ -42,6 +48,17 @@
         -moz-osx-font-smoothing: grayscale;
         overflow-x: hidden;
         touch-action: pan-y pinch-zoom;
+        /* S25 Ultra specific optimizations */
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        font-size: 16px; /* Better readability on large screen */
+      }
+      
+      /* High DPI display optimizations for S25 Ultra */
+      @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
+        body {
+          font-size: 17px;
+        }
       }
       
       /* Minimal Loading State */
@@ -59,11 +76,11 @@
       }
       
       .loading-dot {
-        width: 3px;
-        height: 3px;
+        width: 4px;
+        height: 4px;
         background: #e0e0e0;
         border-radius: 50%;
-        margin: 0 3px;
+        margin: 0 4px;
         animation: loading 1.2s ease-in-out infinite;
       }
       
@@ -81,10 +98,32 @@
           opacity: 1;
         }
       }
+      
+      /* S25 Ultra edge gesture handling */
+      .edge-swipe-area {
+        position: fixed;
+        top: 0;
+        width: 20px;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      .edge-swipe-area.left {
+        left: 0;
+      }
+      
+      .edge-swipe-area.right {
+        right: 0;
+      }
     </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    
+    <!-- Edge swipe protection for S25 Ultra -->
+    <div class="edge-swipe-area left"></div>
+    <div class="edge-swipe-area right"></div>
     
     <!-- Loading State -->
     <div id="loading" class="loading-container">
@@ -96,43 +135,65 @@
     <div id="root"></div>
     
     <script>
-      // Show content when ready
+      // S25 Ultra specific optimizations
       window.addEventListener('DOMContentLoaded', function() {
+        // Performance optimization for high refresh rate
+        if (window.screen && window.screen.refreshRate && window.screen.refreshRate > 60) {
+          document.documentElement.style.setProperty('--high-refresh', '1');
+        }
+        
         setTimeout(function() {
           document.body.style.visibility = 'visible';
           document.body.style.opacity = '1';
-          document.body.style.transition = 'opacity 0.2s ease-in';
+          document.body.style.transition = 'opacity 0.3s ease-in';
           const loader = document.getElementById('loading');
           if (loader) {
             loader.style.opacity = '0';
-            loader.style.transition = 'opacity 0.2s ease-out';
-            setTimeout(() => loader.remove(), 200);
+            loader.style.transition = 'opacity 0.3s ease-out';
+            setTimeout(() => loader.remove(), 300);
           }
         }, 100);
       });
       
-      // Prevent pull-to-refresh on Android
+      // Enhanced pull-to-refresh prevention for S25 Ultra
       let lastTouchY = 0;
       let maybePreventPullToRefresh = false;
+      let touchStartTime = 0;
       
       document.addEventListener('touchstart', (e) => {
         if (e.touches.length !== 1) return;
+        touchStartTime = Date.now();
         lastTouchY = e.touches[0].clientY;
         maybePreventPullToRefresh = window.scrollY === 0;
-      });
+      }, { passive: false });
       
       document.addEventListener('touchmove', (e) => {
         const touchY = e.touches[0].clientY;
         const touchYDelta = touchY - lastTouchY;
+        const touchDuration = Date.now() - touchStartTime;
         lastTouchY = touchY;
         
-        if (maybePreventPullToRefresh) {
+        if (maybePreventPullToRefresh && touchDuration < 500) {
           maybePreventPullToRefresh = false;
           if (touchYDelta > 0) {
             e.preventDefault();
           }
         }
-      });
+      }, { passive: false });
+      
+      // S25 Ultra performance monitoring
+      if (window.performance && window.performance.mark) {
+        window.performance.mark('app-start');
+      }
+      
+      // Battery and performance optimization
+      if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+          if (battery.level < 0.2) {
+            document.documentElement.classList.add('low-battery-mode');
+          }
+        });
+      }
     </script>
   </body>
 </html>

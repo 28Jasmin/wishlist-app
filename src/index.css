@@ -1,7 +1,7 @@
 /* Import Playfair Display as alternative to Nexus Sherif */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-/* CSS Variables for Enhanced mymind-inspired Theme */
+/* CSS Variables for Enhanced mymind-inspired Theme - S25 Ultra Optimized */
 :root {
   /* MyMind-inspired Colors */
   --color-bg: #FDFBF7;
@@ -34,7 +34,7 @@
   --gradient-mint: linear-gradient(135deg, #81E6D9 0%, #4ECDC4 100%);
   --gradient-peach: linear-gradient(135deg, #FBBAA3 0%, #FF6B6B 100%);
   
-  /* Glass Shadows */
+  /* Glass Shadows - Enhanced for S25 Ultra */
   --shadow-xs: 0 2px 4px rgba(45, 45, 47, 0.02);
   --shadow-sm: 0 4px 8px rgba(45, 45, 47, 0.03);
   --shadow-md: 0 8px 16px rgba(45, 45, 47, 0.04);
@@ -57,11 +57,38 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
   
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-spring: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  /* S25 Ultra specific variables */
+  --s25-safe-area-top: env(safe-area-inset-top, 0px);
+  --s25-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --s25-safe-area-left: env(safe-area-inset-left, 0px);
+  --s25-safe-area-right: env(safe-area-inset-right, 0px);
+  
+  /* Enhanced transitions for 120Hz display */
+  --transition-fast: 8ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 16ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 24ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 200ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* High refresh rate optimizations */
+@media (min-resolution: 120dpi) {
+  :root {
+    --transition-fast: 4ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 8ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 12ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Low battery mode optimizations */
+.low-battery-mode {
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+}
+
+.low-battery-mode * {
+  animation-duration: 1s !important;
+  transition-duration: 0.3s !important;
 }
 
 /* Font Setup */
@@ -72,7 +99,7 @@
   font-style: normal;
 }
 
-/* Reset and Base Styles */
+/* Reset and Base Styles - S25 Ultra Optimized */
 *,
 *::before,
 *::after {
@@ -87,13 +114,15 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   touch-action: manipulation;
+  /* S25 Ultra optimizations */
+  font-size: 16px; /* Base font size for better readability */
 }
 
 body {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
   background: var(--color-bg);
   color: var(--color-text-primary);
-  font-size: 14px;
+  font-size: 16px; /* Increased from 14px for S25 Ultra */
   line-height: 1.5;
   font-weight: 400;
   min-height: 100vh;
@@ -104,9 +133,18 @@ body {
   font-feature-settings: 'kern' 1, 'liga' 1;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  padding-top: var(--s25-safe-area-top);
+  padding-bottom: var(--s25-safe-area-bottom);
 }
 
-/* Glass Card Effects */
+/* High DPI display optimizations for S25 Ultra */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
+  body {
+    font-size: 17px;
+  }
+}
+
+/* Glass Card Effects - Enhanced for S25 Ultra */
 .glass-card {
   background: var(--color-glass);
   backdrop-filter: var(--blur-md);
@@ -114,6 +152,11 @@ body {
   border: 1px solid var(--color-border-light);
   box-shadow: var(--shadow-glass);
   transition: all var(--transition-base);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glass-lg);
 }
 
 .glass-card-mini {
@@ -125,6 +168,11 @@ body {
   transition: all var(--transition-fast);
 }
 
+.glass-card-mini:hover {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
 .glass-button {
   background: var(--color-glass);
   backdrop-filter: var(--blur-md);
@@ -132,6 +180,12 @@ body {
   border: 1px solid var(--color-border-light);
   box-shadow: var(--shadow-glass);
   transition: all var(--transition-fast);
+  min-height: 48px; /* S25 Ultra touch target */
+}
+
+.glass-button:hover {
+  background: var(--color-surface);
+  transform: scale(1.03);
 }
 
 .glass-modal {
@@ -142,9 +196,9 @@ body {
   box-shadow: var(--shadow-xl);
 }
 
-/* Media Picker Styles */
+/* Media Picker Styles - S25 Ultra Optimized */
 .media-picker-container {
-  margin-bottom: 24px;
+  margin-bottom: 28px; /* Increased spacing */
 }
 
 .media-preview {
@@ -153,24 +207,24 @@ body {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  margin-bottom: 16px;
+  margin-bottom: 20px; /* Increased spacing */
   background: var(--color-surface);
 }
 
 .media-preview img,
 .media-preview video {
   width: 100%;
-  height: 200px;
+  height: 240px; /* Increased height for S25 Ultra */
   object-fit: cover;
   display: block;
 }
 
 .media-preview-remove {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
+  top: 12px; /* Increased spacing */
+  right: 12px;
+  width: 40px; /* Larger for S25 Ultra */
+  height: 40px;
   background: var(--color-glass);
   backdrop-filter: var(--blur-sm);
   border: none;
@@ -181,6 +235,8 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .media-preview-remove:hover {
@@ -190,20 +246,21 @@ body {
 
 .media-picker-button {
   width: 100%;
-  padding: 12px 24px;
+  padding: 16px 28px; /* Increased padding */
   background: var(--color-glass);
   backdrop-filter: var(--blur-sm);
   color: var(--color-text-primary);
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-lg);
-  font-size: 15px;
+  font-size: 17px; /* Larger text */
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px; /* Increased gap */
   transition: all var(--transition-fast);
+  min-height: 56px; /* Larger touch target */
 }
 
 .media-picker-button:hover {
@@ -212,13 +269,13 @@ body {
   transform: translateY(-1px);
 }
 
-/* Swipe Action Menu Styles */
+/* Swipe Action Menu Styles - S25 Ultra Optimized */
 .swipe-action-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.35); /* Slightly darker */
+  backdrop-filter: blur(6px); /* Increased blur */
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -229,13 +286,13 @@ body {
 
 .swipe-action-buttons {
   display: flex;
-  gap: 40px;
-  margin-bottom: 12px;
+  gap: 48px; /* Increased gap */
+  margin-bottom: 16px;
 }
 
 .swipe-action-button {
-  width: 72px;
-  height: 72px;
+  width: 80px; /* Larger for S25 Ultra */
+  height: 80px;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -278,48 +335,50 @@ body {
 .swipe-action-label {
   color: #fff;
   font-weight: 700;
-  font-size: 16;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 12px;
+  font-size: 18px; /* Larger text */
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  margin-top: 16px;
   letter-spacing: 0.5px;
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
 }
 
-/* Enhanced Card Animations */
+/* Enhanced Card Animations - S25 Ultra */
 .wishli-fancy-card {
   transition: all var(--transition-base);
   transform-style: preserve-3d;
   perspective: 1000px;
+  will-change: transform;
 }
 
 .wishli-fancy-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px); /* More dramatic for larger screen */
   box-shadow: var(--shadow-3d);
 }
 
 .wishli-card-img {
-  transition: transform 0.5s cubic-bezier(0.4, 2, 0.6, 1), filter 0.5s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 2, 0.6, 1), filter 0.6s ease;
 }
 
 .wishli-fancy-card:hover .wishli-card-img {
-  transform: scale(1.04) rotate(-1deg);
-  filter: brightness(1.08) saturate(1.1);
+  transform: scale(1.06) rotate(-1deg); /* Slightly more pronounced */
+  filter: brightness(1.1) saturate(1.15);
 }
 
 .wishli-card-glass {
-  transition: all 0.3s cubic-bezier(0.4, 2, 0.6, 1);
+  transition: all 0.4s cubic-bezier(0.4, 2, 0.6, 1);
 }
 
 .wishli-fancy-card:hover .wishli-card-glass {
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.25);
 }
 
-/* Liquid Button Effects */
+/* Liquid Button Effects - Enhanced */
 .liquid-button {
   position: relative;
   overflow: hidden;
   transition: all var(--transition-base);
+  min-height: 48px; /* S25 Ultra accessibility compliance */
 }
 
 .liquid-effect {
@@ -331,23 +390,30 @@ body {
   transform: translate(-50%, -50%);
   background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-base);
   pointer-events: none;
 }
 
 .liquid-button:hover .liquid-effect,
 .fab-liquid:hover .liquid-effect {
   opacity: 1;
-  animation: liquid-pulse 1.5s ease-in-out infinite;
+  animation: liquid-pulse 1.8s ease-in-out infinite; /* Slower for S25 Ultra */
 }
 
-/* Typography */
+/* Typography - S25 Ultra Optimized */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-text-primary);
 }
+
+h1 { font-size: 32px; } /* Increased for S25 Ultra */
+h2 { font-size: 28px; }
+h3 { font-size: 24px; }
+h4 { font-size: 20px; }
+h5 { font-size: 18px; }
+h6 { font-size: 16px; }
 
 /* Custom Scrollbar - Hidden for cleaner look */
 ::-webkit-scrollbar {
@@ -365,34 +431,35 @@ h1, h2, h3, h4, h5, h6 {
   color: inherit;
 }
 
-/* Focus States */
+/* Focus States - Enhanced for S25 Ultra */
 :focus {
   outline: none;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent-primary);
-  outline-offset: 2px;
+  outline: 3px solid var(--color-accent-primary); /* Thicker outline */
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
 
-/* Input Styles */
+/* Input Styles - S25 Ultra Optimized */
 input,
 textarea,
 select {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
-  font-size: 16px;
+  font-size: 16px; /* Prevent zoom on iOS */
   line-height: 1.5;
   color: var(--color-text-primary);
   background: var(--color-glass-dark);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: 16px 20px; /* Increased padding */
   width: 100%;
   transition: all var(--transition-fast);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  min-height: 48px; /* S25 Ultra accessibility */
 }
 
 input:hover,
@@ -409,24 +476,24 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
 }
 
-/* Button Styles */
+/* Button Styles - S25 Ultra Optimized */
 button {
   font-family: 'Nexus Sherif', 'Playfair Display', serif;
-  font-size: 14px;
+  font-size: 16px; /* Larger base font */
   font-weight: 600;
   line-height: 1;
   color: var(--color-text-primary);
   background: var(--color-glass);
   border: none;
   border-radius: var(--radius-md);
-  padding: 12px 20px;
-  min-height: 44px;
+  padding: 16px 24px; /* Increased padding */
+  min-height: 48px; /* S25 Ultra touch target */
   cursor: pointer;
   transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px; /* Increased gap */
   position: relative;
   overflow: hidden;
   white-space: nowrap;
@@ -439,16 +506,19 @@ button:active {
   transform: scale(0.98);
 }
 
-/* FAB Liquid Effect */
+/* FAB Liquid Effect - S25 Ultra Enhanced */
 .fab-liquid {
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-3d);
   transition: all var(--transition-base);
+  width: 72px; /* Larger for S25 Ultra */
+  height: 72px;
 }
 
 .fab-liquid:hover {
-  box-shadow: 0 24px 48px rgba(91, 91, 214, 0.4);
+  box-shadow: 0 28px 56px rgba(91, 91, 214, 0.4);
+  transform: scale(1.05);
 }
 
 .fab-liquid::after {
@@ -456,73 +526,76 @@ button:active {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 120%;
-  height: 120%;
+  width: 130%; /* Larger effect */
+  height: 130%;
   background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
   transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
 .fab-liquid:hover::after {
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Search Styles */
+/* Search Styles - S25 Ultra Optimized */
 .search-container {
   position: relative;
   width: 100%;
+  max-width: 480px; /* Wider for S25 Ultra */
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 16px 12px 44px;
+  padding: 16px 20px 16px 52px; /* Increased padding */
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  font-size: 16px;
+  font-size: 16px; /* Prevent zoom */
   background: var(--color-glass);
   backdrop-filter: var(--blur-sm);
   color: var(--color-text-primary);
   transition: all var(--transition-fast);
+  min-height: 56px; /* Larger touch target */
 }
 
 .search-icon {
   position: absolute;
-  left: 16px;
+  left: 18px; /* Adjusted for larger padding */
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-tertiary);
-  font-size: 18px;
+  font-size: 20px; /* Larger icon */
   pointer-events: none;
 }
 
-/* List View */
+/* List View - S25 Ultra Optimized */
 .wishes-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px; /* Increased gap */
 }
 
 .wish-list-item {
   display: flex;
   align-items: center;
-  padding: 16px;
+  padding: 20px 24px; /* Increased padding */
   background: var(--color-glass);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
-  gap: 16px;
+  gap: 20px; /* Increased gap */
   cursor: pointer;
   transition: all var(--transition-base);
+  min-height: 80px; /* Larger touch target */
 }
 
 .wish-list-item:hover {
   background: var(--color-surface);
-  transform: translateX(2px);
+  transform: translateX(3px); /* More dramatic */
   box-shadow: var(--shadow-md);
 }
 
 .wish-list-thumbnail {
-  width: 56px;
-  height: 56px;
+  width: 64px; /* Larger thumbnail */
+  height: 64px;
   border-radius: var(--radius-md);
   object-fit: cover;
   background: var(--color-surface);
@@ -535,88 +608,93 @@ button:active {
 }
 
 .wish-list-title {
-  font-size: 16px;
+  font-size: 18px; /* Larger text */
   font-weight: 600;
   color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 4px;
+  margin-bottom: 6px; /* Increased spacing */
 }
 
 .wish-list-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 13px;
+  gap: 16px; /* Increased gap */
+  font-size: 15px; /* Larger text */
   color: var(--color-text-tertiary);
 }
 
-/* Stats */
+/* Stats - S25 Ultra Optimized */
 .stats-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 16px; /* Increased gap */
+  margin-bottom: 36px; /* Increased margin */
 }
 
 .stat-card {
   background: var(--color-glass);
   backdrop-filter: var(--blur-sm);
-  padding: 20px;
+  padding: 24px; /* Increased padding */
   border-radius: var(--radius-lg);
   text-align: center;
   transition: all var(--transition-base);
   border: 1px solid var(--color-border-light);
 }
 
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 .stat-value {
-  font-size: 28px;
+  font-size: 32px; /* Larger text */
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 14px; /* Larger text */
   color: var(--color-text-secondary);
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
-/* Empty State */
+/* Empty State - S25 Ultra Optimized */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 24px; /* Increased padding */
   color: var(--color-text-tertiary);
 }
 
 .empty-state-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+  font-size: 56px; /* Larger icon */
+  margin-bottom: 20px;
   opacity: 0.3;
 }
 
 .empty-state-title {
-  font-size: 18px;
+  font-size: 20px; /* Larger text */
   font-weight: 600;
   color: var(--color-text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .empty-state-description {
-  font-size: 15px;
+  font-size: 17px; /* Larger text */
   color: var(--color-text-tertiary);
-  margin-bottom: 24px;
-  max-width: 300px;
+  margin-bottom: 28px;
+  max-width: 400px; /* Wider for S25 Ultra */
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Animations */
+/* Animations - S25 Ultra Optimized */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px); /* More dramatic */
   }
   to {
     opacity: 1;
@@ -647,7 +725,7 @@ button:active {
   100% { filter: hue-rotate(360deg);}
 }
 
-/* Glass Avatar */
+/* Glass Avatar - S25 Ultra Enhanced */
 .glass-avatar {
   position: relative;
   overflow: hidden;
@@ -662,11 +740,11 @@ button:active {
   height: 200%;
   background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
   transform: rotate(45deg);
-  transition: all 0.5s;
+  transition: all 0.6s; /* Slower for S25 Ultra */
 }
 
 .glass-avatar:hover::before {
-  animation: shine 0.5s ease-in-out;
+  animation: shine 0.6s ease-in-out;
 }
 
 @keyframes shine {
@@ -685,7 +763,7 @@ button:active {
   perspective: 1000px;
 }
 
-/* S25 specific optimizations */
+/* S25 Ultra specific optimizations */
 @media (hover: none) and (pointer: coarse) {
   button {
     min-height: 48px;
@@ -695,27 +773,67 @@ button:active {
   textarea,
   select {
     font-size: 16px !important;
-    min-height: 44px;
+    min-height: 48px;
   }
   
   .swipe-action-button {
-    width: 78px;
-    height: 78px;
+    width: 84px;
+    height: 84px;
+  }
+  
+  .fab-liquid {
+    width: 76px;
+    height: 76px;
   }
 }
 
-/* High DPI screens */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+/* High DPI screens - S25 Ultra */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
   * {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
   }
+  
+  .search-icon,
+  .wish-list-meta {
+    font-size: 18px;
+  }
+  
+  .wish-list-thumbnail {
+    width: 68px;
+    height: 68px;
+  }
 }
 
-/* Landscape adjustments */
+/* Large screen layout optimizations for S25 Ultra */
+@media (min-width: 900px) and (min-height: 2000px) {
+  .wishes-list {
+    gap: 20px;
+  }
+  
+  .wish-list-item {
+    padding: 24px 28px;
+    min-height: 88px;
+  }
+  
+  .wish-list-thumbnail {
+    width: 72px;
+    height: 72px;
+  }
+  
+  .wish-list-title {
+    font-size: 20px;
+  }
+  
+  .wish-list-meta {
+    font-size: 16px;
+  }
+}
+
+/* Landscape adjustments for S25 Ultra */
 @media (orientation: landscape) and (max-height: 500px) {
   :root {
-    --font-size-base: 13px;
+    --font-size-base: 15px;
   }
   
   header {
@@ -723,10 +841,16 @@ button:active {
     top: 0;
     left: 0;
     right: 0;
+    z-index: 100;
   }
   
   main {
-    margin-top: 100px;
+    margin-top: 120px;
+  }
+  
+  .fab-liquid {
+    bottom: 20px;
+    right: 20px;
   }
 }
 
@@ -748,7 +872,7 @@ button:active {
   flex-direction: column;
 }
 
-/* Utility classes */
+/* Utility classes - S25 Ultra Enhanced */
 .text-primary { color: var(--color-text-primary); }
 .text-secondary { color: var(--color-text-secondary); }
 .text-tertiary { color: var(--color-text-tertiary); }
@@ -762,8 +886,31 @@ button:active {
   display: none;
 }
 
-/* Safe area padding */
-.safe-top { padding-top: env(safe-area-inset-top); }
-.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-.safe-left { padding-left: env(safe-area-inset-left); }
-.safe-right { padding-right: env(safe-area-inset-right); }
+/* Safe area padding for S25 Ultra */
+.safe-top { padding-top: var(--s25-safe-area-top); }
+.safe-bottom { padding-bottom: var(--s25-safe-area-bottom); }
+.safe-left { padding-left: var(--s25-safe-area-left); }
+.safe-right { padding-right: var(--s25-safe-area-right); }
+
+/* Additional S25 Ultra specific optimizations */
+.s25-touch-target {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.s25-large-text {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.s25-enhanced-shadow {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Edge-to-edge display support */
+@supports (display-mode: standalone) {
+  body {
+    padding-top: var(--s25-safe-area-top);
+    padding-bottom: var(--s25-safe-area-bottom);
+  }
+}
